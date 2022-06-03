@@ -5,6 +5,8 @@ on:
     branches:
       - main
       - 'releases/*'
+    paths:
+      - 'hello-world/**'
 
 jobs:
   # unit tests
