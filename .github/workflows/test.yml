@@ -26,6 +26,6 @@ jobs:
         working-directory: ./hello-world
     steps:
     - uses: actions/checkout@v3
-    - uses: ./
+    - uses: ./hello-world
       with:
         milliseconds: 1000
