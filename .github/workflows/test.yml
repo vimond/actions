@@ -21,6 +21,9 @@ jobs:
   # test action works running from the graph
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./hello-world
     steps:
     - uses: actions/checkout@v3
     - uses: ./
