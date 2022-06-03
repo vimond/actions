@@ -1,0 +1,33 @@
+name: "units-test"
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'releases/*'
+    paths:
+      - 'ticket-collector/**'
+
+jobs:
+  # unit tests
+  units:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./ticket-collector
+    steps:
+    - uses: actions/checkout@v3
+    - run: npm ci
+    - run: npm test
+
+  # test action works running from the graph
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./ticket-collector
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ./ticket-collector
+      with:
+        milliseconds: 1000

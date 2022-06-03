@@ -1,0 +1,14 @@
+name: 'ticket-collector'
+description: 'Collects ticket ids'
+inputs: {}
+#  pr-id:
+#    description: 'ID of PR'
+#    required: true
+#    #default: ''
+#  jira-tickets:
+#    description: 'comma-separated list of JIRA ticket IDs'
+#    required: true
+outputs: {}
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
