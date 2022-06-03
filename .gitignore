@@ -106,7 +106,3 @@ typings/
 /.idea/misc.xml
 /.idea/modules.xml
 /.idea/vcs.xml
-
-*/dist/index.js.map
-*/dist/licenses.txt
-*/dist/sourcemap-register.js
