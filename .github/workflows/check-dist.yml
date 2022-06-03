@@ -9,12 +9,13 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - '**.md'
+    paths:
+      - 'hello-world/**'
+      - '!**.md'
   pull_request:
-    paths-ignore:
-      - '**.md'
-  workflow_dispatch:
+    paths:
+      - 'hello-world/**'
+      - '!**.md'
 
 jobs:
   check-dist:
