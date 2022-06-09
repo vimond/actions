@@ -1,10 +1,19 @@
 name: 'ticket-collector'
 description: 'Collects ticket ids'
-inputs: {}
-#  pr-id:
-#    description: 'ID of PR'
-#    required: true
-#    #default: ''
+inputs:
+  owner:
+    description: 'Owner of the repository'
+    required: true
+  repository:
+    description: 'Name of the repository'
+    required: true
+  pr-id:
+    description: 'ID of PR'
+    required: true
+  output-file:
+    description: 'File in which we should write the list of tickets'
+    required: true
+    #default: ''
 #  jira-tickets:
 #    description: 'comma-separated list of JIRA ticket IDs'
 #    required: true
