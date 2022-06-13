@@ -11,6 +11,8 @@ async function run() {
   core.debug(github.context.sha);
   try {
 
+    console.log("Enter action log")
+    core.debug("Enter action")
     core.setOutput('time', new Date().toTimeString());
 
     let input = {}
@@ -26,6 +28,7 @@ async function run() {
       input.repo = core.getInput("repository");
       input.prNumber = core.getInput("pr-id");
     }
+
 
     let textBlocks = await prMetadataCollector.getAllTextBlocks(input.owner, input.repo, input.prNumber);
     let ticketsFound = ticketFinder.findAll(textBlocks);
