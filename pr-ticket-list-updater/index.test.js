@@ -54,6 +54,13 @@ describe("replacing text", () => {
     const oldText = "prefixSTARTuntouchedSTARTtargetENDsuffixENDsuffix2";
     expect(matcher.replaceMarkedAreaWith(oldText, "newtext")).toStrictEqual("prefixSTARTuntouchedSTARTnewtextENDsuffixENDsuffix2");
   });
+
+
+  test("'markers without newline' handles no matches", () => {
+    const matcher = pr("START", "END");
+    const oldText = "prefixSTARTuntouched";
+    expect(matcher.replaceMarkedAreaWith(oldText, "newtext")).toStrictEqual("prefixSTARTuntouched");
+  });
 });
 
 

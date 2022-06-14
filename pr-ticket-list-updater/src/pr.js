@@ -32,6 +32,9 @@ const m = (function () {
 
       replaceMarkedAreaWith: function(oldText, newText) {
         const match = pattern.exec(oldText);
+        if(match === null || match.length !== 3) {
+          return oldText;
+        }
         return match[1] + newText + match[2];
       }
 
