@@ -1,5 +1,5 @@
-name: 'ticket-collector'
-description: 'Collects ticket ids'
+name: 'pr-ticket-list-updater'
+description: 'Takes a list of ticket ids and updates the PR with a table listing them'
 inputs: {}
 #  pr-id:
 #    description: 'ID of PR'
