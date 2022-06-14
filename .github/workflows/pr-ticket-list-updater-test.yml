@@ -30,4 +30,6 @@ jobs:
     - uses: actions/checkout@v3
     - uses: ./pr-ticket-list-updater
       with:
-        milliseconds: 1000
+        pr-id: 777
+        input-file: "/tmp/foo"
+        dry-run: "true"

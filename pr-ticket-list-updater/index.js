@@ -5,19 +5,23 @@ const pr = require('./pr');
 
 // most @actions toolkit packages have async methods
 async function run() {
-  // core.debug("omg");
-  // core.debug(github.context.sha);
+  core.debug(github.context.sha);
   try {
-    // const ms = core.getInput('milliseconds');
-    // core.info(`Waiting ${ms} milliseconds ...`);
+    let input = {
+      inputFile: core.getInput("input-file") || process.env.INPUT_FILE,
+      prId: core.getInput("pr-id") || process.env.PR_ID,
+      dryRun: core.getBooleanInput("dry-run") || process.env.DRY_RUN,
+    }
 
-    let m = pr();
-    // console.log(pr.test("nonono"));
-    // console.log(pr.test("aaafoobbbbarbaz"));
+    console.log(`Input file: ${input.inputFile}`);
+    console.log(`Pull Requests ID: ${input.prId}`);
 
-    // core.info((new Date()).toTimeString());
+    if(input.dryRun) {
+      console.log("Dry run. Exiting");
+      return;
+    }
 
-    // core.setOutput('time', new Date().toTimeString());
+    console.log("doing stuff...");
   } catch (error) {
     core.setFailed(error.message);
   }

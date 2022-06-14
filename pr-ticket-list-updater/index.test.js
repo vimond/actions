@@ -1,6 +1,5 @@
 const pr = require('./pr');
 
-
 test("hasMarkedArea with explicit markers", () => {
   const m = pr("foo", "bar");
   expect(m.hasMarkedArea("aaafoobbbbarccc")).toBe(true);
@@ -45,12 +44,12 @@ describe("constructing the module", () => {
     expect(() => {pr("foo", undefined)}).toThrow();
     expect(() => {pr(undefined, "foo")}).toThrow();
   });
-});
 
-test("construct with explicit markers works",  () => {
-  const sm = "this is the start marker";
-  const em = "this is the end my friend";
-  const m = pr(sm, em);
-  expect(m.getStartMarker()).toStrictEqual(sm);
-  expect(m.getEndMarker()).toStrictEqual(em);
+  test("construct with explicit markers works",  () => {
+    const sm = "this is the start marker";
+    const em = "this is the end my friend";
+    const m = pr(sm, em);
+    expect(m.getStartMarker()).toStrictEqual(sm);
+    expect(m.getEndMarker()).toStrictEqual(em);
+  });
 });

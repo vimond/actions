@@ -1,13 +1,12 @@
 name: 'pr-ticket-list-updater'
 description: 'Takes a list of ticket ids and updates the PR with a table listing them'
-inputs: {}
-#  pr-id:
-#    description: 'ID of PR'
-#    required: true
-#    #default: ''
-#  jira-tickets:
-#    description: 'comma-separated list of JIRA ticket IDs'
-#    required: true
+inputs:
+  pr-id:
+    description: 'ID of PR'
+    required: true
+  input-file:
+     description: 'Path to file with ticket IDs'
+     required: true
 outputs: {}
 runs:
   using: 'node16'
