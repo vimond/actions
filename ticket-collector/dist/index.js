@@ -8839,11 +8839,18 @@ async function getAllCommitMessages( octokitClient, prMetadata ) {
         throw new Error('Failed to retrieve all commit messages')
     }
     let messages = []
-    commitResponse.data.forEach((c)=> {
+    for( const c of commitResponse) {
         messages.push(c.commit.message);
-    });
+        messages.push(...await lookForMergeInformation(c));
+    }
+
     return messages;
 }
+
+async function lookForMergeInformation(commitMetadata) {
+    return [];
+}
+
 
 async function getAllTextBlocks(owner, repository, prNumber){
     const prMetadata = {
@@ -8851,7 +8858,7 @@ async function getAllTextBlocks(owner, repository, prNumber){
         repository,
         prNumber
     }
-    const ghToken = process.env.GH_TOKEN || core.getInput('myToken') ;
+    const ghToken = process.env.GH_TOKEN || core.getInput('gh-token') ;
     const octokit = github.getOctokit(ghToken)
     let textBlocks = []
     textBlocks.push(...await getPrTextBlocks(octokit, prMetadata));
@@ -8874,12 +8881,11 @@ const ticketRegex = /[A-Z]{2,}-\d+/gm;
 
 function findAllTickets(textBlocks) {
     let ticketsFound = new Set();
-    for ( text of textBlocks) {
+    for ( const text of textBlocks) {
         const matches = [...text.matchAll(ticketRegex)];
         matches.forEach( m => {
             ticketsFound.add(m[0])
         })
-        console.log(ticketsFound);
     }
     return ticketsFound;
 }
@@ -9072,29 +9078,19 @@ async function run() {
   core.debug(github.context.sha);
   try {
 
-    console.log("Enter action log")
-    core.debug("Enter action")
-    core.setOutput('time', new Date().toTimeString());
+    console.log("Start collecting tickets")
 
-    let input = {}
-    if ( process.env.RUN_LOCALLY ) {
-      input.ghToken = process.env.GH_TOKEN;
-      input.outputFile = process.env.OUTPUT_FILE;
-      input.owner = 'vimond';
-      input.repo = 'testing-terraform-management';
-      input.prNumber = 7;
-    } else {
-      input.outputFile = core.getInput('output-file');
-      input.owner = core.getInput("owner");
-      input.repo = core.getInput("repository");
-      input.prNumber = core.getInput("pr-id");
+    let input = {
+      outputFile: process.env.OUTPUT_FILE || core.getInput('output-file'),
+      owner: process.env.OWNER || core.getInput("owner"),
+      repo: process.env.REPO || core.getInput("repository"),
+      prNumber: process.env.PR_ID || core.getInput("pr-id")
     }
-
 
     let textBlocks = await prMetadataCollector.getAllTextBlocks(input.owner, input.repo, input.prNumber);
     let ticketsFound = ticketFinder.findAll(textBlocks);
+    console.log(`Tickets found: ${JSON.stringify(ticketsFound)}`);
     await fs.writeFileSync(input.outputFile,JSON.stringify(Array.from(ticketsFound)), { flag: 'w' });
-    console.log(ticketsFound)
   } catch (error) {
     core.setFailed(error.message);
   }

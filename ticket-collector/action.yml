@@ -13,10 +13,9 @@ inputs:
   output-file:
     description: 'File in which we should write the list of tickets'
     required: true
-    #default: ''
-#  jira-tickets:
-#    description: 'comma-separated list of JIRA ticket IDs'
-#    required: true
+  gh-token:
+    description: 'Github token with permission to query the PR and list commits'
+    required: true
 outputs: {}
 runs:
   using: 'node16'

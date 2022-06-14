@@ -27,11 +27,18 @@ async function getAllCommitMessages( octokitClient, prMetadata ) {
         throw new Error('Failed to retrieve all commit messages')
     }
     let messages = []
-    commitResponse.data.forEach((c)=> {
+    for( const c of commitResponse) {
         messages.push(c.commit.message);
-    });
+        messages.push(...await lookForMergeInformation(c));
+    }
+
     return messages;
 }
+
+async function lookForMergeInformation(commitMetadata) {
+    return [];
+}
+
 
 async function getAllTextBlocks(owner, repository, prNumber){
     const prMetadata = {
@@ -39,7 +46,7 @@ async function getAllTextBlocks(owner, repository, prNumber){
         repository,
         prNumber
     }
-    const ghToken = process.env.GH_TOKEN || core.getInput('myToken') ;
+    const ghToken = process.env.GH_TOKEN || core.getInput('gh-token') ;
     const octokit = github.getOctokit(ghToken)
     let textBlocks = []
     textBlocks.push(...await getPrTextBlocks(octokit, prMetadata));
