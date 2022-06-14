@@ -1,7 +1,7 @@
-import * as core from '@actions/core';
-import * as github from '@actions/github';
+const core = require('@actions/core');
+const github = require('@actions/github');
 
-const wait = require('./wait');
+const pr = require('./pr');
 
 // most @actions toolkit packages have async methods
 async function run() {
@@ -12,7 +12,7 @@ async function run() {
     core.info(`Waiting ${ms} milliseconds ...`);
 
     core.debug((new Date()).toTimeString()); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-    await wait(parseInt(ms));
+    await pr(parseInt(ms));
     core.info((new Date()).toTimeString());
 
     core.setOutput('time', new Date().toTimeString());

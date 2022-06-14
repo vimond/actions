@@ -1,17 +1,17 @@
-const wait = require('./wait');
+const pr = require('./pr');
 const process = require('process');
 const cp = require('child_process');
 const path = require('path');
 
 test('throws invalid number', async () => {
-  await expect(wait('foo')).rejects.toThrow('milliseconds not a number');
+  await expect(pr('foo')).rejects.toThrow('milliseconds not a number');
 });
 
 test('wait 500 ms', async () => {
   const start = new Date();
-  await wait(500);
+  await pr(500);
   const end = new Date();
-  var delta = Math.abs(end - start);
+  const delta = Math.abs(end - start);
   expect(delta).toBeGreaterThanOrEqual(500);
 });
 

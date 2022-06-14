@@ -1,0 +1,33 @@
+name: "units-test"
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'releases/*'
+    paths:
+      - 'pr-ticket-list-updater/**'
+
+jobs:
+  # unit tests
+  units:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./pr-ticket-list-updater
+    steps:
+    - uses: actions/checkout@v3
+    - run: npm ci
+    - run: npm test
+
+  # test action works running from the graph
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./pr-ticket-list-updater
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ./pr-ticket-list-updater
+      with:
+        milliseconds: 1000
