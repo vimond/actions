@@ -8691,19 +8691,90 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 4258:
+/***/ 5580:
 /***/ ((module) => {
 
-let wait = function (milliseconds) {
-  return new Promise((resolve) => {
-    if (typeof milliseconds !== 'number') {
-      throw new Error('milliseconds not a number');
-    }
-    setTimeout(() => resolve("done!"), milliseconds)
-  });
-};
+const m = (function () {
+  return function (start, end) {
+    const defaultStartMarker = "\n<!-- start: vimond pr ticket list -->\n";
+    const defaultEndMarker = "\n<!-- end: vimond pr ticket list -->\n";
 
-module.exports = wait;
+    if ((start !== undefined && end === undefined) || (start === undefined && end !== undefined)) {
+      throw "Either set both start and end, or non of them";
+    }
+    let startMarker, endMarker;
+
+    if (start !== undefined) {
+      startMarker = start;
+      endMarker = end;
+    } else {
+      startMarker = defaultStartMarker;
+      endMarker = defaultEndMarker;
+    }
+
+    const pattern = new RegExp(`^(.*${startMarker}).*(${endMarker}.*)$`, "gs");
+
+    return {
+      getStartMarker: function () {
+        return startMarker
+      },
+      getEndMarker: function () {
+        return endMarker
+      },
+
+      hasMarkedArea: function (text) {
+        return pattern.test(text)
+      },
+
+      replaceMarkedAreaWith: function(oldText, newText) {
+        const match = pattern.exec(oldText);
+        return match[1] + newText + match[2];
+      }
+
+//       getMarkdownTicketList: function (tickets) {
+//         return `
+// ${startMarker}
+//   | Ticket | Description |
+//   | --- | --- |
+//   | foo | bar |
+//   | quux | baz |
+// ${endMarker}`.trim();
+//       }
+    };
+  };
+})();
+
+
+// const startMarker = "\n<!-- start: vimond pr ticket list -->\n";
+// const endMarker = "\n<!-- end: vimond pr ticket list -->\n";
+//
+// // const startMarker = "\nAAA\n";
+// // const endMarker = "BBB";
+//
+// const pattern = new RegExp(`^(.*)(${startMarker}.*${endMarker})(.*)$`, "gs");
+//
+//
+// let test = async function() {
+//   console.log(pattern);
+//   const t = "something\\nelse" + startMarker + "# data to go away" + endMarker + "this should still be here";
+//   // const t = "AAAfooBBB";
+//   console.log(t);
+//
+//   const r = pattern.exec(t);
+//   console.log(r[1]);
+//   console.log(r[3]);
+//   return true;
+// }
+// let wait = function (milliseconds) {
+//   return new Promise((resolve) => {
+//     if (typeof milliseconds !== 'number') {
+//       throw new Error('milliseconds not a number');
+//     }
+//     setTimeout(() => resolve("done!"), milliseconds)
+//   });
+// };
+
+module.exports = m;
 
 
 /***/ }),
@@ -8869,80 +8940,36 @@ module.exports = require("zlib");
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__nccwpck_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__nccwpck_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__nccwpck_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
-/******/ 		// define __esModule on exports
-/******/ 		__nccwpck_require__.r = (exports) => {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-"use strict";
-__nccwpck_require__.r(__webpack_exports__);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2186);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(5438);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_1__);
+const core = __nccwpck_require__(2186);
+const github = __nccwpck_require__(5438);
 
-
-
-const wait = __nccwpck_require__(4258);
+const pr = __nccwpck_require__(5580);
 
 // most @actions toolkit packages have async methods
 async function run() {
-  _actions_core__WEBPACK_IMPORTED_MODULE_0__.debug("omg");
-  _actions_core__WEBPACK_IMPORTED_MODULE_0__.debug(_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.sha);
+  core.debug("omg");
+  core.debug(github.context.sha);
   try {
-    const ms = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('milliseconds');
-    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Waiting ${ms} milliseconds ...`);
+    const ms = core.getInput('milliseconds');
+    core.info(`Waiting ${ms} milliseconds ...`);
 
-    _actions_core__WEBPACK_IMPORTED_MODULE_0__.debug((new Date()).toTimeString()); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-    await wait(parseInt(ms));
-    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info((new Date()).toTimeString());
+    let m = pr("foo", "bar");
+    console.log(pr.test("nonono"));
+    console.log(pr.test("aaafoobbbbarbaz"));
 
-    _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput('time', new Date().toTimeString());
+    core.info((new Date()).toTimeString());
+
+    core.setOutput('time', new Date().toTimeString());
   } catch (error) {
-    _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(error.message);
+    core.setFailed(error.message);
   }
 }
 

@@ -1,24 +1,56 @@
 const pr = require('./pr');
-const process = require('process');
-const cp = require('child_process');
-const path = require('path');
 
-test('throws invalid number', async () => {
-  await expect(pr('foo')).rejects.toThrow('milliseconds not a number');
+
+test("hasMarkedArea with explicit markers", () => {
+  const m = pr("foo", "bar");
+  expect(m.hasMarkedArea("aaafoobbbbarccc")).toBe(true);
+  expect(m.hasMarkedArea("aaafoobbbbaccc")).toBe(false);
 });
 
-test('wait 500 ms', async () => {
-  const start = new Date();
-  await pr(500);
-  const end = new Date();
-  const delta = Math.abs(end - start);
-  expect(delta).toBeGreaterThanOrEqual(500);
+describe("replacing text", () => {
+  test("'no newline marker' replaced with nothing", () => {
+    const matcher = pr("START", "END");
+    const oldText = "fooSTARTcoolioENDbar";
+    expect(matcher.replaceMarkedAreaWith(oldText, "")).toStrictEqual("fooSTARTENDbar");
+  });
+
+  test("'markers with newline' replaced with nothing", () => {
+    const matcher = pr("\nSTART\n", "\nEND\n");
+    const oldText = "foo\nSTART\ncoolio\nEND\nbar";
+    expect(matcher.replaceMarkedAreaWith(oldText, "")).toStrictEqual("foo\nSTART\n\nEND\nbar");
+  });
+
+  test("'no newline marker' replaced with new text", ()=> {
+    const matcher = pr("START", "END");
+    const oldText = "fooSTARTcoolioENDbar";
+    expect(matcher.replaceMarkedAreaWith(oldText, "mario")).toStrictEqual("fooSTARTmarioENDbar");
+  });
+
+  test("'markers with newline' replaced with new text", () => {
+    const matcher = pr("\nSTART\n", "\nEND\n");
+    const oldText = "foo\nSTART\ncoolio\nEND\nbar";
+    expect(matcher.replaceMarkedAreaWith(oldText, "cookie")).toStrictEqual("foo\nSTART\ncookie\nEND\nbar");
+  });
 });
 
-// shows how the runner will run a javascript action with env / stdout protocol
-test('test runs', () => {
-  process.env['INPUT_MILLISECONDS'] = 100;
-  const ip = path.join(__dirname, 'index.js');
-  const result = cp.execSync(`node ${ip}`, {env: process.env}).toString();
-  console.log(result);
-})
+
+
+describe("constructing the module", () => {
+  test("construct with default markers works", () => {
+    expect(() => {pr()}).not.toThrow();
+  });
+
+  test("construct with missing markers throws", () => {
+    expect(() => {pr("onlyone")}).toThrow();
+    expect(() => {pr("foo", undefined)}).toThrow();
+    expect(() => {pr(undefined, "foo")}).toThrow();
+  });
+});
+
+test("construct with explicit markers works",  () => {
+  const sm = "this is the start marker";
+  const em = "this is the end my friend";
+  const m = pr(sm, em);
+  expect(m.getStartMarker()).toStrictEqual(sm);
+  expect(m.getEndMarker()).toStrictEqual(em);
+});

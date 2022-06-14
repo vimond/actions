@@ -11,8 +11,10 @@ async function run() {
     const ms = core.getInput('milliseconds');
     core.info(`Waiting ${ms} milliseconds ...`);
 
-    core.debug((new Date()).toTimeString()); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-    await pr(parseInt(ms));
+    let m = pr("foo", "bar");
+    console.log(pr.test("nonono"));
+    console.log(pr.test("aaafoobbbbarbaz"));
+
     core.info((new Date()).toTimeString());
 
     core.setOutput('time', new Date().toTimeString());
