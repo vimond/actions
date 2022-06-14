@@ -21,9 +21,9 @@ async function run() {
     }
 
     let textBlocks = await prMetadataCollector.getAllTextBlocks(input.owner, input.repo, input.prNumber);
-    let ticketsFound = ticketFinder.findAll(textBlocks);
+    const ticketsFound = Array.from(ticketFinder.findAll(textBlocks));
     console.log(`Tickets found: ${JSON.stringify(ticketsFound)}`);
-    await fs.writeFileSync(input.outputFile,JSON.stringify(Array.from(ticketsFound)), { flag: 'w' });
+    await fs.writeFileSync(input.outputFile,JSON.stringify(ticketsFound), { flag: 'w' });
   } catch (error) {
     core.setFailed(error.message);
   }

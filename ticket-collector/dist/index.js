@@ -8839,9 +8839,9 @@ async function getAllCommitMessages( octokitClient, prMetadata ) {
         throw new Error('Failed to retrieve all commit messages')
     }
     let messages = []
-    for( const c of commitResponse) {
+    for( let c of commitResponse.data) {
         messages.push(c.commit.message);
-        messages.push(...await lookForMergeInformation(c));
+        //messages.push(...await lookForMergeInformation(c));
     }
 
     return messages;
@@ -9088,9 +9088,9 @@ async function run() {
     }
 
     let textBlocks = await prMetadataCollector.getAllTextBlocks(input.owner, input.repo, input.prNumber);
-    let ticketsFound = ticketFinder.findAll(textBlocks);
+    const ticketsFound = Array.from(ticketFinder.findAll(textBlocks));
     console.log(`Tickets found: ${JSON.stringify(ticketsFound)}`);
-    await fs.writeFileSync(input.outputFile,JSON.stringify(Array.from(ticketsFound)), { flag: 'w' });
+    await fs.writeFileSync(input.outputFile,JSON.stringify(ticketsFound), { flag: 'w' });
   } catch (error) {
     core.setFailed(error.message);
   }

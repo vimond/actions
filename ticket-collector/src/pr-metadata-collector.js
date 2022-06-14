@@ -27,9 +27,9 @@ async function getAllCommitMessages( octokitClient, prMetadata ) {
         throw new Error('Failed to retrieve all commit messages')
     }
     let messages = []
-    for( const c of commitResponse) {
+    for( let c of commitResponse.data) {
         messages.push(c.commit.message);
-        messages.push(...await lookForMergeInformation(c));
+        //messages.push(...await lookForMergeInformation(c));
     }
 
     return messages;
