@@ -1,7 +1,7 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 
-const pr = require('./pr');
+const pr = require('./src/pr');
 
 // most @actions toolkit packages have async methods
 async function run() {

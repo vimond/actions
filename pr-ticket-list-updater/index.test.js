@@ -1,4 +1,4 @@
-const pr = require('./pr');
+const pr = require('./src/pr');
 
 test("hasMarkedArea with explicit markers", () => {
   const m = pr("foo", "bar");
@@ -29,6 +29,30 @@ describe("replacing text", () => {
     const matcher = pr("\nSTART\n", "\nEND\n");
     const oldText = "foo\nSTART\ncoolio\nEND\nbar";
     expect(matcher.replaceMarkedAreaWith(oldText, "cookie")).toStrictEqual("foo\nSTART\ncookie\nEND\nbar");
+  });
+
+  test("'markers without newline' and multiple hits only replaces last hit", () => {
+    const matcher = pr("START", "END");
+    const oldText = "prefixSTARTuntouchedENDmiddleSTARTtargetENDsuffix";
+    expect(matcher.replaceMarkedAreaWith(oldText, "newtext")).toStrictEqual("prefixSTARTuntouchedENDmiddleSTARTnewtextENDsuffix");
+  });
+
+  test("'markers without newline' ignores extra end markers", () => {
+    const matcher = pr("START", "END");
+    const oldText = "prefixSTARTuntouchedENDmiddleSTARTtargetENDsuffixENDsuffix2";
+    expect(matcher.replaceMarkedAreaWith(oldText, "newtext")).toStrictEqual("prefixSTARTuntouchedENDmiddleSTARTnewtextENDsuffixENDsuffix2");
+  });
+
+  test("'markers without newline' ignores extra start markers", () => {
+    const matcher = pr("START", "END");
+    const oldText = "prefixSTARTuntouchedSTARTtargetENDsuffix";
+    expect(matcher.replaceMarkedAreaWith(oldText, "newtext")).toStrictEqual("prefixSTARTuntouchedSTARTnewtextENDsuffix");
+  });
+
+  test("'markers without newline' ignores extra start and end markers", () => {
+    const matcher = pr("START", "END");
+    const oldText = "prefixSTARTuntouchedSTARTtargetENDsuffixENDsuffix2";
+    expect(matcher.replaceMarkedAreaWith(oldText, "newtext")).toStrictEqual("prefixSTARTuntouchedSTARTnewtextENDsuffixENDsuffix2");
   });
 });
 
