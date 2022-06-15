@@ -5,6 +5,7 @@ const fs = require('fs');
 require('dotenv').config()
 const ticketFinder = require('./src/tickets-finder');
 const prMetadataCollector = require('./src/pr-metadata-collector');
+const jira = require('./src/jira');
 
 
 // most @actions toolkit packages have async methods
@@ -19,18 +20,29 @@ async function run() {
       prNumber: process.env.PR_ID || core.getInput("pr-id")
     }
 
+    const jiraConfig = {
+      host: process.env.JIRA_HOST ||  core.getInput("jira-host"),
+      username:  process.env.JIRA_USERNAME ||  core.getInput("jira-username"),
+      token: process.env.JIRA_TOKEN ||  core.getInput("jira-token")
+    }
+
     let textBlocks = await prMetadataCollector.getAllTextBlocks(input.owner, input.repo, input.prNumber);
     const ticketsFound = Array.from(ticketFinder.findAll(textBlocks));
     console.log(`Tickets found: ${JSON.stringify(ticketsFound)}`);
 
+    const ticketsFiltered =  await jira.checkIfExist(jiraConfig, ticketsFound);
+    console.log(`Tickets filtered: ${JSON.stringify(ticketsFiltered)}`);
+
     if ( input.outputFile !== ""){
-      await fs.writeFileSync(input.outputFile,JSON.stringify(ticketsFound), { flag: 'w' });
+      await fs.writeFileSync(input.outputFile,JSON.stringify(ticketsFiltered), { flag: 'w' });
     }
 
-    core.setOutput('tickets', Buffer.from(JSON.stringify(ticketsFound)).toString('base64'))
+    core.setOutput('tickets', Buffer.from(JSON.stringify(ticketsFiltered)).toString('base64'))
   } catch (error) {
     core.setFailed(error.message);
   }
 }
+
+
 
 run();

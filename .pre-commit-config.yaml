@@ -8,10 +8,12 @@ repos:
     hooks:
       - id: detect-aws-credentials
       - id: detect-private-key
+        exclude: dist/index.js
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.1.0
     hooks:
       - id: detect-secrets
+        exclude: dist/index.js
   - repo: https://github.com/zricethezav/gitleaks
     rev: v8.8.7
     hooks:

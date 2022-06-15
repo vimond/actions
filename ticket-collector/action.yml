@@ -19,6 +19,15 @@ inputs:
   git-search-base-url:
     description: 'Proxy URL for git search api'
     required: false
+  jira-host:
+    description: 'Domain name of the Jira Cloud server (Needed if you want to verify ticket list against Jira)'
+    required: false
+  jira-username:
+    description: 'Jira username (Needed if you want to verify ticket list against Jira)'
+    required: false
+  jira-token:
+    description: 'Jira token or password (Needed if you want to verify ticket list against Jira)'
+    required: false
 outputs:
   tickets:
     description: 'Base64 encoded json list of tickets found'
