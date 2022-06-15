@@ -9108,7 +9108,11 @@ async function run() {
     let textBlocks = await prMetadataCollector.getAllTextBlocks(input.owner, input.repo, input.prNumber);
     const ticketsFound = Array.from(ticketFinder.findAll(textBlocks));
     console.log(`Tickets found: ${JSON.stringify(ticketsFound)}`);
-    await fs.writeFileSync(input.outputFile,JSON.stringify(ticketsFound), { flag: 'w' });
+
+    if ( input.outputFile !== ""){
+      await fs.writeFileSync(input.outputFile,JSON.stringify(ticketsFound), { flag: 'w' });
+    }
+
     core.setOutput('tickets', Buffer.from(JSON.stringify(ticketsFound)).toString('base64'))
   } catch (error) {
     core.setFailed(error.message);

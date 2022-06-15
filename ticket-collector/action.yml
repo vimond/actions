@@ -12,7 +12,7 @@ inputs:
     required: true
   output-file:
     description: 'File in which we should write the list of tickets'
-    required: true
+    required: false
   gh-token:
     description: 'Github token with permission to query the PR and list commits'
     required: true
