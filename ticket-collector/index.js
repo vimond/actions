@@ -23,6 +23,7 @@ async function run() {
     const ticketsFound = Array.from(ticketFinder.findAll(textBlocks));
     console.log(`Tickets found: ${JSON.stringify(ticketsFound)}`);
     await fs.writeFileSync(input.outputFile,JSON.stringify(ticketsFound), { flag: 'w' });
+    core.setOutput('tickets', Buffer.from(JSON.stringify(ticketsFound)).toString('base64'))
   } catch (error) {
     core.setFailed(error.message);
   }

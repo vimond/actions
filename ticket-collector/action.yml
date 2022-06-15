@@ -19,7 +19,9 @@ inputs:
   git-search-base-url:
     description: 'Proxy URL for git search api'
     required: false
-outputs: {}
+outputs:
+  tickets:
+    description: 'Base64 encoded json list of tickets found'
 runs:
   using: 'node16'
   main: 'dist/index.js'
