@@ -26,17 +26,36 @@ async function getAllCommitMessages( octokitClient, prMetadata ) {
     if ( commitResponse.status !== 200 ) {
         throw new Error('Failed to retrieve all commit messages')
     }
+
+    const searchBaseUrl = process.env.SEARCH_BASE_URL || core.getInput('git-search-base-url');
+
+    const gitCacheClient = github.getOctokit(process.env.GH_TOKEN || core.getInput('gh-token'),{
+            ...(searchBaseUrl !== "" && {baseUrl: searchBaseUrl})
+        })
     let messages = []
     for( let c of commitResponse.data) {
         messages.push(c.commit.message);
-        //messages.push(...await lookForMergeInformation(c));
+        messages.push(...await searchForCommitPullRequest(gitCacheClient, prMetadata,  c));
     }
 
     return messages;
 }
 
-async function lookForMergeInformation(commitMetadata) {
-    return [];
+async function searchForCommitPullRequest(searchClient, prMetadata, commitMetadata) {
+    const searchResponse = await searchClient.rest.search.issuesAndPullRequests({
+        q: encodeURIComponent(commitMetadata.sha),
+    });
+    console.log(`Request search PR for sha ${commitMetadata.sha}:  ${searchResponse.headers['x-cache']}`);
+    let prBodies = []
+    if (searchResponse.data.total_count > 1 ) {
+
+        searchResponse.data.items.forEach(i=> {
+            if (i.pull_request.url !== `https://api.github.com/repos/${prMetadata.owner}/${prMetadata.repo}/pulls/${prMetadata.prNumber}`){
+                prBodies.push(i.body);
+            }
+        });
+    }
+    return prBodies;
 }
 
 

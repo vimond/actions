@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 const github = require('@actions/github')
+
 const fs = require('fs');
 require('dotenv').config()
 const ticketFinder = require('./src/tickets-finder');
@@ -8,9 +9,7 @@ const prMetadataCollector = require('./src/pr-metadata-collector');
 
 // most @actions toolkit packages have async methods
 async function run() {
-  core.debug(github.context.sha);
   try {
-
     console.log("Start collecting tickets")
 
     let input = {

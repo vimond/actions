@@ -16,6 +16,9 @@ inputs:
   gh-token:
     description: 'Github token with permission to query the PR and list commits'
     required: true
+  git-search-base-url:
+    description: 'Proxy URL for git search api'
+    required: false
 outputs: {}
 runs:
   using: 'node16'
