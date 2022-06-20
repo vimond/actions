@@ -4383,6 +4383,122 @@ exports.Deprecation = Deprecation;
 
 /***/ }),
 
+/***/ 2437:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const fs = __nccwpck_require__(5747)
+const path = __nccwpck_require__(5622)
+const os = __nccwpck_require__(2087)
+
+const LINE = /(?:^|^)\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|$)/mg
+
+// Parser src into an Object
+function parse (src) {
+  const obj = {}
+
+  // Convert buffer to string
+  let lines = src.toString()
+
+  // Convert line breaks to same format
+  lines = lines.replace(/\r\n?/mg, '\n')
+
+  let match
+  while ((match = LINE.exec(lines)) != null) {
+    const key = match[1]
+
+    // Default undefined or null to empty string
+    let value = (match[2] || '')
+
+    // Remove whitespace
+    value = value.trim()
+
+    // Check if double quoted
+    const maybeQuote = value[0]
+
+    // Remove surrounding quotes
+    value = value.replace(/^(['"`])([\s\S]*)\1$/mg, '$2')
+
+    // Expand newlines if double quoted
+    if (maybeQuote === '"') {
+      value = value.replace(/\\n/g, '\n')
+      value = value.replace(/\\r/g, '\r')
+    }
+
+    // Add to object
+    obj[key] = value
+  }
+
+  return obj
+}
+
+function _log (message) {
+  console.log(`[dotenv][DEBUG] ${message}`)
+}
+
+function _resolveHome (envPath) {
+  return envPath[0] === '~' ? path.join(os.homedir(), envPath.slice(1)) : envPath
+}
+
+// Populates process.env from .env file
+function config (options) {
+  let dotenvPath = path.resolve(process.cwd(), '.env')
+  let encoding = 'utf8'
+  const debug = Boolean(options && options.debug)
+  const override = Boolean(options && options.override)
+
+  if (options) {
+    if (options.path != null) {
+      dotenvPath = _resolveHome(options.path)
+    }
+    if (options.encoding != null) {
+      encoding = options.encoding
+    }
+  }
+
+  try {
+    // Specifying an encoding returns a string instead of a buffer
+    const parsed = DotenvModule.parse(fs.readFileSync(dotenvPath, { encoding }))
+
+    Object.keys(parsed).forEach(function (key) {
+      if (!Object.prototype.hasOwnProperty.call(process.env, key)) {
+        process.env[key] = parsed[key]
+      } else {
+        if (override === true) {
+          process.env[key] = parsed[key]
+        }
+
+        if (debug) {
+          if (override === true) {
+            _log(`"${key}" is already defined in \`process.env\` and WAS overwritten`)
+          } else {
+            _log(`"${key}" is already defined in \`process.env\` and was NOT overwritten`)
+          }
+        }
+      }
+    })
+
+    return { parsed }
+  } catch (e) {
+    if (debug) {
+      _log(`Failed to load ${dotenvPath} ${e.message}`)
+    }
+
+    return { error: e }
+  }
+}
+
+const DotenvModule = {
+  config,
+  parse
+}
+
+module.exports.config = DotenvModule.config
+module.exports.parse = DotenvModule.parse
+module.exports = DotenvModule
+
+
+/***/ }),
+
 /***/ 3287:
 /***/ ((__unused_webpack_module, exports) => {
 
@@ -8691,7 +8807,7 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 5580:
+/***/ 2337:
 /***/ ((module) => {
 
 const m = (function () {
@@ -8700,7 +8816,7 @@ const m = (function () {
     const defaultEndMarker = "\n<!-- end: vimond pr ticket list -->\n";
 
     if ((start !== undefined && end === undefined) || (start === undefined && end !== undefined)) {
-      throw "Either set both start and end, or non of them";
+      throw "Either set both start and end, or none of them";
     }
     let startMarker, endMarker;
 
@@ -8712,7 +8828,7 @@ const m = (function () {
       endMarker = defaultEndMarker;
     }
 
-    const pattern = new RegExp(`^(.*${startMarker}).*(${endMarker}.*)$`, "gs");
+    const pattern = new RegExp(`^(.*${startMarker}).*?(${endMarker}.*)$`, "gs");
 
     return {
       getStartMarker: function () {
@@ -8728,51 +8844,35 @@ const m = (function () {
 
       replaceMarkedAreaWith: function(oldText, newText) {
         const match = pattern.exec(oldText);
+        if(match === null || match.length !== 3) {
+          return oldText;
+        }
         return match[1] + newText + match[2];
-      }
+      },
 
-//       getMarkdownTicketList: function (tickets) {
-//         return `
-// ${startMarker}
-//   | Ticket | Description |
-//   | --- | --- |
-//   | foo | bar |
-//   | quux | baz |
-// ${endMarker}`.trim();
-//       }
-    };
-  };
-})();
+      generateJiraTable: function(issues) {
+        const header = `
+${startMarker}
+# Related JIRA Issues
+<details>
+  <summary>Expand to show</summary>
+  | Issue | Description |
+  | --- | --- | 
+        `.trim()
+        const footer = `
+</details>
+${endMarker}
+        `.trim()
+        let body = '';
+        for (const issue in issues) {
+          body += `  | ${issue.id} | ${issue.title} |\n`
+        }
+        return header + body + footer;
+      },
+    }
+  }
+})()
 
-
-// const startMarker = "\n<!-- start: vimond pr ticket list -->\n";
-// const endMarker = "\n<!-- end: vimond pr ticket list -->\n";
-//
-// // const startMarker = "\nAAA\n";
-// // const endMarker = "BBB";
-//
-// const pattern = new RegExp(`^(.*)(${startMarker}.*${endMarker})(.*)$`, "gs");
-//
-//
-// let test = async function() {
-//   console.log(pattern);
-//   const t = "something\\nelse" + startMarker + "# data to go away" + endMarker + "this should still be here";
-//   // const t = "AAAfooBBB";
-//   console.log(t);
-//
-//   const r = pattern.exec(t);
-//   console.log(r[1]);
-//   console.log(r[3]);
-//   return true;
-// }
-// let wait = function (milliseconds) {
-//   return new Promise((resolve) => {
-//     if (typeof milliseconds !== 'number') {
-//       throw new Error('milliseconds not a number');
-//     }
-//     setTimeout(() => resolve("done!"), milliseconds)
-//   });
-// };
 
 module.exports = m;
 
@@ -8948,33 +9048,54 @@ module.exports = require("zlib");
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-const core = __nccwpck_require__(2186);
-const github = __nccwpck_require__(5438);
+const core = __nccwpck_require__(2186)
+const github = __nccwpck_require__(5438)
+const fs = __nccwpck_require__(5747)
 
-const pr = __nccwpck_require__(5580);
+const pr = __nccwpck_require__(2337)
 
+
+__nccwpck_require__(2437).config()
 // most @actions toolkit packages have async methods
 async function run() {
   core.debug(github.context.sha);
   try {
     let input = {
-      inputFile: core.getInput("input-file") || process.env.INPUT_FILE,
-      prId: core.getInput("pr-id") || process.env.PR_ID,
-      dryRun: core.getBooleanInput("dry-run") || process.env.DRY_RUN,
+      tickets: process.env.TICKETS || core.getInput("tickets"),
+      inputFile: process.env.INPUT_FILE || core.getInput("input-file"),
+      prId:  process.env.PR_ID || core.getInput("pr-id"),
+      dryRun: process.env.DRY_RUN || core.getBooleanInput("dry-run"),
     }
 
+    if (input.tickets === "") {
+      input.tickets = readInputFile(input.inputFile);
+    } else {
+      input.tickets = Buffer.from(input.tickets, 'base64').toString('utf-8');
+    }
+    const parsedTickets = JSON.parse(input.tickets);
     console.log(`Input file: ${input.inputFile}`);
     console.log(`Pull Requests ID: ${input.prId}`);
+    console.log(`Tickets: ${input.tickets}`)
+    console.log(`Ticket count: ${parsedTickets.length}`)
+
+
+
+    const table = pr.generateJiraTable(parsedTickets)
+    console.log(table);
 
     if(input.dryRun) {
       console.log("Dry run. Exiting");
       return;
     }
-
     console.log("doing stuff...");
   } catch (error) {
     core.setFailed(error.message);
   }
+}
+
+function readInputFile(path) {
+  console.log(`Trying to read tickets from ${path}`);
+  return fs.readFileSync(path, {encoding: 'base64'});
 }
 
 run();

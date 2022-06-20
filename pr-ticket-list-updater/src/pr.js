@@ -36,20 +36,30 @@ const m = (function () {
           return oldText;
         }
         return match[1] + newText + match[2];
-      }
+      },
 
-//       getMarkdownTicketList: function (tickets) {
-//         return `
-// ${startMarker}
-//   | Ticket | Description |
-//   | --- | --- |
-//   | foo | bar |
-//   | quux | baz |
-// ${endMarker}`.trim();
-//       }
-    };
-  };
-})();
+      generateJiraTable: function(issues) {
+        const header = `
+${startMarker}
+# Related JIRA Issues
+<details>
+  <summary>Expand to show</summary>
+  | Issue | Description |
+  | --- | --- | 
+        `.trim()
+        const footer = `
+</details>
+${endMarker}
+        `.trim()
+        let body = '';
+        for (const issue in issues) {
+          body += `  | ${issue.id} | ${issue.title} |\n`
+        }
+        return header + body + footer;
+      },
+    }
+  }
+})()
 
 
 module.exports = m;
