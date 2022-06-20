@@ -20371,7 +20371,7 @@ async function checkIfExist(jiraConfig, tickets) {
 
 
     const ticketsFiltered = await jiraSearch({
-        serverRoot: `https://${jiraConfig.host}`,
+        serverRoot: `https://${jiraConfig.proxy}`,
         strictSSL: true,
         user: jiraConfig.username,
         pass: jiraConfig.token,
@@ -20758,7 +20758,6 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const core = __nccwpck_require__(7348);
-const github = __nccwpck_require__(4808)
 
 const fs = __nccwpck_require__(7147);
 (__nccwpck_require__(1398).config)()
@@ -20781,6 +20780,7 @@ async function run() {
 
     const jiraConfig = {
       host: process.env.JIRA_HOST ||  core.getInput("jira-host"),
+      proxy: process.env.JIRA_PROXY ||  core.getInput("jira-proxy"),
       username:  process.env.JIRA_USERNAME ||  core.getInput("jira-username"),
       token: process.env.JIRA_TOKEN ||  core.getInput("jira-token")
     }

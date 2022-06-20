@@ -1,5 +1,4 @@
 const core = require('@actions/core');
-const github = require('@actions/github')
 
 const fs = require('fs');
 require('dotenv').config()
@@ -22,6 +21,7 @@ async function run() {
 
     const jiraConfig = {
       host: process.env.JIRA_HOST ||  core.getInput("jira-host"),
+      proxy: process.env.JIRA_PROXY ||  core.getInput("jira-proxy"),
       username:  process.env.JIRA_USERNAME ||  core.getInput("jira-username"),
       token: process.env.JIRA_TOKEN ||  core.getInput("jira-token")
     }
