@@ -2,9 +2,9 @@ const jiraClient = require('jira-client');
 
 function shouldCheckIfExists(jiraConfig) {
     return jiraConfig &&
-        jiraConfig.host && jiraConfig.host != ""  &&
-        jiraConfig.username && jiraConfig.username != "" &&
-        jiraConfig.token && jiraConfig.token != "" ;
+        jiraConfig.host && jiraConfig.host !== ""  &&
+        jiraConfig.username && jiraConfig.username !== "" &&
+        jiraConfig.token && jiraConfig.token !== "" ;
 }
 
 async function checkIfExist(jiraConfig, tickets) {

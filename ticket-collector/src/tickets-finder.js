@@ -1,6 +1,6 @@
 const ticketRegex = /[A-Z]{2,}-\d+/gm;
 
-function findAllTickets(textBlocks) {
+function findAll(textBlocks) {
     let ticketsFound = new Set();
     for ( const text of textBlocks) {
         const matches = [...text.matchAll(ticketRegex)];
@@ -12,5 +12,5 @@ function findAllTickets(textBlocks) {
 }
 
 module.exports = {
-    findAll: findAllTickets
+    findAll
 }
