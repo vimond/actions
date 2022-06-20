@@ -20792,11 +20792,16 @@ async function run() {
     const ticketsFiltered =  await jira.checkIfExist(jiraConfig, ticketsFound);
     console.log(`Tickets filtered: ${JSON.stringify(ticketsFiltered)}`);
 
+
+
     if ( input.outputFile !== ""){
       await fs.writeFileSync(input.outputFile,JSON.stringify(ticketsFiltered), { flag: 'w' });
     }
-
     core.setOutput('tickets', Buffer.from(JSON.stringify(ticketsFiltered)).toString('base64'))
+
+    if ( ticketsFiltered.length === 0 ){
+      core.setFailed('No valid tickets were found in this pull request');
+    }
   } catch (error) {
     core.setFailed(error.message);
   }
