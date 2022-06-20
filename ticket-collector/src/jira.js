@@ -1,4 +1,4 @@
-const jiraClient = require('jira-client');
+const jiraSearch = require('jira-search');
 
 function shouldCheckIfExists(jiraConfig) {
     return jiraConfig &&
@@ -13,23 +13,28 @@ async function checkIfExist(jiraConfig, tickets) {
         return [];
     }
 
-    const client = new jiraClient({
-        protocol: 'https',
-        apiVersion: '2',
-        host: jiraConfig.host,
-        password: `${jiraConfig.token}`,
-        username: `${jiraConfig.username}`,
-        strictSSL: true
-    })
+    if ( tickets.length === 0 ){
+        return [];
+    }
 
 
-    const noop = function(){}
-    const ticketPromises = tickets.map(t => {
-        return client.findIssue(t).catch(noop);
-    })
-    const ticketsFiltered = (await Promise.all(ticketPromises)).filter(r => typeof r != 'undefined').map(r => r.key )
+    const ticketsFiltered = await jiraSearch({
+        serverRoot: `https://${jiraConfig.host}`,
+        strictSSL: true,
+        user: jiraConfig.username,
+        pass: jiraConfig.token,
+        jql: `issue IN ( ${tickets.join(',')} )`,
+        fields: '*all',
+        maxResults: 50, // the maximum number of results for each request to JIRA, multiple requests will be made till all the matching issues have been collected
+        mapCallback: function (issue) {
+            return {
+                key: issue.key,
+                summary: issue.fields.summary,
+                link: `https://${jiraConfig.host}/browse/${issue.key}`
+            };
+        }
+    });
 
-    console.log(ticketsFiltered);
     return ticketsFiltered;
 }
 
