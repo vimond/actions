@@ -44,18 +44,17 @@ ${startMarker}
 # Related JIRA Issues
 <details>
   <summary>Expand to show</summary>
+  
   | Issue | Description |
-  | --- | --- | 
+  | --- | --- |
         `.trim()
         const footer = `
 </details>
 ${endMarker}
         `.trim()
         let body = '';
-        for (const issue in issues) {
-          body += `  | ${issue.id} | ${issue.title} |\n`
-        }
-        return header + body + footer;
+        issues.forEach(issue => body += `  | [${issue.key}](${issue.link}) | ${issue.summary} |\n`);
+        return header + '\n' + body + footer + '\n';
       },
     }
   }
