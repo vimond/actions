@@ -20369,8 +20369,7 @@ async function checkIfExist(jiraConfig, tickets) {
         return [];
     }
 
-
-    const ticketsFiltered = await jiraSearch({
+    return await jiraSearch({
         serverRoot: `https://${jiraConfig.proxy}`,
         strictSSL: true,
         user: jiraConfig.username,
@@ -20386,8 +20385,6 @@ async function checkIfExist(jiraConfig, tickets) {
             };
         }
     });
-
-    return ticketsFiltered;
 }
 
 module.exports = {
@@ -20428,9 +20425,9 @@ async function getAllCommitMessages( octokitClient, prMetadata ) {
         throw new Error('Failed to retrieve all commit messages')
     }
 
-    const searchBaseUrl = process.env.SEARCH_BASE_URL || core.getInput('git-search-base-url');
+    const searchBaseUrl = core.getInput('git-search-base-url');
 
-    const gitCacheClient = github.getOctokit(process.env.GH_TOKEN || core.getInput('gh-token'),{
+    const gitCacheClient = github.getOctokit(core.getInput('gh-token'),{
             ...(searchBaseUrl !== "" && {baseUrl: searchBaseUrl})
         })
     let messages = []
@@ -20466,7 +20463,7 @@ async function getAllTextBlocks(owner, repository, prNumber){
         repository,
         prNumber
     }
-    const ghToken = process.env.GH_TOKEN || core.getInput('gh-token') ;
+    const ghToken = core.getInput('gh-token') ;
     const octokit = github.getOctokit(ghToken)
     let textBlocks = []
     textBlocks.push(...await getPrTextBlocks(octokit, prMetadata));
@@ -20492,7 +20489,7 @@ function findAll(textBlocks) {
     for ( const text of textBlocks) {
         const matches = [...text.matchAll(ticketRegex)];
         matches.forEach( m => {
-            ticketsFound.add(m[0])
+            ticketsFound.add(m[0]);
         })
     }
     return ticketsFound;
@@ -20772,18 +20769,23 @@ async function run() {
     console.log("Start collecting tickets")
 
     let input = {
-      outputFile: process.env.OUTPUT_FILE || core.getInput('output-file'),
-      owner: process.env.OWNER || core.getInput("owner"),
-      repo: process.env.REPO || core.getInput("repository"),
-      prNumber: process.env.PR_ID || core.getInput("pr-id")
+      outputFile: core.getInput('output-file'),
+      owner: core.getInput("owner"),
+      repo: core.getInput("repository"),
+      prNumber: core.getInput("pr-id")
     }
 
     const jiraConfig = {
-      host: process.env.JIRA_HOST ||  core.getInput("jira-host"),
-      proxy: process.env.JIRA_PROXY ||  core.getInput("jira-proxy"),
-      username:  process.env.JIRA_USERNAME ||  core.getInput("jira-username"),
-      token: process.env.JIRA_TOKEN ||  core.getInput("jira-token")
+      host: core.getInput("jira-host"),
+      proxy: core.getInput("jira-proxy"),
+      username: core.getInput("jira-username"),
+      token: core.getInput("jira-token")
     }
+
+    // Hide secrets
+    core.setSecret(jiraConfig.token);
+    core.setSecret(jiraConfig.username);
+    core.setSecret(core.getInput('gh-token'))
 
     let textBlocks = await prMetadataCollector.getAllTextBlocks(input.owner, input.repo, input.prNumber);
     const ticketsFound = Array.from(ticketFinder.findAll(textBlocks));

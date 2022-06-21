@@ -5,7 +5,7 @@ function findAll(textBlocks) {
     for ( const text of textBlocks) {
         const matches = [...text.matchAll(ticketRegex)];
         matches.forEach( m => {
-            ticketsFound.add(m[0])
+            ticketsFound.add(m[0]);
         })
     }
     return ticketsFound;

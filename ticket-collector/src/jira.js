@@ -17,8 +17,7 @@ async function checkIfExist(jiraConfig, tickets) {
         return [];
     }
 
-
-    const ticketsFiltered = await jiraSearch({
+    return await jiraSearch({
         serverRoot: `https://${jiraConfig.proxy}`,
         strictSSL: true,
         user: jiraConfig.username,
@@ -34,8 +33,6 @@ async function checkIfExist(jiraConfig, tickets) {
             };
         }
     });
-
-    return ticketsFiltered;
 }
 
 module.exports = {

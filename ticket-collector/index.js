@@ -13,18 +13,23 @@ async function run() {
     console.log("Start collecting tickets")
 
     let input = {
-      outputFile: process.env.OUTPUT_FILE || core.getInput('output-file'),
-      owner: process.env.OWNER || core.getInput("owner"),
-      repo: process.env.REPO || core.getInput("repository"),
-      prNumber: process.env.PR_ID || core.getInput("pr-id")
+      outputFile: core.getInput('output-file'),
+      owner: core.getInput("owner"),
+      repo: core.getInput("repository"),
+      prNumber: core.getInput("pr-id")
     }
 
     const jiraConfig = {
-      host: process.env.JIRA_HOST ||  core.getInput("jira-host"),
-      proxy: process.env.JIRA_PROXY ||  core.getInput("jira-proxy"),
-      username:  process.env.JIRA_USERNAME ||  core.getInput("jira-username"),
-      token: process.env.JIRA_TOKEN ||  core.getInput("jira-token")
+      host: core.getInput("jira-host"),
+      proxy: core.getInput("jira-proxy"),
+      username: core.getInput("jira-username"),
+      token: core.getInput("jira-token")
     }
+
+    // Hide secrets
+    core.setSecret(jiraConfig.token);
+    core.setSecret(jiraConfig.username);
+    core.setSecret(core.getInput('gh-token'))
 
     let textBlocks = await prMetadataCollector.getAllTextBlocks(input.owner, input.repo, input.prNumber);
     const ticketsFound = Array.from(ticketFinder.findAll(textBlocks));

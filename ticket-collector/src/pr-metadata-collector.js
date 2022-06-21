@@ -27,9 +27,9 @@ async function getAllCommitMessages( octokitClient, prMetadata ) {
         throw new Error('Failed to retrieve all commit messages')
     }
 
-    const searchBaseUrl = process.env.SEARCH_BASE_URL || core.getInput('git-search-base-url');
+    const searchBaseUrl = core.getInput('git-search-base-url');
 
-    const gitCacheClient = github.getOctokit(process.env.GH_TOKEN || core.getInput('gh-token'),{
+    const gitCacheClient = github.getOctokit(core.getInput('gh-token'),{
             ...(searchBaseUrl !== "" && {baseUrl: searchBaseUrl})
         })
     let messages = []
@@ -65,7 +65,7 @@ async function getAllTextBlocks(owner, repository, prNumber){
         repository,
         prNumber
     }
-    const ghToken = process.env.GH_TOKEN || core.getInput('gh-token') ;
+    const ghToken = core.getInput('gh-token') ;
     const octokit = github.getOctokit(ghToken)
     let textBlocks = []
     textBlocks.push(...await getPrTextBlocks(octokit, prMetadata));
