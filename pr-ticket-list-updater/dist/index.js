@@ -8857,17 +8857,15 @@ ${startMarker}
 <details>
   <summary>Expand to show</summary>
   | Issue | Description |
-  | --- | --- | 
+  | --- | --- |
         `.trim()
         const footer = `
 </details>
 ${endMarker}
         `.trim()
         let body = '';
-        for (const issue in issues) {
-          body += `  | ${issue.id} | ${issue.title} |\n`
-        }
-        return header + body + footer;
+        issues.forEach(issue => body += `  | [${issue.key}](${issue.link}) | ${issue.summary} |\n`);
+        return header + '\n' + body + footer + '\n';
       },
     }
   }
@@ -9052,7 +9050,7 @@ const core = __nccwpck_require__(2186)
 const github = __nccwpck_require__(5438)
 const fs = __nccwpck_require__(5747)
 
-const pr = __nccwpck_require__(2337)
+const pr = __nccwpck_require__(2337)()
 
 
 __nccwpck_require__(2437).config()
@@ -9063,7 +9061,7 @@ async function run() {
     let input = {
       tickets: process.env.TICKETS || core.getInput("tickets"),
       inputFile: process.env.INPUT_FILE || core.getInput("input-file"),
-      prId:  process.env.PR_ID || core.getInput("pr-id"),
+      prId:  process.env.PR_ID || core.getInput("pr-id", {required: true}),
       dryRun: process.env.DRY_RUN || core.getBooleanInput("dry-run"),
     }
 
@@ -9080,6 +9078,7 @@ async function run() {
 
 
 
+    console.log(parsedTickets);
     const table = pr.generateJiraTable(parsedTickets)
     console.log(table);
 

@@ -1,7 +1,7 @@
 const m = (function () {
   return function (start, end) {
-    const defaultStartMarker = "\n<!-- start: vimond pr ticket list -->\n";
-    const defaultEndMarker = "\n<!-- end: vimond pr ticket list -->\n";
+    const defaultStartMarker = "\r\n<!-- start: vimond pr ticket list -->\r\n";
+    const defaultEndMarker = "\r\n<!-- end: vimond pr ticket list -->\r\n";
 
     if ((start !== undefined && end === undefined) || (start === undefined && end !== undefined)) {
       throw "Either set both start and end, or none of them";
@@ -16,7 +16,7 @@ const m = (function () {
       endMarker = defaultEndMarker;
     }
 
-    const pattern = new RegExp(`^(.*${startMarker}).*?(${endMarker}.*)$`, "gs");
+    const pattern =`^(.*)${startMarker}.*?${endMarker}(.*)$`;
 
     return {
       getStartMarker: function () {
@@ -27,20 +27,21 @@ const m = (function () {
       },
 
       hasMarkedArea: function (text) {
-        return pattern.test(text)
+        return new RegExp(pattern, 'gs').test(text);
       },
 
-      replaceMarkedAreaWith: function(oldText, newText) {
-        const match = pattern.exec(oldText);
+      replaceOrAddMarkedArea: function(oldText, newText) {
+        const matcher = new RegExp(pattern, 'gs');
+        const match = matcher.exec(oldText);
         if(match === null || match.length !== 3) {
-          return oldText;
+          return oldText + startMarker + newText + endMarker;
+        } else {
+          return match[1] + startMarker + newText + endMarker + match[2];
         }
-        return match[1] + newText + match[2];
       },
 
       generateJiraTable: function(issues) {
         const header = `
-${startMarker}
 # Related JIRA Issues
 <details>
   <summary>Expand to show</summary>
@@ -50,11 +51,10 @@ ${startMarker}
         `.trim()
         const footer = `
 </details>
-${endMarker}
         `.trim()
         let body = '';
-        issues.forEach(issue => body += `  | [${issue.key}](${issue.link}) | ${issue.summary} |\n`);
-        return header + '\n' + body + footer + '\n';
+        issues.forEach(issue => body += `  | [${issue.key}](${issue.link}) | ${issue.summary} |\r\n`);
+        return header + '\r\n' + body + footer + '\r\n';
       },
     }
   }
