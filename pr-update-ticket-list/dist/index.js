@@ -8807,13 +8807,16 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 2337:
-/***/ ((module) => {
+/***/ 8301:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const github = __nccwpck_require__(5438)
+
 
 const m = (function () {
   return function (start, end) {
-    const defaultStartMarker = "\n<!-- start: vimond pr ticket list -->\n";
-    const defaultEndMarker = "\n<!-- end: vimond pr ticket list -->\n";
+    const defaultStartMarker = "\r\n<!-- start: vimond pr ticket list -->\r\n";
+    const defaultEndMarker = "\r\n<!-- end: vimond pr ticket list -->\r\n";
 
     if ((start !== undefined && end === undefined) || (start === undefined && end !== undefined)) {
       throw "Either set both start and end, or none of them";
@@ -8828,7 +8831,7 @@ const m = (function () {
       endMarker = defaultEndMarker;
     }
 
-    const pattern = new RegExp(`^(.*${startMarker}).*?(${endMarker}.*)$`, "gs");
+    const pattern =`^(.*)${startMarker}.*?${endMarker}(.*)$`;
 
     return {
       getStartMarker: function () {
@@ -8838,34 +8841,60 @@ const m = (function () {
         return endMarker
       },
 
-      hasMarkedArea: function (text) {
-        return pattern.test(text)
+      updatePr: async function(octokit, prId, tickets, repo) {
+        const table = this.generateJiraTable(tickets)
+        console.debug("Generated table:");
+        console.debug(table);
+
+        const thePr = await octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}', {
+          owner: github.context.repo.owner,
+          repo: github.context.repo.repo,
+          pull_number: prId,
+        })
+
+        const newBody = this.replaceOrAddMarkedArea(thePr.data.body, table);
+        if (thePr.data.body !== newBody) {
+          console.log("Change in table detected, updating PR.")
+          await octokit.request('PATCH /repos/{owner}/{repo}/pulls/{pull_number}', {
+            owner: repo.owner,
+            repo: repo.repo,
+            pull_number: prId,
+            body: newBody,
+          })
+        } else {
+          console.log("No changes in table.");
+        }
       },
 
-      replaceMarkedAreaWith: function(oldText, newText) {
-        const match = pattern.exec(oldText);
+      hasMarkedArea: function (text) {
+        return new RegExp(pattern, 'gs').test(text);
+      },
+
+      replaceOrAddMarkedArea: function(oldText, newText) {
+        const matcher = new RegExp(pattern, 'gs');
+        const match = matcher.exec(oldText);
         if(match === null || match.length !== 3) {
-          return oldText;
+          return oldText + startMarker + newText + endMarker;
+        } else {
+          return match[1] + startMarker + newText + endMarker + match[2];
         }
-        return match[1] + newText + match[2];
       },
 
       generateJiraTable: function(issues) {
         const header = `
-${startMarker}
 # Related JIRA Issues
 <details>
   <summary>Expand to show</summary>
+  
   | Issue | Description |
   | --- | --- |
         `.trim()
         const footer = `
 </details>
-${endMarker}
         `.trim()
         let body = '';
-        issues.forEach(issue => body += `  | [${issue.key}](${issue.link}) | ${issue.summary} |\n`);
-        return header + '\n' + body + footer + '\n';
+        issues.forEach(issue => body += `  | [${issue.key}](${issue.link}) | ${issue.summary} |\r\n`);
+        return header + '\r\n' + body + footer + '\r\n';
       },
     }
   }
@@ -9050,51 +9079,51 @@ const core = __nccwpck_require__(2186)
 const github = __nccwpck_require__(5438)
 const fs = __nccwpck_require__(5747)
 
-const pr = __nccwpck_require__(2337)()
+const prUpdater = __nccwpck_require__(8301)()
 
 
 __nccwpck_require__(2437).config()
 // most @actions toolkit packages have async methods
 async function run() {
-  core.debug(github.context.sha);
   try {
     let input = {
-      tickets: process.env.TICKETS || core.getInput("tickets"),
-      inputFile: process.env.INPUT_FILE || core.getInput("input-file"),
-      prId:  process.env.PR_ID || core.getInput("pr-id", {required: true}),
-      dryRun: process.env.DRY_RUN || core.getBooleanInput("dry-run"),
+      tickets: core.getInput("tickets"),
+      inputFile: core.getInput("input-file"),
+      prId: core.getInput("pr-id", {required: true}),
+      dryRun: core.getBooleanInput("dry-run"),
+      githubToken: core.getInput("gh-token")
     }
+    core.setSecret(input.githubToken);
 
     if (input.tickets === "") {
-      input.tickets = readInputFile(input.inputFile);
+      input.tickets = readTicketFile(input.inputFile);
     } else {
-      input.tickets = Buffer.from(input.tickets, 'base64').toString('utf-8');
+      input.tickets = convertTicketInput(input.tickets);
     }
     const parsedTickets = JSON.parse(input.tickets);
+
     console.log(`Input file: ${input.inputFile}`);
     console.log(`Pull Requests ID: ${input.prId}`);
-    console.log(`Tickets: ${input.tickets}`)
-    console.log(`Ticket count: ${parsedTickets.length}`)
-
-
-
-    console.log(parsedTickets);
-    const table = pr.generateJiraTable(parsedTickets)
-    console.log(table);
+    console.log(`Tickets: ${parsedTickets.map(t => t.key)}`)
 
     if(input.dryRun) {
       console.log("Dry run. Exiting");
       return;
     }
-    console.log("doing stuff...");
+    const octokit = github.getOctokit(input.githubToken);
+    await prUpdater.updatePr(octokit, input.prId, parsedTickets, github.context.repo);
   } catch (error) {
     core.setFailed(error.message);
   }
 }
 
-function readInputFile(path) {
+function readTicketFile(path) {
   console.log(`Trying to read tickets from ${path}`);
   return fs.readFileSync(path, {encoding: 'base64'});
+}
+
+function convertTicketInput(inputValue) {
+  return Buffer.from(inputValue, 'base64').toString('utf-8');
 }
 
 run();
