@@ -13,6 +13,7 @@ inputs:
   dry-run:
     description: "if true, only the table will be generated (in debug output). Not actions taken on PR"
     required: false
+    default: "false"
   gh-token:
     description: "GitHub access token to be used when communicating with the GitHub API"
     required: true
