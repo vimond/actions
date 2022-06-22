@@ -8,7 +8,6 @@ const prUpdater = require('./src/pr-updater')()
 require('dotenv').config()
 // most @actions toolkit packages have async methods
 async function run() {
-  core.debug(github.context.sha);
   try {
     let input = {
       tickets: core.getInput("tickets"),
@@ -20,59 +19,34 @@ async function run() {
     core.setSecret(input.githubToken);
 
     if (input.tickets === "") {
-      input.tickets = readInputFile(input.inputFile);
+      input.tickets = readTicketFile(input.inputFile);
     } else {
-      input.tickets = Buffer.from(input.tickets, 'base64').toString('utf-8');
+      input.tickets = convertTicketInput(input.tickets);
     }
     const parsedTickets = JSON.parse(input.tickets);
+
     console.log(`Input file: ${input.inputFile}`);
     console.log(`Pull Requests ID: ${input.prId}`);
-    console.log(`Tickets: ${input.tickets}`)
-    console.log(`Ticket count: ${parsedTickets.length}`)
-
-
-
-    console.log(parsedTickets);
-    const table = prUpdater.generateJiraTable(parsedTickets)
-    console.log(table);
+    console.log(`Tickets: ${parsedTickets.map(t => t.key)}`)
 
     if(input.dryRun) {
       console.log("Dry run. Exiting");
       return;
     }
-
     const octokit = github.getOctokit(input.githubToken);
-    const thePr = await octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}', {
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      pull_number: input.prId,
-    })
-    console.log(thePr);
-    const oldBody = thePr.data.body;
-
-    const newBody = prUpdater.replaceOrAddMarkedArea(thePr.data.body, table);
-    if (oldBody !== newBody) {
-      console.log("We did some updated. Save.")
-      await octokit.request('PATCH /repos/{owner}/{repo}/pulls/{pull_number}', {
-        owner: github.context.repo.owner,
-        repo: github.context.repo.repo,
-        pull_number: input.prId,
-        body: newBody,
-      })
-    } else {
-      console.log("No changes");
-    }
-
-
-    console.log("doing stuff...");
+    await prUpdater.updatePr(octokit, input.prId, parsedTickets, github.context.repo);
   } catch (error) {
     core.setFailed(error.message);
   }
 }
 
-function readInputFile(path) {
+function readTicketFile(path) {
   console.log(`Trying to read tickets from ${path}`);
   return fs.readFileSync(path, {encoding: 'base64'});
+}
+
+function convertTicketInput(inputValue) {
+  return Buffer.from(inputValue, 'base64').toString('utf-8');
 }
 
 run();

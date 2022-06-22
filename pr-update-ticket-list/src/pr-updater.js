@@ -1,3 +1,6 @@
+const github = require('@actions/github')
+
+
 const m = (function () {
   return function (start, end) {
     const defaultStartMarker = "\r\n<!-- start: vimond pr ticket list -->\r\n";
@@ -24,6 +27,31 @@ const m = (function () {
       },
       getEndMarker: function () {
         return endMarker
+      },
+
+      updatePr: async function(octokit, prId, tickets, repo) {
+        const table = this.generateJiraTable(tickets)
+        console.debug("Generated table:");
+        console.debug(table);
+
+        const thePr = await octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}', {
+          owner: github.context.repo.owner,
+          repo: github.context.repo.repo,
+          pull_number: prId,
+        })
+
+        const newBody = this.replaceOrAddMarkedArea(thePr.data.body, table);
+        if (thePr.data.body !== newBody) {
+          console.log("Change in table detected, updating PR.")
+          await octokit.request('PATCH /repos/{owner}/{repo}/pulls/{pull_number}', {
+            owner: repo.owner,
+            repo: repo.repo,
+            pull_number: prId,
+            body: newBody,
+          })
+        } else {
+          console.log("No changes in table.");
+        }
       },
 
       hasMarkedArea: function (text) {
