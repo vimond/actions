@@ -1,14 +1,39 @@
 name: 'ticket-collector'
 description: 'Collects ticket ids'
-inputs: {}
-#  pr-id:
-#    description: 'ID of PR'
-#    required: true
-#    #default: ''
-#  jira-tickets:
-#    description: 'comma-separated list of JIRA ticket IDs'
-#    required: true
-outputs: {}
+inputs:
+  owner:
+    description: 'Owner of the repository'
+    required: true
+  repository:
+    description: 'Name of the repository'
+    required: true
+  pr-id:
+    description: 'ID of PR'
+    required: true
+  output-file:
+    description: 'File in which we should write the list of tickets'
+    required: false
+  gh-token:
+    description: 'Github token with permission to query the PR and list commits'
+    required: true
+  git-search-base-url:
+    description: 'Proxy URL for git search api'
+    required: false
+  jira-host:
+    description: 'Domain name of the Jira Cloud server (Needed if you want to verify ticket list against Jira)'
+    required: false
+  jira-proxy:
+    description: 'Proxy Domain name of the Jira Cloud server ( use for caching of search queries )'
+    required: false
+  jira-username:
+    description: 'Jira username (Needed if you want to verify ticket list against Jira)'
+    required: false
+  jira-token:
+    description: 'Jira token or password (Needed if you want to verify ticket list against Jira)'
+    required: false
+outputs:
+  tickets:
+    description: 'Base64 encoded json list of tickets found'
 runs:
   using: 'node16'
   main: 'dist/index.js'
