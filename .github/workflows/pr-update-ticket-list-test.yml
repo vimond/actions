@@ -1,4 +1,4 @@
-name: "units-test"
+name: "pr-update-ticket-list: units-test"
 on:
   pull_request:
   push:
