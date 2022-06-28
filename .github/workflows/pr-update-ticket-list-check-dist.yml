@@ -3,18 +3,18 @@
 # `index.js` is the code that will run.
 # For our project, we generate this file through a build process from other source files.
 # We need to make sure the checked-in `index.js` actually matches what we expect it to be.
-name: "ticket-collector: Check dist/"
+name: "pr-update-ticket-list: Check dist/"
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'ticket-collector/**'
+      - 'pr-ticket-list-updater/**'
       - '!**.md'
   pull_request:
     paths:
-      - 'ticket-collector/**'
+      - 'pr-ticket-list-updater/**'
       - '!**.md'
 
 jobs:
@@ -22,12 +22,12 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./ticket-collector
+        working-directory: ./pr-ticket-list-updater
     steps:
       - uses: actions/checkout@v3
 
       - name: Set Node.js 16.x
-        uses: actions/setup-node@v3.3.0
+        uses: actions/setup-node@v3.2.0
         with:
           node-version: 16.x
 

@@ -1,4 +1,4 @@
-name: "ticket-collector: units-test"
+name: "pr-update-ticket-list: units-test"
 on:
   pull_request:
   push:
@@ -6,7 +6,7 @@ on:
       - main
       - 'releases/*'
     paths:
-      - 'ticket-collector/**'
+      - 'pr-ticket-list-updater/**'
 
 jobs:
   # unit tests
@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./ticket-collector
+        working-directory: ./pr-ticket-list-updater
     steps:
     - uses: actions/checkout@v3
     - run: npm ci
@@ -25,9 +25,11 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./ticket-collector
+        working-directory: ./pr-ticket-list-updater
     steps:
     - uses: actions/checkout@v3
-    - uses: ./ticket-collector
+    - uses: ./pr-ticket-list-updater
       with:
-        milliseconds: 1000
+        pr-id: 777
+        input-file: "/tmp/foo"
+        dry-run: "true"

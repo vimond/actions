@@ -1,0 +1,23 @@
+name: 'pr-update-ticket-list'
+description: 'Takes a list of ticket ids and updates the PR with a table listing them'
+inputs:
+  pr-id:
+    description: 'ID of PR'
+    required: true
+  input-file:
+     description: 'Path to file with base64(JSON) describing the tickets'
+     required: false
+  tickets:
+    description: 'base64(JSON) describing the tickets'
+    required: false
+  dry-run:
+    description: "if true, only the table will be generated (in debug output). Not actions taken on PR"
+    required: false
+    default: "false"
+  gh-token:
+    description: "GitHub access token to be used when communicating with the GitHub API"
+    required: true
+outputs: {}
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

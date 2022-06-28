@@ -1,0 +1,41 @@
+{
+  "name": "pr-ticket-list-updater",
+  "version": "0.0.1",
+  "description": "Updates a PR with a block containing information about a list of JIRA tickets",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "prepare": "ncc build index.js -o dist --source-map --license licenses.txt",
+    "test": "jest",
+    "all": "npm run lint && npm run prepare && npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:vimond/actions.git"
+  },
+  "keywords": [
+    "GitHub",
+    "Actions",
+    "JavaScript"
+  ],
+  "author": "",
+  "license": "PROPRIETARY",
+  "bugs": {
+    "url": "https://github.com/vimond/actions/issues"
+  },
+  "homepage": "https://github.com/vimond/actions",
+  "dependencies": {
+    "@actions/core": "^1.2.5",
+    "@actions/github": "^5.0.3",
+    "dotenv": "^16.0.1"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.31.1",
+    "eslint": "^8.17.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.2.3",
+    "eslint-plugin-promise": "^6.0.0",
+    "jest": "^27.2.5"
+  }
+}
