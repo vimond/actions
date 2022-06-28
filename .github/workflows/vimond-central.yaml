@@ -1,0 +1,65 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Pull Request Validation
+
+# Controls when the workflow will run
+on:
+  #  # Triggers the workflow on push or pull request events but only for the main branch
+  #  pull_request:
+  #    types: ['opened', 'edited', 'reopened', 'synchronize']
+  ##    branches: [ main ]
+
+  # Allows you to run this workflow from other workflows
+  workflow_call:
+    secrets:
+      DVL_TEST_GITHUB_TOKEN:
+        required: true
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+env:
+  PR_ID: "${{ github.event.number }}"
+jobs:
+  store-in-cloud:
+    if: github.event.pull_request.merged == 'true'
+    runs-on: ubuntu-latest
+    needs:
+      - pr-lint
+    steps:
+      - name: Store in the cloud
+        run: echo Pretending to take all the tickets and store them in the cloud on closed PR
+  pr-lint:
+    name: ticket check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name : machine echo github
+        env : { CONTENT : "${{ toJson(github) }}" }
+        run : "echo $CONTENT"
+      - name: show pr id (via shell)
+        run: "echo PR ID: $PR_ID"
+      - name: show or id (via context)
+        run: "echo ${{ env.PR_ID }}"
+      - name: collect tickets
+        id: collect
+        uses: vimond/actions/ticket-collector@e3519b1795facaaa173f70e63195c894ce1e0496
+        with:
+          owner: '${{ github.repository_owner }}'
+          repository: '${{ github.event.repository.name }}'
+          pr-id: '${{ env.PR_ID }}'
+          output-file: './tickets.json'
+          gh-token: '${{ secrets.DVL_TEST_GITHUB_TOKEN }}'
+          git-search-base-url: 'https://git-api-proxy.eu-north-1-internal.vmnd.tv'
+          jira-host: 'vimond-ng.atlassian.net'
+          jira-username: '${{ secrets.JIRA_USERNAME }}'
+          jira-token: '${{ secrets.JIRA_TOKEN }}'
+      #      - name: Fake some tickets
+      #        id: collect
+      #        run: echo '::set-output name=tickets::W3sia2V5IjoiVEVTVC03ODkiLCJzdW1tYXJ5IjoiTS1UZXN0IHNldCAtIChNb25ldGl6YXRpb24pIC0gVm91Y2hlcnMiLCJsaW5rIjoiaHR0cHM6Ly92aW1vbmQtbmcuYXRsYXNzaWFuLm5ldC9icm93c2UvVEVTVC03ODkifSx7ImtleSI6IlRFU1QtMTIzIiwic3VtbWFyeSI6Ik0tVGVzdCAtIChDYXRhbG9nIC0gQXNzZXRzIC8gUmVsYXRlZCBBc3NldHMpIC0gVmlldyBhc3NldHMgZm9yIGEgU3R1ZGlvL1Nob3ciLCJsaW5rIjoiaHR0cHM6Ly92aW1vbmQtbmcuYXRsYXNzaWFuLm5ldC9icm93c2UvVEVTVC0xMjMifSx7ImtleSI6IlNSLTEyMzQiLCJzdW1tYXJ5IjoiRXJyb3IgRGlzcGxheWluZyB0aGUgY29udGVudCBpbiBWTUFOIHdlYiBicm93c2VyIiwibGluayI6Imh0dHBzOi8vdmltb25kLW5nLmF0bGFzc2lhbi5uZXQvYnJvd3NlL1NSLTEyMzQifSx7ImtleSI6IlBMQVQtMzIxIiwic3VtbWFyeSI6IlVwZ3JhZGUgS2Fma2EgZnJvbSAxLjEuMSB0byAyLjYuMCIsImxpbmsiOiJodHRwczovL3ZpbW9uZC1uZy5hdGxhc3NpYW4ubmV0L2Jyb3dzZS9QTEFULTMyMSJ9LHsia2V5IjoiUExBVC0xMjMiLCJzdW1tYXJ5IjoiaW5ncmVzc2VzLWFwLXNvdXRoZWFzdC0yYS5uY2FiLXByb2QuazhzLnZvcHMuaW8gaW5zdGFuY2UgaXMgcnVubmluZyBvbiBkZWdyYWRlZCBoYXJkd2FyZSwgUmVxdWlyZWQgdG8gc3RvcCBhbmQgc3RhcnQiLCJsaW5rIjoiaHR0cHM6Ly92aW1vbmQtbmcuYXRsYXNzaWFuLm5ldC9icm93c2UvUExBVC0xMjMifV0='
+      - name: Print the list of ticket
+        run: echo "${{ steps.collect.outputs.tickets }}" | base64 -d
+      - name: Update PR
+        uses: vimond/actions/pr-update-ticket-list@feature/pr-ticket-list-updater
+        with:
+          pr-id: '${{ env.PR_ID }}'
+          tickets: '${{ steps.collect.outputs.tickets }}'
+          gh-token: '${{ secrets.DVL_TEST_GITHUB_TOKEN }}'
