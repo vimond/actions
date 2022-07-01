@@ -1,0 +1,30 @@
+name: 'ticket-collector'
+description: 'Collects ticket ids'
+inputs:
+  owner:
+    description: 'Owner of the repository'
+    required: true
+  repository:
+    description: 'Name of the repository'
+    required: true
+  branch:
+    description: 'The branch of the commit'
+    required: true
+  commit-sha:
+    description: 'SHA of the commit'
+    required: true
+  tag:
+    description: 'Tag if applicable'
+    required: false
+  tickets:
+    description: 'The tickets related to the commit'
+    required: false
+  lambda-url:
+    description: 'The URL of the lambda which should receive the request'
+    required: true
+  signing-key:
+    description: 'The key which should be used to sign the request'
+    required: false
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
