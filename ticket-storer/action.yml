@@ -13,18 +13,27 @@ inputs:
   commit-sha:
     description: 'SHA of the commit'
     required: true
+  parent-sha:
+    description: 'SHA of the parent commit'
+    required: true
   tag:
     description: 'Tag if applicable'
     required: false
   tickets:
     description: 'The tickets related to the commit'
     required: false
-  lambda-url:
-    description: 'The URL of the lambda which should receive the request'
+  created-at:
+    description: 'The creation time of the commit'
     required: true
-  signing-key:
-    description: 'The key which should be used to sign the request'
-    required: false
+  aws-credentials:
+    description: 'The AWS credentials used to put the commit into DynamoDB'
+    required: true
+  aws-region:
+    description: 'The AWS region of the DynamoDB table'
+    required: true
+  dynamodb-tablename:
+    description: 'The DynamoDB table name'
+    required: true
 runs:
   using: 'node16'
   main: 'dist/index.js'
