@@ -58,7 +58,7 @@ jobs:
       - name: Print the list of ticket
         run: echo "${{ steps.collect.outputs.tickets }}" | base64 -d
       - name: Update PR
-        uses: vimond/actions/pr-update-ticket-list@feature/pr-ticket-list-updater
+        uses: vimond/actions/pr-update-ticket-list@main
         with:
           pr-id: '${{ env.PR_ID }}'
           tickets: '${{ steps.collect.outputs.tickets }}'
