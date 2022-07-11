@@ -4,7 +4,7 @@ inputs:
   owner:
     description: 'Owner of the repository'
     required: true
-  repo:
+  repository:
     description: 'Name of the repository'
     required: true
   ref-name:

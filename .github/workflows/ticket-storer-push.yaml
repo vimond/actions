@@ -26,7 +26,7 @@ jobs:
         uses: vimond/actions/ticket-storer@feat/ticket-storer
         with:
           owner: ${{ github.repository_owner }}
-          repo: ${{ github.event.repository.name }}
+          repository: ${{ github.event.repository.name }}
           ref-name: ${{ github.ref_name }}
           ref-type: ${{ github.ref_type }}
           ref-base: ${{ github.event.base_ref }}
