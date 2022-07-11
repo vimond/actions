@@ -28722,46 +28722,60 @@ exports["default"] = _default;
 /***/ 6868:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-const { DynamoDBClient, PutItemCommand } = __nccwpck_require__(3363);
+const { DynamoDBClient, PutItemCommand, BatchWriteItemCommand } = __nccwpck_require__(3363);
+
+const maxItemsNum = 25;
 
 async function storeCommits(awsConfig, commits) {
-    const client = new DynamoDBClient({
-        region: awsConfig.region,
-        AccessKeyId: awsConfig.AccessKeyId,
-        SecretAccessKey: awsConfig.AccessKeySecret
-    });
+    const client = new DynamoDBClient();
 
-    return await client.send(new BatchWriteItemCommand({
-        RequestItems: {
-            [awsConfig.tableName]: commits.map((item) => ({
-                PutRequest: {
-                    Item: {
+    let resp = [];
+    for (let i = 0; i < commits.length; i += maxItemsNum) {
+        resp.push(await client.send(new BatchWriteItemCommand({
+            RequestItems: {
+                [awsConfig.tableName]: commits.slice(i, i + maxItemsNum).map(function (item) {
+                    let obj = {
                         "OwnerRepo": { S: item.ownerRepo },
                         "ID": { S: `commit:${item.commitSha}` },
-                        "ParentSha": { S: item.parentSHA },
-                        "Branch": { S: item.branch },
-                        "Ticekts": { SS: item.tickets },
+                        "ParentSha": { S: item.parentSha }
+                    };
+
+                    if (item.Branch != "" && item.branch !== undefined) {
+                        obj["Branch"] = { S: item.branch };
                     }
-                }
-            }))
-        }
-    }));
+
+                    if (item.tickets.length > 0) {
+                        obj["Tickets"] = { SS: item.tickets };
+                    }
+
+                    return {
+                        PutRequest: {
+                            Item: obj
+                        }
+                    };
+                })
+            }
+        })));
+    }
+
+    return resp;
 }
 
 async function storeTag(awsConfig, tagInfo) {
-    const client = new DynamoDBClient({
-        region: awsConfig.region,
-        AccessKeyId: awsConfig.AccessKeyId,
-        SecretAccessKey: awsConfig.secretAccessKey
-    });
+    const client = new DynamoDBClient();
+
+    let item = {
+        "OwnerRepo": { S: tagInfo.ownerRepo },
+        "ID": { S: `tag:${tagInfo.tag}` },
+        "MappedCommit": { S: tagInfo.commitSha }
+    };
+
+    if (tagInfo.branch !== "" && tagInfo.branch !== undefined) {
+        item["Branch"] = { S: tagInfo.branch };
+    }
 
     return await client.send(new PutItemCommand({
-        Item: {
-            "OwnerRepo": { S: tagInfo.ownerRepo },
-            "ID": { S: `tag:${tagInfo.tag}` },
-            "MappedCommit": { S: tagInfo.commitSha },
-            "Branch": { S: tagInfo.branch }
-        },
+        Item: item,
         TableName: awsConfig.tableName
     }));
 }
@@ -28770,20 +28784,6 @@ module.exports = {
     storeCommits,
     storeTag
 }
-
-// return await client.send(new PutItemCommand({
-//     Item: {
-//         "OwnerRepo": { S: input.owner + ":" + input.repo },
-//         "CommitSha": { S: input.commitSha },
-//         "ParentSha": { S: input.parentSHA },
-//         "Tag": { S: input.tag },
-//         "Branch": { S: input.branch },
-//         "Ticekts": { SS: input.tickets },
-//     },
-//     TableName: awsConfig.tableName
-// }));
-
-
 
 /***/ }),
 
@@ -28943,7 +28943,7 @@ module.exports = require("util");
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"_from":"@aws-sdk/client-dynamodb","_id":"@aws-sdk/client-dynamodb@3.121.0","_inBundle":false,"_integrity":"sha512-j5JgFagsyAoE7HxRD4Iis7IFmIV1W1fXeRZiQ6f5OwMlvhcnpacXPsVoxZfag4wz58WTuaJXbRiD5k5xxqTYvQ==","_location":"/@aws-sdk/client-dynamodb","_phantomChildren":{},"_requested":{"type":"tag","registry":true,"raw":"@aws-sdk/client-dynamodb","name":"@aws-sdk/client-dynamodb","escapedName":"@aws-sdk%2fclient-dynamodb","scope":"@aws-sdk","rawSpec":"","saveSpec":null,"fetchSpec":"latest"},"_requiredBy":["#USER","/"],"_resolved":"https://vimond.jfrog.io/vimond/api/npm/npm-virtual/@aws-sdk/client-dynamodb/-/client-dynamodb-3.121.0.tgz","_shasum":"72e06b036bf02a2521e1a443a9f8b1be8dcd655d","_spec":"@aws-sdk/client-dynamodb","_where":"/Users/erlend/projects/actions/ticket-storer","author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"bugs":{"url":"https://github.com/aws/aws-sdk-js-v3/issues"},"bundleDependencies":false,"dependencies":{"@aws-crypto/sha256-browser":"2.0.0","@aws-crypto/sha256-js":"2.0.0","@aws-sdk/client-sts":"3.121.0","@aws-sdk/config-resolver":"3.110.0","@aws-sdk/credential-provider-node":"3.121.0","@aws-sdk/fetch-http-handler":"3.110.0","@aws-sdk/hash-node":"3.110.0","@aws-sdk/invalid-dependency":"3.110.0","@aws-sdk/middleware-content-length":"3.110.0","@aws-sdk/middleware-endpoint-discovery":"3.110.0","@aws-sdk/middleware-host-header":"3.110.0","@aws-sdk/middleware-logger":"3.110.0","@aws-sdk/middleware-recursion-detection":"3.110.0","@aws-sdk/middleware-retry":"3.118.1","@aws-sdk/middleware-serde":"3.110.0","@aws-sdk/middleware-signing":"3.110.0","@aws-sdk/middleware-stack":"3.110.0","@aws-sdk/middleware-user-agent":"3.110.0","@aws-sdk/node-config-provider":"3.110.0","@aws-sdk/node-http-handler":"3.118.1","@aws-sdk/protocol-http":"3.110.0","@aws-sdk/smithy-client":"3.110.0","@aws-sdk/types":"3.110.0","@aws-sdk/url-parser":"3.110.0","@aws-sdk/util-base64-browser":"3.109.0","@aws-sdk/util-base64-node":"3.55.0","@aws-sdk/util-body-length-browser":"3.55.0","@aws-sdk/util-body-length-node":"3.55.0","@aws-sdk/util-defaults-mode-browser":"3.110.0","@aws-sdk/util-defaults-mode-node":"3.110.0","@aws-sdk/util-user-agent-browser":"3.110.0","@aws-sdk/util-user-agent-node":"3.118.0","@aws-sdk/util-utf8-browser":"3.109.0","@aws-sdk/util-utf8-node":"3.109.0","@aws-sdk/util-waiter":"3.118.1","tslib":"^2.3.1","uuid":"^8.3.2"},"deprecated":false,"description":"AWS SDK for JavaScript Dynamodb Client for Node.js, Browser and React Native","devDependencies":{"@aws-sdk/service-client-documentation-generator":"3.58.0","@tsconfig/recommended":"1.0.1","@types/node":"^12.7.5","@types/uuid":"^8.3.0","concurrently":"7.0.0","downlevel-dts":"0.7.0","rimraf":"3.0.2","typedoc":"0.19.2","typescript":"~4.6.2"},"engines":{"node":">=12.0.0"},"files":["dist-*"],"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-dynamodb","license":"Apache-2.0","main":"./dist-cjs/index.js","module":"./dist-es/index.js","name":"@aws-sdk/client-dynamodb","react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"repository":{"type":"git","url":"git+https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-dynamodb"},"scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"tsc -p tsconfig.cjs.json","build:docs":"typedoc","build:es":"tsc -p tsconfig.es.json","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo"},"sideEffects":false,"types":"./dist-types/index.d.ts","typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"version":"3.121.0"}');
+module.exports = JSON.parse('{"name":"@aws-sdk/client-dynamodb","description":"AWS SDK for JavaScript Dynamodb Client for Node.js, Browser and React Native","version":"3.121.0","scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"tsc -p tsconfig.cjs.json","build:docs":"typedoc","build:es":"tsc -p tsconfig.es.json","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"2.0.0","@aws-crypto/sha256-js":"2.0.0","@aws-sdk/client-sts":"3.121.0","@aws-sdk/config-resolver":"3.110.0","@aws-sdk/credential-provider-node":"3.121.0","@aws-sdk/fetch-http-handler":"3.110.0","@aws-sdk/hash-node":"3.110.0","@aws-sdk/invalid-dependency":"3.110.0","@aws-sdk/middleware-content-length":"3.110.0","@aws-sdk/middleware-endpoint-discovery":"3.110.0","@aws-sdk/middleware-host-header":"3.110.0","@aws-sdk/middleware-logger":"3.110.0","@aws-sdk/middleware-recursion-detection":"3.110.0","@aws-sdk/middleware-retry":"3.118.1","@aws-sdk/middleware-serde":"3.110.0","@aws-sdk/middleware-signing":"3.110.0","@aws-sdk/middleware-stack":"3.110.0","@aws-sdk/middleware-user-agent":"3.110.0","@aws-sdk/node-config-provider":"3.110.0","@aws-sdk/node-http-handler":"3.118.1","@aws-sdk/protocol-http":"3.110.0","@aws-sdk/smithy-client":"3.110.0","@aws-sdk/types":"3.110.0","@aws-sdk/url-parser":"3.110.0","@aws-sdk/util-base64-browser":"3.109.0","@aws-sdk/util-base64-node":"3.55.0","@aws-sdk/util-body-length-browser":"3.55.0","@aws-sdk/util-body-length-node":"3.55.0","@aws-sdk/util-defaults-mode-browser":"3.110.0","@aws-sdk/util-defaults-mode-node":"3.110.0","@aws-sdk/util-user-agent-browser":"3.110.0","@aws-sdk/util-user-agent-node":"3.118.0","@aws-sdk/util-utf8-browser":"3.109.0","@aws-sdk/util-utf8-node":"3.109.0","@aws-sdk/util-waiter":"3.118.1","tslib":"^2.3.1","uuid":"^8.3.2"},"devDependencies":{"@aws-sdk/service-client-documentation-generator":"3.58.0","@tsconfig/recommended":"1.0.1","@types/node":"^12.7.5","@types/uuid":"^8.3.0","concurrently":"7.0.0","downlevel-dts":"0.7.0","rimraf":"3.0.2","typedoc":"0.19.2","typescript":"~4.6.2"},"engines":{"node":">=12.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-dynamodb","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-dynamodb"}}');
 
 /***/ }),
 
@@ -28951,7 +28951,7 @@ module.exports = JSON.parse('{"_from":"@aws-sdk/client-dynamodb","_id":"@aws-sdk
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"_from":"@aws-sdk/client-sso@3.121.0","_id":"@aws-sdk/client-sso@3.121.0","_inBundle":false,"_integrity":"sha512-uYkeUdNnEla57g4QZT0Cu5ll+m0fUQJPkoTXQI5QKeLH2usVpmrCRbtTWEVTh94Gf2x/HK8Ifu7eO/0PquwwIQ==","_location":"/@aws-sdk/client-sso","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"@aws-sdk/client-sso@3.121.0","name":"@aws-sdk/client-sso","escapedName":"@aws-sdk%2fclient-sso","scope":"@aws-sdk","rawSpec":"3.121.0","saveSpec":null,"fetchSpec":"3.121.0"},"_requiredBy":["/@aws-sdk/credential-provider-sso"],"_resolved":"https://vimond.jfrog.io/vimond/api/npm/npm-virtual/@aws-sdk/client-sso/-/client-sso-3.121.0.tgz","_shasum":"a0d26c03f0a58ffbce85bcc4cd0384f6c090d900","_spec":"@aws-sdk/client-sso@3.121.0","_where":"/Users/erlend/projects/actions/ticket-storer/node_modules/@aws-sdk/credential-provider-sso","author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"bugs":{"url":"https://github.com/aws/aws-sdk-js-v3/issues"},"bundleDependencies":false,"dependencies":{"@aws-crypto/sha256-browser":"2.0.0","@aws-crypto/sha256-js":"2.0.0","@aws-sdk/config-resolver":"3.110.0","@aws-sdk/fetch-http-handler":"3.110.0","@aws-sdk/hash-node":"3.110.0","@aws-sdk/invalid-dependency":"3.110.0","@aws-sdk/middleware-content-length":"3.110.0","@aws-sdk/middleware-host-header":"3.110.0","@aws-sdk/middleware-logger":"3.110.0","@aws-sdk/middleware-recursion-detection":"3.110.0","@aws-sdk/middleware-retry":"3.118.1","@aws-sdk/middleware-serde":"3.110.0","@aws-sdk/middleware-stack":"3.110.0","@aws-sdk/middleware-user-agent":"3.110.0","@aws-sdk/node-config-provider":"3.110.0","@aws-sdk/node-http-handler":"3.118.1","@aws-sdk/protocol-http":"3.110.0","@aws-sdk/smithy-client":"3.110.0","@aws-sdk/types":"3.110.0","@aws-sdk/url-parser":"3.110.0","@aws-sdk/util-base64-browser":"3.109.0","@aws-sdk/util-base64-node":"3.55.0","@aws-sdk/util-body-length-browser":"3.55.0","@aws-sdk/util-body-length-node":"3.55.0","@aws-sdk/util-defaults-mode-browser":"3.110.0","@aws-sdk/util-defaults-mode-node":"3.110.0","@aws-sdk/util-user-agent-browser":"3.110.0","@aws-sdk/util-user-agent-node":"3.118.0","@aws-sdk/util-utf8-browser":"3.109.0","@aws-sdk/util-utf8-node":"3.109.0","tslib":"^2.3.1"},"deprecated":false,"description":"AWS SDK for JavaScript Sso Client for Node.js, Browser and React Native","devDependencies":{"@aws-sdk/service-client-documentation-generator":"3.58.0","@tsconfig/recommended":"1.0.1","@types/node":"^12.7.5","concurrently":"7.0.0","downlevel-dts":"0.7.0","rimraf":"3.0.2","typedoc":"0.19.2","typescript":"~4.6.2"},"engines":{"node":">=12.0.0"},"files":["dist-*"],"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-sso","license":"Apache-2.0","main":"./dist-cjs/index.js","module":"./dist-es/index.js","name":"@aws-sdk/client-sso","react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"repository":{"type":"git","url":"git+https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-sso"},"scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"tsc -p tsconfig.cjs.json","build:docs":"typedoc","build:es":"tsc -p tsconfig.es.json","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo"},"sideEffects":false,"types":"./dist-types/index.d.ts","typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"version":"3.121.0"}');
+module.exports = JSON.parse('{"name":"@aws-sdk/client-sso","description":"AWS SDK for JavaScript Sso Client for Node.js, Browser and React Native","version":"3.121.0","scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"tsc -p tsconfig.cjs.json","build:docs":"typedoc","build:es":"tsc -p tsconfig.es.json","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"2.0.0","@aws-crypto/sha256-js":"2.0.0","@aws-sdk/config-resolver":"3.110.0","@aws-sdk/fetch-http-handler":"3.110.0","@aws-sdk/hash-node":"3.110.0","@aws-sdk/invalid-dependency":"3.110.0","@aws-sdk/middleware-content-length":"3.110.0","@aws-sdk/middleware-host-header":"3.110.0","@aws-sdk/middleware-logger":"3.110.0","@aws-sdk/middleware-recursion-detection":"3.110.0","@aws-sdk/middleware-retry":"3.118.1","@aws-sdk/middleware-serde":"3.110.0","@aws-sdk/middleware-stack":"3.110.0","@aws-sdk/middleware-user-agent":"3.110.0","@aws-sdk/node-config-provider":"3.110.0","@aws-sdk/node-http-handler":"3.118.1","@aws-sdk/protocol-http":"3.110.0","@aws-sdk/smithy-client":"3.110.0","@aws-sdk/types":"3.110.0","@aws-sdk/url-parser":"3.110.0","@aws-sdk/util-base64-browser":"3.109.0","@aws-sdk/util-base64-node":"3.55.0","@aws-sdk/util-body-length-browser":"3.55.0","@aws-sdk/util-body-length-node":"3.55.0","@aws-sdk/util-defaults-mode-browser":"3.110.0","@aws-sdk/util-defaults-mode-node":"3.110.0","@aws-sdk/util-user-agent-browser":"3.110.0","@aws-sdk/util-user-agent-node":"3.118.0","@aws-sdk/util-utf8-browser":"3.109.0","@aws-sdk/util-utf8-node":"3.109.0","tslib":"^2.3.1"},"devDependencies":{"@aws-sdk/service-client-documentation-generator":"3.58.0","@tsconfig/recommended":"1.0.1","@types/node":"^12.7.5","concurrently":"7.0.0","downlevel-dts":"0.7.0","rimraf":"3.0.2","typedoc":"0.19.2","typescript":"~4.6.2"},"engines":{"node":">=12.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-sso","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-sso"}}');
 
 /***/ }),
 
@@ -28959,7 +28959,7 @@ module.exports = JSON.parse('{"_from":"@aws-sdk/client-sso@3.121.0","_id":"@aws-
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"_from":"@aws-sdk/client-sts@3.121.0","_id":"@aws-sdk/client-sts@3.121.0","_inBundle":false,"_integrity":"sha512-ZqEcxfeYVeSo/VyXSI4XW4MsWYoRmEdxRLWwI7kgFQxgqwVtfhPmvcaw6CA1atMcSR6waiRSpe9pgpj6gKJvyw==","_location":"/@aws-sdk/client-sts","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"@aws-sdk/client-sts@3.121.0","name":"@aws-sdk/client-sts","escapedName":"@aws-sdk%2fclient-sts","scope":"@aws-sdk","rawSpec":"3.121.0","saveSpec":null,"fetchSpec":"3.121.0"},"_requiredBy":["/@aws-sdk/client-dynamodb"],"_resolved":"https://vimond.jfrog.io/vimond/api/npm/npm-virtual/@aws-sdk/client-sts/-/client-sts-3.121.0.tgz","_shasum":"258077598138a102b508519da6551949ea08c37b","_spec":"@aws-sdk/client-sts@3.121.0","_where":"/Users/erlend/projects/actions/ticket-storer/node_modules/@aws-sdk/client-dynamodb","author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"bugs":{"url":"https://github.com/aws/aws-sdk-js-v3/issues"},"bundleDependencies":false,"dependencies":{"@aws-crypto/sha256-browser":"2.0.0","@aws-crypto/sha256-js":"2.0.0","@aws-sdk/config-resolver":"3.110.0","@aws-sdk/credential-provider-node":"3.121.0","@aws-sdk/fetch-http-handler":"3.110.0","@aws-sdk/hash-node":"3.110.0","@aws-sdk/invalid-dependency":"3.110.0","@aws-sdk/middleware-content-length":"3.110.0","@aws-sdk/middleware-host-header":"3.110.0","@aws-sdk/middleware-logger":"3.110.0","@aws-sdk/middleware-recursion-detection":"3.110.0","@aws-sdk/middleware-retry":"3.118.1","@aws-sdk/middleware-sdk-sts":"3.110.0","@aws-sdk/middleware-serde":"3.110.0","@aws-sdk/middleware-signing":"3.110.0","@aws-sdk/middleware-stack":"3.110.0","@aws-sdk/middleware-user-agent":"3.110.0","@aws-sdk/node-config-provider":"3.110.0","@aws-sdk/node-http-handler":"3.118.1","@aws-sdk/protocol-http":"3.110.0","@aws-sdk/smithy-client":"3.110.0","@aws-sdk/types":"3.110.0","@aws-sdk/url-parser":"3.110.0","@aws-sdk/util-base64-browser":"3.109.0","@aws-sdk/util-base64-node":"3.55.0","@aws-sdk/util-body-length-browser":"3.55.0","@aws-sdk/util-body-length-node":"3.55.0","@aws-sdk/util-defaults-mode-browser":"3.110.0","@aws-sdk/util-defaults-mode-node":"3.110.0","@aws-sdk/util-user-agent-browser":"3.110.0","@aws-sdk/util-user-agent-node":"3.118.0","@aws-sdk/util-utf8-browser":"3.109.0","@aws-sdk/util-utf8-node":"3.109.0","entities":"2.2.0","fast-xml-parser":"3.19.0","tslib":"^2.3.1"},"deprecated":false,"description":"AWS SDK for JavaScript Sts Client for Node.js, Browser and React Native","devDependencies":{"@aws-sdk/service-client-documentation-generator":"3.58.0","@tsconfig/recommended":"1.0.1","@types/node":"^12.7.5","concurrently":"7.0.0","downlevel-dts":"0.7.0","rimraf":"3.0.2","typedoc":"0.19.2","typescript":"~4.6.2"},"engines":{"node":">=12.0.0"},"files":["dist-*"],"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-sts","license":"Apache-2.0","main":"./dist-cjs/index.js","module":"./dist-es/index.js","name":"@aws-sdk/client-sts","react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"repository":{"type":"git","url":"git+https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-sts"},"scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"tsc -p tsconfig.cjs.json","build:docs":"typedoc","build:es":"tsc -p tsconfig.es.json","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo"},"sideEffects":false,"types":"./dist-types/index.d.ts","typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"version":"3.121.0"}');
+module.exports = JSON.parse('{"name":"@aws-sdk/client-sts","description":"AWS SDK for JavaScript Sts Client for Node.js, Browser and React Native","version":"3.121.0","scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"tsc -p tsconfig.cjs.json","build:docs":"typedoc","build:es":"tsc -p tsconfig.es.json","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"2.0.0","@aws-crypto/sha256-js":"2.0.0","@aws-sdk/config-resolver":"3.110.0","@aws-sdk/credential-provider-node":"3.121.0","@aws-sdk/fetch-http-handler":"3.110.0","@aws-sdk/hash-node":"3.110.0","@aws-sdk/invalid-dependency":"3.110.0","@aws-sdk/middleware-content-length":"3.110.0","@aws-sdk/middleware-host-header":"3.110.0","@aws-sdk/middleware-logger":"3.110.0","@aws-sdk/middleware-recursion-detection":"3.110.0","@aws-sdk/middleware-retry":"3.118.1","@aws-sdk/middleware-sdk-sts":"3.110.0","@aws-sdk/middleware-serde":"3.110.0","@aws-sdk/middleware-signing":"3.110.0","@aws-sdk/middleware-stack":"3.110.0","@aws-sdk/middleware-user-agent":"3.110.0","@aws-sdk/node-config-provider":"3.110.0","@aws-sdk/node-http-handler":"3.118.1","@aws-sdk/protocol-http":"3.110.0","@aws-sdk/smithy-client":"3.110.0","@aws-sdk/types":"3.110.0","@aws-sdk/url-parser":"3.110.0","@aws-sdk/util-base64-browser":"3.109.0","@aws-sdk/util-base64-node":"3.55.0","@aws-sdk/util-body-length-browser":"3.55.0","@aws-sdk/util-body-length-node":"3.55.0","@aws-sdk/util-defaults-mode-browser":"3.110.0","@aws-sdk/util-defaults-mode-node":"3.110.0","@aws-sdk/util-user-agent-browser":"3.110.0","@aws-sdk/util-user-agent-node":"3.118.0","@aws-sdk/util-utf8-browser":"3.109.0","@aws-sdk/util-utf8-node":"3.109.0","entities":"2.2.0","fast-xml-parser":"3.19.0","tslib":"^2.3.1"},"devDependencies":{"@aws-sdk/service-client-documentation-generator":"3.58.0","@tsconfig/recommended":"1.0.1","@types/node":"^12.7.5","concurrently":"7.0.0","downlevel-dts":"0.7.0","rimraf":"3.0.2","typedoc":"0.19.2","typescript":"~4.6.2"},"engines":{"node":">=12.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-sts","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-sts"}}');
 
 /***/ }),
 
@@ -29053,15 +29053,12 @@ async function run() {
       refName: core.getInput("ref-name", { required: true }),
       refType: core.getInput("ref-type", { required: true }),
       refBase: core.getInput("ref-base", { required: true }),
-      previousSha: core.getInput("previousSha", { required: true }),
-      newSha: core.getInput("newSha", { required: true }),
+      previousSha: core.getInput("previous-sha", { required: true }),
+      newSha: core.getInput("new-sha", { required: true }),
       commits: core.getInput("commits", { required: true })
     };
 
     const awsConfig = {
-      accessKeyId: core.getInput("aws-access-key-id", { required: true }),
-      secretAccessKey: core.getInput("aws-secret-access-key", { required: true }),
-      region: core.getInput("aws-region", { required: true }),
       tableName: core.getInput("dynamodb-tablename", { required: true }),
     };
 
@@ -29073,63 +29070,60 @@ async function run() {
     };
 
     // Hide secrets
-    core.setSecret(awsConfig.accessKeyId);
-    core.setSecret(awsConfig.secretAccessKey);
     core.setSecret(jiraConfig.token);
     core.setSecret(jiraConfig.username);
 
 
-    if (refType === "tag") {
+    if (input.refType === "tag") {
       let branch = "";
       if (input.refBase.startsWith("refs/heads/")) {
-        branch = input.refBase.slice("refs/heads/".length);
+          branch = input.refBase.slice("refs/heads/".length);
       }
 
       const resp = await ticketSender.storeTag(awsConfig, {
-        ownerRepo: input.owner + ":" + input.repo,
-        tag: input.refName,
-        commitSha: input.newSha,
-        branch: branch
+          ownerRepo: input.owner + ":" + input.repo,
+          tag: input.refName,
+          commitSha: input.newSha,
+          branch: branch
       });
       console.log(`Tickets sent: ${JSON.stringify(resp)}`);
       return;
     }
 
-
     let commitTickets = {};
     let allTickets = [];
     let validTickets = {};
     for (const commit of input.commits) {
-      const tickets = ticketFinder.findAll([commit.message]);
-      commitTickets[commit.id] = tickets;
-      allTickets.concat([...tickets]);
+        const tickets = ticketFinder.findAll([commit.message]);
+        commitTickets[commit.id] = tickets;
+        allTickets = allTickets.concat([...tickets]);
     }
 
     const filteredTickets = jira.checkIfExist(jiraConfig, new Set(allTickets));
     for (const ticket of filteredTickets) {
-      validTickets[ticket] = true;
+        validTickets[ticket] = true;
     }
-
 
     let commits = [];
     let parentSha = input.previousSha;
     for (const commit of input.commits) {
-      let tickets = [];
-      for (const ticket of commitTickets[commit.id]) {
-        if (validTickets.has(ticket)) {
-          tickets.push(ticket);
+        let tickets = [];
+        for (const ticket of commitTickets[commit.id]) {
+            if (ticket in validTickets) {
+                tickets.push(ticket);
+            }
         }
-      }
 
-      commits.push({
-        ownerRepo: input.owner + ":" + input.repo,
-        commitSha: commit.id,
-        parentSha: parentSha,
-        branch: input.refName,
-        tickets: tickets
-      });
-      parentSha = commit.id;
+        commits.push({
+            ownerRepo: input.owner + ":" + input.repo,
+            commitSha: commit.id,
+            parentSha: parentSha,
+            branch: input.refName,
+            tickets: tickets
+        });
+        parentSha = commit.id;
     }
+
 
     const resp = await ticketSender.storeCommits(awsConfig, commits);
     console.log(`Tickets sent: ${JSON.stringify(resp)}`);

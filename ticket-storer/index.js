@@ -15,8 +15,8 @@ async function run() {
       refName: core.getInput("ref-name", { required: true }),
       refType: core.getInput("ref-type", { required: true }),
       refBase: core.getInput("ref-base", { required: true }),
-      previousSha: core.getInput("previousSha", { required: true }),
-      newSha: core.getInput("newSha", { required: true }),
+      previousSha: core.getInput("previous-sha", { required: true }),
+      newSha: core.getInput("new-sha", { required: true }),
       commits: core.getInput("commits", { required: true })
     };
 
