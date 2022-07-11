@@ -11,7 +11,7 @@ async function run() {
 
     const input = {
       owner: core.getInput("owner", { required: true }),
-      repo: core.getInput("repo", { required: true }),
+      repo: core.getInput("repository", { required: true }),
       refName: core.getInput("ref-name", { required: true }),
       refType: core.getInput("ref-type", { required: true }),
       refBase: core.getInput("ref-base", { required: false }),
