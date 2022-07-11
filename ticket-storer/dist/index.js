@@ -40577,7 +40577,7 @@ async function run() {
     }
 
     const filteredTickets = jira.checkIfExist(jiraConfig, allTickets);
-    if (filteredTickets == null || typeof filteredTickets[Symbol.iterator] === 'function') {
+    if (filteredTickets == null || typeof filteredTickets[Symbol.iterator] !== 'function') {
       console.log(filteredTickets);
       core.setFailed("Bad response from JIRA");
       return;
