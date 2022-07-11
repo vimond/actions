@@ -62,6 +62,12 @@ async function run() {
     }
 
     const filteredTickets = jira.checkIfExist(jiraConfig, new Set(allTickets));
+    if (filteredTickets == null || typeof filteredTickets[Symbol.iterator] === 'function') {
+      console.log(filteredTickets);
+      core.setFailed("Bad response from JIRA");
+      return;
+    }
+
     for (const ticket of filteredTickets) {
         validTickets[ticket] = true;
     }
