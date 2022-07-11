@@ -61,7 +61,8 @@ async function run() {
         allTickets = allTickets.concat([...tickets]);
     }
 
-    const filteredTickets = jira.checkIfExist(jiraConfig, allTickets);
+    console.log("allTickets", allTickets)
+    const filteredTickets = await jira.checkIfExist(jiraConfig, allTickets);
     if (filteredTickets == null || typeof filteredTickets[Symbol.iterator] !== 'function') {
       console.log(filteredTickets);
       core.setFailed("Bad response from JIRA");
