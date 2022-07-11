@@ -1,0 +1,41 @@
+name: Ticket store on push
+
+on:
+  workflow_call:
+    secrets:
+      DVL_TEST_GITHUB_TOKEN:
+        required: true
+
+jobs:
+  store-pushed-tickets:
+    name: ticket store
+    runs-on: ubuntu-latest
+    steps:
+      - name : machine echo github
+        env : { CONTENT : "${{ toJson(github) }}" }
+        run : "echo $CONTENT"
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.TICKET_COLLECTOR_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.TICKET_COLLECTOR_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
+
+      - name: store valid tickets
+        id: store
+        uses: vimond/actions/ticket-storer@feat/ticket-storer
+        with:
+          owner: ${{ github.repository_owner }}
+          repository: ${{ github.event.repository.name }}
+          ref-name: ${{ github.ref_name }}
+          ref-type: ${{ github.ref_type }}
+          ref-base: ${{ github.event.base_ref }}
+          previousSha: ${{ github.event.before }}
+          newSha: ${{ github.event.after }}
+          commits: ${{ github.events.commits }}
+
+          dynamodb-tablename: 'eu-north-1-internal-commit-tickets'
+
+          jira-host: 'vimond-ng.atlassian.net'
+          jira-username: ${{ secrets.JIRA_USERNAME }}
+          jira-token: ${{ secrets.JIRA_TOKEN }}
