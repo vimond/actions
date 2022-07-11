@@ -18,7 +18,7 @@ async function checkIfExist(jiraConfig, tickets) {
     }
 
     return await jiraSearch({
-        // serverRoot: `https://${jiraConfig.proxy}`,
+        serverRoot: `https://${jiraConfig.proxy}`,
         strictSSL: true,
         user: jiraConfig.username,
         pass: jiraConfig.token,

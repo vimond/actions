@@ -2,7 +2,7 @@ require('dotenv').config();
 const ticketSender = require('./src/dynamodb');
 const core = require('@actions/core');
 const ticketFinder = require('../ticket-collector/src/tickets-finder');
-const jira = require('./src/jira');
+// const jira = require('./src/jira');
 
 // most @actions toolkit packages have async methods
 async function run() {
@@ -62,14 +62,14 @@ async function run() {
     }
 
     console.log("allTickets", allTickets)
-    const filteredTickets = await jira.checkIfExist(jiraConfig, allTickets);
-    if (filteredTickets == null || typeof filteredTickets[Symbol.iterator] !== 'function') {
-      console.log(filteredTickets);
-      core.setFailed("Bad response from JIRA");
-      return;
-    }
+    // const filteredTickets = await jira.checkIfExist(jiraConfig, allTickets);
+    // if (filteredTickets == null || typeof filteredTickets[Symbol.iterator] !== 'function') {
+    //   console.log(filteredTickets);
+    //   core.setFailed("Bad response from JIRA");
+    //   return;
+    // }
 
-    for (const ticket of filteredTickets) {
+    for (const ticket of allTickets) { // TODO: validate, use filteredTickets
         validTickets[ticket] = true;
     }
 
