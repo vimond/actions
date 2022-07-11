@@ -2,7 +2,7 @@ require('dotenv').config();
 const ticketSender = require('./src/dynamodb');
 const core = require('@actions/core');
 const ticketFinder = require('../ticket-collector/src/tickets-finder');
-const jira = require('../ticket-collector/src/jira');
+const jira = require('./src/jira');
 
 // most @actions toolkit packages have async methods
 async function run() {
