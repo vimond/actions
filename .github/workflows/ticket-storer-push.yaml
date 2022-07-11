@@ -32,7 +32,7 @@ jobs:
           ref-base: ${{ github.event.base_ref }}
           previous-sha: ${{ github.event.before }}
           new-sha: ${{ github.event.after }}
-          commits: ${{ github.events.commits }}
+          commits: "${{ toJson(github.events.commits) }}"
 
           dynamodb-tablename: 'eu-north-1-internal-commit-tickets'
 

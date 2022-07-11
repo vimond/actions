@@ -14,10 +14,10 @@ async function run() {
       repo: core.getInput("repo", { required: true }),
       refName: core.getInput("ref-name", { required: true }),
       refType: core.getInput("ref-type", { required: true }),
-      refBase: core.getInput("ref-base", { required: true }),
+      refBase: core.getInput("ref-base", { required: false }),
       previousSha: core.getInput("previous-sha", { required: true }),
       newSha: core.getInput("new-sha", { required: true }),
-      commits: core.getInput("commits", { required: true })
+      commits: JSON.parse(core.getInput("commits", { required: true }))
     };
 
     const awsConfig = {
