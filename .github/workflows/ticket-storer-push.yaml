@@ -7,9 +7,6 @@ on:
         description: "Override of the repository name for when the repo name doesn't match the deployment name"
         required: false
         type: string
-    secrets:
-      DVL_TEST_GITHUB_TOKEN:
-        required: true
 
 jobs:
   store-pushed-tickets:
