@@ -7,6 +7,9 @@ inputs:
   repository:
     description: 'Name of the repository'
     required: true
+  override-repository:
+    description: 'Override of the repository name'
+    required: false
   ref-name:
     description: "Ref name"
     required: true

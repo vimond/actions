@@ -27,6 +27,7 @@ jobs:
         with:
           owner: ${{ github.repository_owner }}
           repository: ${{ github.event.repository.name }}
+          override-repository: ${{ env.OVERRIDE_REPO_NAME }}
           ref-name: ${{ github.ref_name }}
           ref-type: ${{ github.ref_type }}
           ref-base: ${{ github.event.base_ref }}

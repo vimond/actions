@@ -12,6 +12,7 @@ async function run() {
     const input = {
       owner: core.getInput("owner", { required: true }),
       repo: core.getInput("repository", { required: true }),
+      overrideRepo: core.getInput("override-repository", { required: false }),
       refName: core.getInput("ref-name", { required: true }),
       refType: core.getInput("ref-type", { required: true }),
       refBase: core.getInput("ref-base", { required: false }),
@@ -19,6 +20,10 @@ async function run() {
       newSha: core.getInput("new-sha", { required: true }),
       commits: JSON.parse(core.getInput("commits", { required: true }))
     };
+
+    if (input.overrideRepo != undefined && input.overrideRepo !== "") {
+      input.repo = input.overrideRepo;
+    } 
 
     const awsConfig = {
       tableName: core.getInput("dynamodb-tablename", { required: true }),
