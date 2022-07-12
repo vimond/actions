@@ -56,7 +56,21 @@ async function storeTag(awsConfig, tagInfo) {
     }));
 }
 
+async function storeOverrideRepoName(awsConfig, owner, repoName, overrideRepoName) {
+    const client = new DynamoDBClient();
+
+    return await client.send(new PutItemCommand({
+        Item: {
+            "OwnerRepo": { S: "vimond:" + overrideRepoName },
+            "ID": { S: `reponame` },
+            "RepoName": { S: repoName }
+        },
+        TableName: awsConfig.tableName
+    }));
+}
+
 module.exports = {
     storeCommits,
-    storeTag
+    storeTag,
+    storeOverrideRepoName
 }

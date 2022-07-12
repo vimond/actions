@@ -28734,9 +28734,23 @@ async function storeTag(awsConfig, tagInfo) {
     }));
 }
 
+async function storeOverrideRepoName(awsConfig, owner, repoName, overrideRepoName) {
+    const client = new DynamoDBClient();
+
+    return await client.send(new PutItemCommand({
+        Item: {
+            "OwnerRepo": { S: "vimond:" + overrideRepoName },
+            "ID": { S: `reponame` },
+            "RepoName": { S: repoName }
+        },
+        TableName: awsConfig.tableName
+    }));
+}
+
 module.exports = {
     storeCommits,
-    storeTag
+    storeTag,
+    storeOverrideRepoName
 }
 
 /***/ }),
@@ -29005,10 +29019,6 @@ async function run() {
       commits: JSON.parse(core.getInput("commits", { required: true }))
     };
 
-    if (input.overrideRepo != undefined && input.overrideRepo !== "") {
-      input.repo = input.overrideRepo;
-    } 
-
     const awsConfig = {
       tableName: core.getInput("dynamodb-tablename", { required: true }),
     };
@@ -29024,6 +29034,11 @@ async function run() {
     core.setSecret(jiraConfig.token);
     core.setSecret(jiraConfig.username);
 
+    if (input.overrideRepo != undefined && input.overrideRepo !== "") {
+      const resp = await ticketSender.storeOverrideRepoName(awsConfig, input.owner, input.repo, input.overrideRepo);
+      console.log("Storing overriden repo name", resp)
+      input.repo = input.overrideRepo;
+    } 
 
     if (input.refType === "tag") {
       let branch = "";

@@ -21,10 +21,6 @@ async function run() {
       commits: JSON.parse(core.getInput("commits", { required: true }))
     };
 
-    if (input.overrideRepo != undefined && input.overrideRepo !== "") {
-      input.repo = input.overrideRepo;
-    } 
-
     const awsConfig = {
       tableName: core.getInput("dynamodb-tablename", { required: true }),
     };
@@ -40,6 +36,11 @@ async function run() {
     core.setSecret(jiraConfig.token);
     core.setSecret(jiraConfig.username);
 
+    if (input.overrideRepo != undefined && input.overrideRepo !== "") {
+      const resp = await ticketSender.storeOverrideRepoName(awsConfig, input.owner, input.repo, input.overrideRepo);
+      console.log("Storing overriden repo name", resp)
+      input.repo = input.overrideRepo;
+    } 
 
     if (input.refType === "tag") {
       let branch = "";
