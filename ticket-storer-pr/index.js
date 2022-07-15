@@ -23,6 +23,7 @@ async function run() {
       input.repo = input.overrideRepo;
     }
 
+    console.log("convertig tickets");
 
     if (input.tickets === "") {
       input.tickets = readTicketFile(input.inputFile);
