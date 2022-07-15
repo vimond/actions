@@ -1,0 +1,30 @@
+name: 'ticket-collector'
+description: 'Collects ticket ids'
+inputs:
+  owner:
+    description: 'Owner of the repository'
+    required: true
+  repository:
+    description: 'Name of the repository'
+    required: true
+  override-repository:
+    description: 'Override of the repository name'
+    required: false
+  pr-id:
+    description: 'ID of PR'
+    required: true
+  input-file:
+     description: 'Path to file with base64(JSON) describing the tickets'
+     required: false
+  tickets:
+    description: 'base64(JSON) describing the tickets'
+    required: false
+  dynamodb-tablename:
+    description: 'The DynamoDB table name'
+    required: true
+  gh-token:
+    description: 'Github token with permission to query the PR and list commits'
+    required: true
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

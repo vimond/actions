@@ -14,19 +14,16 @@ on:
     secrets:
       DVL_TEST_GITHUB_TOKEN:
         required: true
+    inputs:
+      override-repo-name:
+        description: "Override of the repository name for when the repo name doesn't match the deployment name"
+        required: false
+        type: string
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 env:
   PR_ID: "${{ github.event.number }}"
 jobs:
-  store-in-cloud:
-    if: github.event.pull_request.merged == 'true'
-    runs-on: ubuntu-latest
-    needs:
-      - pr-lint
-    steps:
-      - name: Store in the cloud
-        run: echo Pretending to take all the tickets and store them in the cloud on closed PR
   pr-lint:
     name: ticket check
     runs-on: ubuntu-latest
@@ -63,3 +60,14 @@ jobs:
           pr-id: '${{ env.PR_ID }}'
           tickets: '${{ steps.collect.outputs.tickets }}'
           gh-token: '${{ secrets.DVL_TEST_GITHUB_TOKEN }}'
+      - name: Store tickets
+        uses: vimond/actions/ticket-storer@feat/ticket-storer
+        with:
+          owner: ${{ github.repository_owner }}
+          repository: ${{ github.event.repository.name }}
+          override-repository: ${{ inputs.override-repo-name }}
+          pr-id: '${{ env.PR_ID }}'
+          tickets: '${{ steps.collect.outputs.tickets }}'
+          gh-token: '${{ secrets.DVL_TEST_GITHUB_TOKEN }}'
+          dynamodb-tablename: 'eu-north-1-internal-commit-tickets'
+
