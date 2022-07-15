@@ -1,4 +1,5 @@
 const github = require('@actions/github');
+const core = require("@actions/core");
 
 function getSearchClient() {
     return github.getOctokit(core.getInput('gh-token', { required: true }), {
