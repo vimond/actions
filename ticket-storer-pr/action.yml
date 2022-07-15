@@ -22,9 +22,6 @@ inputs:
   dynamodb-tablename:
     description: 'The DynamoDB table name'
     required: true
-  gh-token:
-    description: 'Github token with permission to query the PR and list commits'
-    required: true
 runs:
   using: 'node16'
   main: 'dist/index.js'

@@ -43,6 +43,9 @@ inputs:
   jira-token:
     description: 'Jira token or password (Needed if you want to verify ticket list against Jira)'
     required: false
+  gh-token:
+    description: 'Github token with permission to query the PR and list commits'
+    required: true
 runs:
   using: 'node16'
   main: 'dist/index.js'

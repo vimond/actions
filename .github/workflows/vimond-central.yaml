@@ -68,6 +68,5 @@ jobs:
           override-repository: ${{ inputs.override-repo-name }}
           pr-id: '${{ env.PR_ID }}'
           tickets: '${{ steps.collect.outputs.tickets }}'
-          gh-token: '${{ secrets.DVL_TEST_GITHUB_TOKEN }}'
           dynamodb-tablename: 'eu-north-1-internal-commit-tickets'
 
