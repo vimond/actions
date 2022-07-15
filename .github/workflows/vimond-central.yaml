@@ -60,6 +60,12 @@ jobs:
           pr-id: '${{ env.PR_ID }}'
           tickets: '${{ steps.collect.outputs.tickets }}'
           gh-token: '${{ secrets.DVL_TEST_GITHUB_TOKEN }}'
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.TICKET_COLLECTOR_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.TICKET_COLLECTOR_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
       - name: Store tickets
         uses: vimond/actions/ticket-storer-pr@feat/ticket-storer
         with:
