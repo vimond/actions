@@ -61,7 +61,7 @@ jobs:
           tickets: '${{ steps.collect.outputs.tickets }}'
           gh-token: '${{ secrets.DVL_TEST_GITHUB_TOKEN }}'
       - name: Store tickets
-        uses: vimond/actions/ticket-storer@feat/ticket-storer
+        uses: vimond/actions/ticket-storer-pr@feat/ticket-storer
         with:
           owner: ${{ github.repository_owner }}
           repository: ${{ github.event.repository.name }}
