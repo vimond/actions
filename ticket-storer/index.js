@@ -2,6 +2,7 @@ require('dotenv').config();
 const ticketSender = require('./src/dynamodb');
 const core = require('@actions/core');
 const ticketFinder = require('../ticket-collector/src/tickets-finder');
+const prTicketSearcher = require('./src/github');
 // const jira = require('./src/jira');
 
 // most @actions toolkit packages have async methods
@@ -36,20 +37,25 @@ async function run() {
     // Hide secrets
     core.setSecret(jiraConfig.token);
     core.setSecret(jiraConfig.username);
+    core.setSecret(core.getInput('gh-token', { required: true }));
 
     if (input.overrideRepo != undefined && input.overrideRepo !== "") {
       const resp = await ticketSender.storeOverrideRepoName(awsConfig, input.owner, input.repo, input.overrideRepo);
-      console.log("Storing overriden repo name", resp)
+      console.log("Storing overriden repo name", resp);
       input.repo = input.overrideRepo;
     }
+
+    const searchClient = prTicketSearcher.getSearchClient();
 
     let commitTickets = {};
     let allTickets = [];
     let validTickets = {};
     for (const commit of input.commits) {
-        const tickets = ticketFinder.findAll([commit.message]);
-        commitTickets[commit.id] = tickets;
-        allTickets = allTickets.concat([...tickets]);
+      let texts = await prTicketSearcher.searchForCommitPullRequest(searchClient, commit.id);
+      texts.push(commit.message);
+      const tickets = ticketFinder.findAll(texts);
+      commitTickets[commit.id] = tickets;
+      allTickets = allTickets.concat([...tickets]);
     }
 
     console.log("allTickets", allTickets)
@@ -61,27 +67,27 @@ async function run() {
     // }
 
     for (const ticket of allTickets) { // TODO: validate, use filteredTickets
-        validTickets[ticket] = true;
+      validTickets[ticket] = true;
     }
 
     let commits = [];
     let parentSha = input.previousSha;
     for (const commit of input.commits) {
-        let tickets = [];
-        for (const ticket of commitTickets[commit.id]) {
-            if (ticket in validTickets) {
-                tickets.push(ticket);
-            }
+      let tickets = [];
+      for (const ticket of commitTickets[commit.id]) {
+        if (ticket in validTickets) {
+          tickets.push(ticket);
         }
+      }
 
-        commits.push({
-            ownerRepo: input.owner + ":" + input.repo,
-            commitSha: commit.id,
-            parentSha: parentSha,
-            branch: input.refName,
-            tickets: tickets
-        });
-        parentSha = commit.id;
+      commits.push({
+        ownerRepo: input.owner + ":" + input.repo,
+        commitSha: commit.id,
+        parentSha: parentSha,
+        branch: input.refName,
+        tickets: tickets
+      });
+      parentSha = commit.id;
     }
 
 

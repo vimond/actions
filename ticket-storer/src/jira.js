@@ -2,18 +2,18 @@ const jiraSearch = require('jira-search');
 
 function shouldCheckIfExists(jiraConfig) {
     return jiraConfig &&
-        jiraConfig.host && jiraConfig.host !== ""  &&
+        jiraConfig.host && jiraConfig.host !== "" &&
         jiraConfig.username && jiraConfig.username !== "" &&
-        jiraConfig.token && jiraConfig.token !== "" ;
+        jiraConfig.token && jiraConfig.token !== "";
 }
 
 async function checkIfExist(jiraConfig, tickets) {
-    if (! shouldCheckIfExists(jiraConfig)){
+    if (!shouldCheckIfExists(jiraConfig)) {
         console.log('Jira validation pre-requisites missing, skipping verifying if ticket exits')
         return [];
     }
 
-    if ( tickets.length === 0 ){
+    if (tickets.length === 0) {
         return [];
     }
 

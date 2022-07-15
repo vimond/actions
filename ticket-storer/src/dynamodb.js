@@ -37,6 +37,7 @@ async function storeCommits(awsConfig, commits) {
     return resp;
 }
 
+// The original repo name is needed to clone the repo when getting the commits between two deployments
 async function storeOverrideRepoName(awsConfig, owner, repoName, overrideRepoName) {
     const client = new DynamoDBClient();
 
