@@ -1,9 +1,8 @@
 const github = require('@actions/github');
-const core = require("@actions/core");
 
-function getSearchClient() {
-    return github.getOctokit(core.getInput('gh-token', { required: true }), {
-        ...(searchBaseUrl !== "" && { baseUrl: searchBaseUrl })
+function getSearchClient(githubConfig) {
+    return github.getOctokit(githubConfig.token, {
+        ...(githubConfig.searchBaseUrl !== "" && { baseUrl: githubConfig.searchBaseUrl })
     });
 }
 

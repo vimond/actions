@@ -35159,11 +35159,10 @@ module.exports = {
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const github = __nccwpck_require__(5438);
-const core = __nccwpck_require__(2186);
 
-function getSearchClient() {
-    return github.getOctokit(core.getInput('gh-token', { required: true }), {
-        ...(searchBaseUrl !== "" && { baseUrl: searchBaseUrl })
+function getSearchClient(githubConfig) {
+    return github.getOctokit(githubConfig.token, {
+        ...(githubConfig.searchBaseUrl !== "" && { baseUrl: githubConfig.searchBaseUrl })
     });
 }
 
@@ -35497,10 +35496,15 @@ async function run() {
       token: core.getInput("jira-token")
     };
 
+    const githubConfig = {
+      token: core.getInput('gh-token', { required: true }),
+      searchBaseUrl: core.getInput('git-search-base-url')
+    }
+
     // Hide secrets
     core.setSecret(jiraConfig.token);
     core.setSecret(jiraConfig.username);
-    core.setSecret(core.getInput('gh-token', { required: true }));
+    core.setSecret(githubConfig.token);
 
     if (input.overrideRepo != undefined && input.overrideRepo !== "") {
       const resp = await ticketSender.storeOverrideRepoName(awsConfig, input.owner, input.repo, input.overrideRepo);
@@ -35508,7 +35512,7 @@ async function run() {
       input.repo = input.overrideRepo;
     }
 
-    const searchClient = prTicketSearcher.getSearchClient();
+    const searchClient = prTicketSearcher.getSearchClient(githubConfig);
 
     let commitTickets = {};
     let allTickets = [];

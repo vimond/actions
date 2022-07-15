@@ -33,10 +33,15 @@ async function run() {
       token: core.getInput("jira-token")
     };
 
+    const githubConfig = {
+      token: core.getInput('gh-token', { required: true }),
+      searchBaseUrl: core.getInput('git-search-base-url')
+    }
+
     // Hide secrets
     core.setSecret(jiraConfig.token);
     core.setSecret(jiraConfig.username);
-    core.setSecret(core.getInput('gh-token', { required: true }));
+    core.setSecret(githubConfig.token);
 
     if (input.overrideRepo != undefined && input.overrideRepo !== "") {
       const resp = await ticketSender.storeOverrideRepoName(awsConfig, input.owner, input.repo, input.overrideRepo);
@@ -44,7 +49,7 @@ async function run() {
       input.repo = input.overrideRepo;
     }
 
-    const searchClient = prTicketSearcher.getSearchClient();
+    const searchClient = prTicketSearcher.getSearchClient(githubConfig);
 
     let commitTickets = {};
     let allTickets = [];

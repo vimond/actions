@@ -47,3 +47,4 @@ jobs:
           jira-token: ${{ secrets.JIRA_TOKEN }}
 
           gh-token: '${{ secrets.DVL_TEST_GITHUB_TOKEN }}'
+          git-search-base-url: 'https://git-api-proxy.eu-north-1-internal.vmnd.tv'
