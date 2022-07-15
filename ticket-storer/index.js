@@ -1,4 +1,3 @@
-require('dotenv').config();
 const ticketSender = require('./src/dynamodb');
 const core = require('@actions/core');
 const ticketFinder = require('../ticket-collector/src/tickets-finder');

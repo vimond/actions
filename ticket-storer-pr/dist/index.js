@@ -28288,14 +28288,6 @@ module.exports = eval("require")("aws-crt");
 
 /***/ }),
 
-/***/ 153:
-/***/ ((module) => {
-
-module.exports = eval("require")("dotenv");
-
-
-/***/ }),
-
 /***/ 9491:
 /***/ ((module) => {
 
@@ -28529,7 +28521,6 @@ module.exports = JSON.parse('{"amp":"&","apos":"\'","gt":">","lt":"<","quot":"\\
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-(__nccwpck_require__(153).config)();
 const ticketSender = __nccwpck_require__(6868);
 const core = __nccwpck_require__(2186);
 const fs = __nccwpck_require__(7147);
@@ -28572,7 +28563,7 @@ async function run() {
 
 function readTicketFile(path) {
   console.log(`Trying to read tickets from ${path}`);
-  return fs.readFileSync(path, {encoding: 'base64'});
+  return fs.readFileSync(path, { encoding: 'base64' });
 }
 
 function convertTicketInput(inputValue) {

@@ -28357,10 +28357,11 @@ async function searchForCommitPullRequest(searchClient, commitSha) {
         q: encodeURIComponent(commitSha),
     });
     console.log(`Request search PR for sha ${commitSha}:  ${searchResponse.headers['x-cache']}`);
-    let prBodies = []
+    let prBodies = [];
+    console.log(searchResponse);
     if (searchResponse.data.total_count > 1) {
         searchResponse.data.items.forEach(i => {
-            prBodies.push(i.body)
+            prBodies.push(i.body);
         });
     }
     return prBodies;
@@ -28385,14 +28386,6 @@ module.exports = eval("require")("@actions/github");
 /***/ ((module) => {
 
 module.exports = eval("require")("aws-crt");
-
-
-/***/ }),
-
-/***/ 153:
-/***/ ((module) => {
-
-module.exports = eval("require")("dotenv");
 
 
 /***/ }),
@@ -28630,7 +28623,6 @@ module.exports = JSON.parse('{"amp":"&","apos":"\'","gt":">","lt":"<","quot":"\\
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-(__nccwpck_require__(153).config)();
 const ticketSender = __nccwpck_require__(6868);
 const core = __nccwpck_require__(2186);
 const ticketFinder = __nccwpck_require__(8493);

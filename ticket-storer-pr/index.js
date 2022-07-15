@@ -1,4 +1,3 @@
-require('dotenv').config();
 const ticketSender = require('./src/dynamodb');
 const core = require('@actions/core');
 const fs = require('fs');
@@ -41,7 +40,7 @@ async function run() {
 
 function readTicketFile(path) {
   console.log(`Trying to read tickets from ${path}`);
-  return fs.readFileSync(path, {encoding: 'base64'});
+  return fs.readFileSync(path, { encoding: 'base64' });
 }
 
 function convertTicketInput(inputValue) {
