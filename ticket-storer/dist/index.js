@@ -35159,6 +35159,7 @@ module.exports = {
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const github = __nccwpck_require__(5438);
+const core = __nccwpck_require__(2186);
 
 function getSearchClient() {
     return github.getOctokit(core.getInput('gh-token', { required: true }), {
