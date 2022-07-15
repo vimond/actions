@@ -10,6 +10,7 @@ on:
 
 jobs:
   store-pushed-tickets:
+    if: github.event.commits != null
     name: ticket store
     runs-on: ubuntu-latest
     steps:

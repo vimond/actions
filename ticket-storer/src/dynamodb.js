@@ -37,31 +37,12 @@ async function storeCommits(awsConfig, commits) {
     return resp;
 }
 
-async function storeTag(awsConfig, tagInfo) {
-    const client = new DynamoDBClient();
-
-    let item = {
-        "OwnerRepo": { S: tagInfo.ownerRepo },
-        "ID": { S: `tag:${tagInfo.tag}` },
-        "MappedCommit": { S: tagInfo.commitSha }
-    };
-
-    if (tagInfo.branch !== "" && tagInfo.branch !== undefined) {
-        item["Branch"] = { S: tagInfo.branch };
-    }
-
-    return await client.send(new PutItemCommand({
-        Item: item,
-        TableName: awsConfig.tableName
-    }));
-}
-
 async function storeOverrideRepoName(awsConfig, owner, repoName, overrideRepoName) {
     const client = new DynamoDBClient();
 
     return await client.send(new PutItemCommand({
         Item: {
-            "OwnerRepo": { S: "vimond:" + overrideRepoName },
+            "OwnerRepo": { S: owner + ":" + overrideRepoName },
             "ID": { S: `reponame` },
             "RepoName": { S: repoName }
         },
@@ -71,6 +52,5 @@ async function storeOverrideRepoName(awsConfig, owner, repoName, overrideRepoNam
 
 module.exports = {
     storeCommits,
-    storeTag,
     storeOverrideRepoName
 }

@@ -25,6 +25,7 @@ async function run() {
       tableName: core.getInput("dynamodb-tablename", { required: true }),
     };
 
+    // These should be required when everything is properly configured
     const jiraConfig = {
       host: core.getInput("jira-host"),
       proxy: core.getInput("jira-proxy"),
@@ -40,22 +41,6 @@ async function run() {
       const resp = await ticketSender.storeOverrideRepoName(awsConfig, input.owner, input.repo, input.overrideRepo);
       console.log("Storing overriden repo name", resp)
       input.repo = input.overrideRepo;
-    } 
-
-    if (input.refType === "tag") {
-      let branch = "";
-      if (input.refBase.startsWith("refs/heads/")) {
-          branch = input.refBase.slice("refs/heads/".length);
-      }
-
-      const resp = await ticketSender.storeTag(awsConfig, {
-          ownerRepo: input.owner + ":" + input.repo,
-          tag: input.refName,
-          commitSha: input.newSha,
-          branch: branch
-      });
-      console.log(`Tickets sent: ${JSON.stringify(resp)}`);
-      return;
     }
 
     let commitTickets = {};
