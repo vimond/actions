@@ -32,7 +32,7 @@ async function run() {
     }
 
     console.log(`input tickets: ${input.tickets}`);
-    const parsedTickets = JSON.parse(input.tickets);
+    const parsedTickets = JSON.parse(input.tickets).map(t => t.key);
     console.log(`parsed tickets: ${parsedTickets}`);
 
     const resp = await ticketSender.storePRTickets(awsConfig, input.owner, input.repo, input.prID, parsedTickets);
