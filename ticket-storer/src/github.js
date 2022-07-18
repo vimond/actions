@@ -12,8 +12,8 @@ async function searchForCommitPullRequest(searchClient, commitSha) {
     });
     console.log(`Request search PR for sha ${commitSha}:  ${searchResponse.headers['x-cache']}`);
     let prBodies = [];
-    console.log(searchResponse);
-    if (searchResponse.data.total_count > 1) {
+    console.log(JSON.stringify(searchResponse));
+    if (searchResponse.data.total_count > 1 && searchResponse.status === 200) {
         searchResponse.data.items.forEach(i => {
             prBodies.push(i.body);
         });
