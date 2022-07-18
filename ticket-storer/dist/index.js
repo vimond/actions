@@ -35178,6 +35178,7 @@ async function searchForCommitPullRequest(searchClient, commitSha) {
     });
     console.log(`Request search PR for sha ${commitSha}:  ${searchResponse.headers['x-cache']}`);
     let prs = [];
+    console.log(`Commit: ${commitSha}: ${searchResponse}`)
 
     if (searchResponse.status === 200 && searchResponse.data.total_count > 1) {
         searchResponse.data.items.forEach(i => {
@@ -35187,6 +35188,8 @@ async function searchForCommitPullRequest(searchClient, commitSha) {
             // TODO: handle issues?
         });
     }
+
+    console.log(`PRs found: ${prs}`);
     return prs;
 }
 
