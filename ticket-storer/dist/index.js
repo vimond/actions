@@ -35182,6 +35182,7 @@ async function searchForCommitPullRequest(searchClient, commitSha) {
 
     if (searchResponse.status === 200 && searchResponse.data.total_count > 1) {
         searchResponse.data.items.forEach(i => {
+            console.log(i.pull_request, i.number)
             if (i.pull_request !== undefined) {
                 prs.push(i.number);
             }
