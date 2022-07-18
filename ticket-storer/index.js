@@ -52,14 +52,16 @@ async function run() {
     const searchClient = prTicketSearcher.getSearchClient(githubConfig);
 
     let commitTickets = {};
+    let commitPrs = {};
     let allTickets = [];
     let validTickets = {};
     for (const commit of input.commits) {
-      let texts = await prTicketSearcher.searchForCommitPullRequest(searchClient, commit.id);
-      texts.push(commit.message);
-      const tickets = ticketFinder.findAll(texts);
+      const tickets = ticketFinder.findAll([commit.message]); // Finding tickets in the commit message
       commitTickets[commit.id] = tickets;
       allTickets = allTickets.concat([...tickets]);
+
+      // Getting PRs assosiated with the commit
+      commitPrs[commit.id] = await prTicketSearcher.searchForCommitPullRequest(searchClient, commit.id);
     }
 
     console.log("allTickets", allTickets)
@@ -89,7 +91,8 @@ async function run() {
         commitSha: commit.id,
         parentSha: parentSha,
         branch: input.refName,
-        tickets: tickets
+        tickets: tickets,
+        prs: commitPrs[commit.id]
       });
       parentSha = commit.id;
     }

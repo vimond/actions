@@ -35121,6 +35121,10 @@ async function storeCommits(awsConfig, commits) {
                         obj["Tickets"] = { SS: item.tickets };
                     }
 
+                    if (item.prs.length > 0) {
+                        obj["PRs"] = { SS: item.prs };
+                    }
+
                     return {
                         PutRequest: {
                             Item: obj
@@ -35166,19 +35170,24 @@ function getSearchClient(githubConfig) {
     });
 }
 
+// Getting pull request numbers assosiated with a commit.
+// Storing the PR number instad of commits in the PR body in case the body is later updated with new tickets.
 async function searchForCommitPullRequest(searchClient, commitSha) {
     const searchResponse = await searchClient.rest.search.issuesAndPullRequests({
         q: encodeURIComponent(commitSha),
     });
     console.log(`Request search PR for sha ${commitSha}:  ${searchResponse.headers['x-cache']}`);
-    let prBodies = [];
-    console.log(JSON.stringify(searchResponse));
-    if (searchResponse.data.total_count > 1 && searchResponse.status === 200) {
+    let prs = [];
+
+    if (searchResponse.status === 200 && searchResponse.data.total_count > 1) {
         searchResponse.data.items.forEach(i => {
-            prBodies.push(i.body);
+            if (i.pull_request !== undefined) {
+                prs.push(i.number);
+            }
+            // TODO: handle issues?
         });
     }
-    return prBodies;
+    return prs;
 }
 
 module.exports = {
@@ -35515,14 +35524,16 @@ async function run() {
     const searchClient = prTicketSearcher.getSearchClient(githubConfig);
 
     let commitTickets = {};
+    let commitPrs = {};
     let allTickets = [];
     let validTickets = {};
     for (const commit of input.commits) {
-      let texts = await prTicketSearcher.searchForCommitPullRequest(searchClient, commit.id);
-      texts.push(commit.message);
-      const tickets = ticketFinder.findAll(texts);
+      const tickets = ticketFinder.findAll([commit.message]); // Finding tickets in the commit message
       commitTickets[commit.id] = tickets;
       allTickets = allTickets.concat([...tickets]);
+
+      // Getting PRs assosiated with the commit
+      commitPrs[commit.id] = await prTicketSearcher.searchForCommitPullRequest(searchClient, commit.id);
     }
 
     console.log("allTickets", allTickets)
@@ -35552,7 +35563,8 @@ async function run() {
         commitSha: commit.id,
         parentSha: parentSha,
         branch: input.refName,
-        tickets: tickets
+        tickets: tickets,
+        prs: commitPrs[commit.id]
       });
       parentSha = commit.id;
     }

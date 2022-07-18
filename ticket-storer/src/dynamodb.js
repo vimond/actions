@@ -24,6 +24,10 @@ async function storeCommits(awsConfig, commits) {
                         obj["Tickets"] = { SS: item.tickets };
                     }
 
+                    if (item.prs.length > 0) {
+                        obj["PRs"] = { SS: item.prs };
+                    }
+
                     return {
                         PutRequest: {
                             Item: obj
