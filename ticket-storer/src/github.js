@@ -14,11 +14,11 @@ async function searchForCommitPullRequest(searchClient, commitSha) {
     });
     console.log(`Request search PR for sha ${commitSha}:  ${searchResponse.headers['x-cache']}`);
     let prs = [];
-    console.log(`Commit: ${commitSha}: ${searchResponse}`)
+    console.log(`Commit: ${commitSha}: ${JSON.stringify(searchResponse)}`);
 
-    if (searchResponse.status === 200 && searchResponse.data.total_count > 1) {
+    if (searchResponse.status === 200 && searchResponse.data.total_count > 0) {
         searchResponse.data.items.forEach(i => {
-            console.log(i.pull_request, i.number)
+            console.log(i.pull_request, i.number);
             if (i.pull_request !== undefined) {
                 prs.push(i.number);
             }
