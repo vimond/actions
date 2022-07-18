@@ -21,11 +21,11 @@ async function storeCommits(awsConfig, commits) {
                     }
 
                     if (item.tickets.length > 0) {
-                        obj["Tickets"] = { SS: item.tickets };
+                        obj["Tickets"] = { SS: new Set(item.tickets) };
                     }
 
                     if (item.prs.length > 0) {
-                        obj["PRs"] = { SS: item.prs };
+                        obj["PRs"] = { NS: new Set(item.prs) };
                     }
 
                     return {
