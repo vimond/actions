@@ -35102,6 +35102,7 @@ const maxItemsNum = 25;
 async function storeCommits(awsConfig, commits) {
     const client = new DynamoDBClient();
 
+    console.log("Storing commits");
     let resp = [];
     for (let i = 0; i < commits.length; i += maxItemsNum) {
         resp.push(await client.send(new BatchWriteItemCommand({
@@ -35122,7 +35123,7 @@ async function storeCommits(awsConfig, commits) {
                     }
 
                     if (item.prs.length > 0) {
-                        obj["PRs"] = { NS: item.prs };
+                        obj["PRs"] = { NS: item.prs.map(pr => `${pr}`) };
                     }
 
                     return {
