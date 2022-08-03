@@ -42,6 +42,7 @@ jobs:
           jira-host: 'vimond-ng.atlassian.net'
           jira-username: ${{ secrets.JIRA_USERNAME }}
           jira-token: ${{ secrets.JIRA_TOKEN }}
+          jira-proxy: ${{ secrets.JIRA_PROXY_DOMAIN }}
 
-          gh-token: '${{ secrets.ACTIONS_GITHUB_API_TOKEN }}'
-          git-search-base-url: 'https://git-api-proxy.eu-north-1-internal.vmnd.tv'
+          gh-token: ${{ secrets.ACTIONS_GITHUB_API_TOKEN }}
+          git-search-base-url: ${{ GH_PROXY_DOMAIN }}
