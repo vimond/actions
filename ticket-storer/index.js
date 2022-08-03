@@ -43,13 +43,14 @@ async function run() {
     core.setSecret(jiraConfig.username);
     core.setSecret(githubConfig.token);
 
-    console.log("Starting ticket validation");
+
     if (input.overrideRepo != undefined && input.overrideRepo !== "") {
       const resp = await ticketSender.storeOverrideRepoName(awsConfig, input.owner, input.repo, input.overrideRepo);
       console.log("Storing overriden repo name", resp);
       input.repo = input.overrideRepo;
     }
-    console.log("Finished ticket validation");
+
+    console.log("Finding tickets");
 
     const searchClient = prTicketSearcher.getSearchClient(githubConfig);
 
@@ -62,6 +63,7 @@ async function run() {
       commitTickets[commit.id] = tickets;
       allTickets = allTickets.concat([...tickets]);
 
+      console.log("searching for PRs");
       // Getting PRs assosiated with the commit
       commitPrs[commit.id] = await prTicketSearcher.searchForCommitPullRequest(searchClient, commit.id);
     }
@@ -73,8 +75,9 @@ async function run() {
       core.setFailed("Bad response from JIRA");
       return;
     }
+    console.log(`Finished ticket validation: ${filteredTickets}`);
 
-    for (const ticket of allTickets) { // TODO: validate, use filteredTickets
+    for (const ticket of filteredTickets) { // TODO: validate, use filteredTickets
       validTickets[ticket] = true;
     }
 
