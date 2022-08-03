@@ -22,7 +22,7 @@ async function searchForCommitPullRequest(searchClient, commitSha) {
             if (i.pull_request !== undefined) {
                 prs.push(i.number);
             }
-            // TODO: handle issues?
+            console.log(`PR is undefined: ${i}`);
         });
     }
 

@@ -27,10 +27,10 @@ async function run() {
 
     // These should be required when everything is properly configured
     const jiraConfig = {
-      host: core.getInput("jira-host", { required: true }),
+      host: core.getInput("jira-host"),
       proxy: core.getInput("jira-proxy"),
-      username: core.getInput("jira-username", { required: true }),
-      token: core.getInput("jira-token", { required: true })
+      username: core.getInput("jira-username"),
+      token: core.getInput("jira-token")
     };
 
     const githubConfig = {
@@ -69,15 +69,27 @@ async function run() {
     }
 
     console.log("allTickets", allTickets)
-    const filteredTickets = await jira.checkIfExist(jiraConfig, allTickets);
-    if (filteredTickets == null || typeof filteredTickets[Symbol.iterator] !== 'function') {
-      console.log(filteredTickets);
-      core.setFailed("Bad response from JIRA");
-      return;
+    let filteredTickets;
+    if (jiraConfig.host !== undefined && jiraConfig.token !== undefined && jiraConfig.username !== undefined) {
+      try {
+        filteredTickets = await jira.checkIfExist(jiraConfig, allTickets);
+        if (filteredTickets == null || typeof filteredTickets[Symbol.iterator] !== 'function') {
+          console.log(filteredTickets);
+          core.setFailed("Bad response from JIRA");
+          return;
+        }
+        console.log(`Finished ticket validation: ${filteredTickets}`);
+      } catch (e) {
+        console.log(`error validating JIRA tickets, skipping: ${e}`);
+        filteredTickets = allTickets;
+      }
+    } else {
+      filteredTickets = allTickets;
+      console.log("jira config not provided, skipping validation")
     }
-    console.log(`Finished ticket validation: ${filteredTickets}`);
 
-    for (const ticket of filteredTickets) { // TODO: validate, use filteredTickets
+
+    for (const ticket of filteredTickets) {
       validTickets[ticket] = true;
     }
 
