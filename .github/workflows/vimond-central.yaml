@@ -42,7 +42,7 @@ jobs:
           pr-id: ${{ env.PR_ID }}
           output-file: './tickets.json'
           gh-token: ${{ secrets.ACTIONS_GITHUB_API_TOKEN }}
-          git-search-base-url: ${{ GH_PROXY_DOMAIN }}
+          git-search-base-url: ${{ secrets.GH_PROXY_DOMAIN }}
           jira-host: 'vimond-ng.atlassian.net'
           jira-username: ${{ secrets.JIRA_USERNAME }}
           jira-token: ${{ secrets.JIRA_TOKEN }}

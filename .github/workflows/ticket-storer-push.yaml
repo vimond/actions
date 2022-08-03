@@ -45,4 +45,4 @@ jobs:
           jira-proxy: ${{ secrets.JIRA_PROXY_DOMAIN }}
 
           gh-token: ${{ secrets.ACTIONS_GITHUB_API_TOKEN }}
-          git-search-base-url: ${{ GH_PROXY_DOMAIN }}
+          git-search-base-url: ${{ secrets.GH_PROXY_DOMAIN }}
