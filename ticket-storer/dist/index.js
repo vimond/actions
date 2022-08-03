@@ -47043,11 +47043,13 @@ async function run() {
     core.setSecret(jiraConfig.username);
     core.setSecret(githubConfig.token);
 
+    console.log("Starting ticket validation");
     if (input.overrideRepo != undefined && input.overrideRepo !== "") {
       const resp = await ticketSender.storeOverrideRepoName(awsConfig, input.owner, input.repo, input.overrideRepo);
       console.log("Storing overriden repo name", resp);
       input.repo = input.overrideRepo;
     }
+    console.log("Finished ticket validation");
 
     const searchClient = prTicketSearcher.getSearchClient(githubConfig);
 
