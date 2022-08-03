@@ -78,7 +78,7 @@ async function run() {
           core.setFailed("Bad response from JIRA");
           return;
         }
-        console.log(`Finished ticket validation: ${filteredTickets}`);
+        console.log(`Finished ticket validation: ${JSON.stringify(filteredTickets)}`);
       } catch (e) {
         console.log(`error validating JIRA tickets, skipping: ${e}`);
         filteredTickets = allTickets;
