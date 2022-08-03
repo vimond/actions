@@ -11,22 +11,16 @@ on:
 
   # Allows you to run this workflow from other workflows
   workflow_call:
-    secrets:
-      DVL_TEST_GITHUB_TOKEN:
-        required: true
+    inputs:
+      override-repo-name:
+        description: "Override of the repository name for when the repo name doesn't match the deployment name"
+        required: false
+        type: string
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 env:
   PR_ID: "${{ github.event.number }}"
 jobs:
-  store-in-cloud:
-    if: github.event.pull_request.merged == 'true'
-    runs-on: ubuntu-latest
-    needs:
-      - pr-lint
-    steps:
-      - name: Store in the cloud
-        run: echo Pretending to take all the tickets and store them in the cloud on closed PR
   pr-lint:
     name: ticket check
     runs-on: ubuntu-latest
@@ -43,15 +37,16 @@ jobs:
         id: collect
         uses: vimond/actions/ticket-collector@e3519b1795facaaa173f70e63195c894ce1e0496
         with:
-          owner: '${{ github.repository_owner }}'
-          repository: '${{ github.event.repository.name }}'
-          pr-id: '${{ env.PR_ID }}'
+          owner: ${{ github.repository_owner }}
+          repository: ${{ github.event.repository.name }}
+          pr-id: ${{ env.PR_ID }}
           output-file: './tickets.json'
-          gh-token: '${{ secrets.DVL_TEST_GITHUB_TOKEN }}'
-          git-search-base-url: 'https://git-api-proxy.eu-north-1-internal.vmnd.tv'
+          gh-token: ${{ secrets.ACTIONS_GITHUB_API_TOKEN }}
+          git-search-base-url: ${{ secrets.GH_PROXY_DOMAIN }}
           jira-host: 'vimond-ng.atlassian.net'
-          jira-username: '${{ secrets.JIRA_USERNAME }}'
-          jira-token: '${{ secrets.JIRA_TOKEN }}'
+          jira-username: ${{ secrets.JIRA_USERNAME }}
+          jira-token: ${{ secrets.JIRA_TOKEN }}
+          jira-proxy: ${{ secrets.JIRA_PROXY_DOMAIN }}
       #      - name: Fake some tickets
       #        id: collect
       #        run: echo '::set-output name=tickets::W3sia2V5IjoiVEVTVC03ODkiLCJzdW1tYXJ5IjoiTS1UZXN0IHNldCAtIChNb25ldGl6YXRpb24pIC0gVm91Y2hlcnMiLCJsaW5rIjoiaHR0cHM6Ly92aW1vbmQtbmcuYXRsYXNzaWFuLm5ldC9icm93c2UvVEVTVC03ODkifSx7ImtleSI6IlRFU1QtMTIzIiwic3VtbWFyeSI6Ik0tVGVzdCAtIChDYXRhbG9nIC0gQXNzZXRzIC8gUmVsYXRlZCBBc3NldHMpIC0gVmlldyBhc3NldHMgZm9yIGEgU3R1ZGlvL1Nob3ciLCJsaW5rIjoiaHR0cHM6Ly92aW1vbmQtbmcuYXRsYXNzaWFuLm5ldC9icm93c2UvVEVTVC0xMjMifSx7ImtleSI6IlNSLTEyMzQiLCJzdW1tYXJ5IjoiRXJyb3IgRGlzcGxheWluZyB0aGUgY29udGVudCBpbiBWTUFOIHdlYiBicm93c2VyIiwibGluayI6Imh0dHBzOi8vdmltb25kLW5nLmF0bGFzc2lhbi5uZXQvYnJvd3NlL1NSLTEyMzQifSx7ImtleSI6IlBMQVQtMzIxIiwic3VtbWFyeSI6IlVwZ3JhZGUgS2Fma2EgZnJvbSAxLjEuMSB0byAyLjYuMCIsImxpbmsiOiJodHRwczovL3ZpbW9uZC1uZy5hdGxhc3NpYW4ubmV0L2Jyb3dzZS9QTEFULTMyMSJ9LHsia2V5IjoiUExBVC0xMjMiLCJzdW1tYXJ5IjoiaW5ncmVzc2VzLWFwLXNvdXRoZWFzdC0yYS5uY2FiLXByb2QuazhzLnZvcHMuaW8gaW5zdGFuY2UgaXMgcnVubmluZyBvbiBkZWdyYWRlZCBoYXJkd2FyZSwgUmVxdWlyZWQgdG8gc3RvcCBhbmQgc3RhcnQiLCJsaW5rIjoiaHR0cHM6Ly92aW1vbmQtbmcuYXRsYXNzaWFuLm5ldC9icm93c2UvUExBVC0xMjMifV0='
@@ -60,6 +55,22 @@ jobs:
       - name: Update PR
         uses: vimond/actions/pr-update-ticket-list@main
         with:
-          pr-id: '${{ env.PR_ID }}'
-          tickets: '${{ steps.collect.outputs.tickets }}'
-          gh-token: '${{ secrets.DVL_TEST_GITHUB_TOKEN }}'
+          pr-id: ${{ env.PR_ID }}
+          tickets: ${{ steps.collect.outputs.tickets }}
+          gh-token: ${{ secrets.ACTIONS_GITHUB_API_TOKEN }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.TICKET_COLLECTOR_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.TICKET_COLLECTOR_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
+      - name: Store tickets
+        uses: vimond/actions/ticket-storer-pr@feat/ticket-storer
+        with:
+          owner: ${{ github.repository_owner }}
+          repository: ${{ github.event.repository.name }}
+          override-repository: ${{ inputs.override-repo-name }}
+          pr-id: ${{ env.PR_ID }}
+          tickets: ${{ steps.collect.outputs.tickets }}
+          dynamodb-tablename: 'eu-north-1-internal-commit-tickets'
+
