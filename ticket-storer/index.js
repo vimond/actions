@@ -76,8 +76,10 @@ async function run() {
         if (filteredTickets == null || typeof filteredTickets[Symbol.iterator] !== 'function') {
           console.log(filteredTickets);
           core.setFailed("Bad response from JIRA");
-          return;
+          filteredTickets = allTickets;
         }
+        filteredTickets = filteredTickets.map(t => t.key);
+
         console.log(`Finished ticket validation: ${JSON.stringify(filteredTickets)}`);
       } catch (e) {
         console.log(`error validating JIRA tickets, skipping: ${e}`);
