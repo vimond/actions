@@ -2,7 +2,7 @@ const ticketSender = require('./src/dynamodb');
 const core = require('@actions/core');
 const ticketFinder = require('../ticket-collector/src/tickets-finder');
 const prTicketSearcher = require('./src/github');
-// const jira = require('./src/jira');
+const jira = require('./src/jira');
 
 // most @actions toolkit packages have async methods
 async function run() {
@@ -27,10 +27,10 @@ async function run() {
 
     // These should be required when everything is properly configured
     const jiraConfig = {
-      host: core.getInput("jira-host"),
-      proxy: core.getInput("jira-proxy"),
-      username: core.getInput("jira-username"),
-      token: core.getInput("jira-token")
+      host: core.getInput("jira-host", { required: true }),
+      proxy: core.getInput("jira-proxy", { required: true }),
+      username: core.getInput("jira-username", { required: true }),
+      token: core.getInput("jira-token", { required: true })
     };
 
     const githubConfig = {
@@ -65,12 +65,12 @@ async function run() {
     }
 
     console.log("allTickets", allTickets)
-    // const filteredTickets = await jira.checkIfExist(jiraConfig, allTickets);
-    // if (filteredTickets == null || typeof filteredTickets[Symbol.iterator] !== 'function') {
-    //   console.log(filteredTickets);
-    //   core.setFailed("Bad response from JIRA");
-    //   return;
-    // }
+    const filteredTickets = await jira.checkIfExist(jiraConfig, allTickets);
+    if (filteredTickets == null || typeof filteredTickets[Symbol.iterator] !== 'function') {
+      console.log(filteredTickets);
+      core.setFailed("Bad response from JIRA");
+      return;
+    }
 
     for (const ticket of allTickets) { // TODO: validate, use filteredTickets
       validTickets[ticket] = true;
