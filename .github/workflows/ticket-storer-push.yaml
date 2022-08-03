@@ -2,9 +2,6 @@ name: Ticket store on push
 
 on:
   workflow_call:
-    secrets:
-      DVL_TEST_GITHUB_TOKEN:
-        required: true
     inputs:
       override-repo-name:
         description: "Override of the repository name for when the repo name doesn't match the deployment name"
@@ -46,5 +43,5 @@ jobs:
           jira-username: ${{ secrets.JIRA_USERNAME }}
           jira-token: ${{ secrets.JIRA_TOKEN }}
 
-          gh-token: '${{ secrets.DVL_TEST_GITHUB_TOKEN }}'
+          gh-token: '${{ secrets.ACTIONS_GITHUB_API_TOKEN }}'
           git-search-base-url: 'https://git-api-proxy.eu-north-1-internal.vmnd.tv'

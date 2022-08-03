@@ -11,9 +11,6 @@ on:
 
   # Allows you to run this workflow from other workflows
   workflow_call:
-    secrets:
-      DVL_TEST_GITHUB_TOKEN:
-        required: true
     inputs:
       override-repo-name:
         description: "Override of the repository name for when the repo name doesn't match the deployment name"
@@ -44,7 +41,7 @@ jobs:
           repository: '${{ github.event.repository.name }}'
           pr-id: '${{ env.PR_ID }}'
           output-file: './tickets.json'
-          gh-token: '${{ secrets.DVL_TEST_GITHUB_TOKEN }}'
+          gh-token: '${{ secrets.ACTIONS_GITHUB_API_TOKEN }}'
           git-search-base-url: 'https://git-api-proxy.eu-north-1-internal.vmnd.tv'
           jira-host: 'vimond-ng.atlassian.net'
           jira-username: '${{ secrets.JIRA_USERNAME }}'
@@ -59,7 +56,7 @@ jobs:
         with:
           pr-id: '${{ env.PR_ID }}'
           tickets: '${{ steps.collect.outputs.tickets }}'
-          gh-token: '${{ secrets.DVL_TEST_GITHUB_TOKEN }}'
+          gh-token: '${{ secrets.ACTIONS_GITHUB_API_TOKEN }}'
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
