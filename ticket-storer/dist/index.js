@@ -47028,7 +47028,7 @@ async function run() {
     // These should be required when everything is properly configured
     const jiraConfig = {
       host: core.getInput("jira-host", { required: true }),
-      proxy: core.getInput("jira-proxy", { required: true }),
+      proxy: core.getInput("jira-proxy"),
       username: core.getInput("jira-username", { required: true }),
       token: core.getInput("jira-token", { required: true })
     };

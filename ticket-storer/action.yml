@@ -36,7 +36,7 @@ inputs:
     required: true
   jira-proxy:
     description: 'Proxy Domain name of the Jira Cloud server ( use for caching of search queries )'
-    required: true
+    required: false
   jira-username:
     description: 'Jira username (Needed if you want to verify ticket list against Jira)'
     required: true
