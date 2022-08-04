@@ -11,11 +11,11 @@ on:
 #      - main
 #      - fix/jfrog-auth
     paths:
-      - 'pr-ticket-list-updater/**'
+      - 'pr-update-ticket-list/**'
       - '!**.md'
   pull_request:
     paths:
-      - 'pr-ticket-list-updater/**'
+      - 'pr-update-ticket-list/**'
       - '!**.md'
 
 jobs:
