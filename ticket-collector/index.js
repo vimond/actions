@@ -1,8 +1,8 @@
 const core = require('@actions/core');
 
 const fs = require('fs');
-require('dotenv').config()
-const ticketFinder = require('./src/tickets-finder');
+require('dotenv').config();
+const ticketFinder = require('../utils/tickets-finder');
 const prMetadataCollector = require('./src/pr-metadata-collector');
 const jira = require('./src/jira');
 
@@ -35,17 +35,17 @@ async function run() {
     const ticketsFound = Array.from(ticketFinder.findAll(textBlocks));
     console.log(`Tickets found: ${JSON.stringify(ticketsFound)}`);
 
-    const ticketsFiltered =  await jira.checkIfExist(jiraConfig, ticketsFound);
+    const ticketsFiltered = await jira.checkIfExist(jiraConfig, ticketsFound);
     console.log(`Tickets filtered: ${JSON.stringify(ticketsFiltered)}`);
 
 
 
-    if ( input.outputFile !== ""){
-      await fs.writeFileSync(input.outputFile,JSON.stringify(ticketsFiltered), { flag: 'w' });
+    if (input.outputFile !== "") {
+      await fs.writeFileSync(input.outputFile, JSON.stringify(ticketsFiltered), { flag: 'w' });
     }
     core.setOutput('tickets', Buffer.from(JSON.stringify(ticketsFiltered)).toString('base64'))
 
-    if ( ticketsFiltered.length === 0 ){
+    if (ticketsFiltered.length === 0) {
       core.setFailed('No valid tickets were found in this pull request');
     }
   } catch (error) {
