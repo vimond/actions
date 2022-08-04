@@ -106,7 +106,7 @@ async function run() {
       }
 
       commits.push({
-        ownerRepo: input.owner + ":" + input.repo,
+        ownerRepo: `${input.owner}:${input.repo}`,
         commitSha: commit.id,
         parentSha: parentSha,
         branch: input.refName,

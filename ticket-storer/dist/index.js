@@ -46532,7 +46532,7 @@ async function storeOverrideRepoName(awsConfig, owner, repoName, overrideRepoNam
 
     return await client.send(new PutItemCommand({
         Item: {
-            "OwnerRepo": { S: owner + ":" + overrideRepoName },
+            "OwnerRepo": { S: `${owner}:${overrideRepoName}` },
             "ID": { S: "reponame" },
             "RepoName": { S: repoName }
         },
@@ -47106,7 +47106,7 @@ async function run() {
       }
 
       commits.push({
-        ownerRepo: input.owner + ":" + input.repo,
+        ownerRepo: `${input.owner}:${input.repo}`,
         commitSha: commit.id,
         parentSha: parentSha,
         branch: input.refName,

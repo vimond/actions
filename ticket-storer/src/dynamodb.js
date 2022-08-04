@@ -48,7 +48,7 @@ async function storeOverrideRepoName(awsConfig, owner, repoName, overrideRepoNam
 
     return await client.send(new PutItemCommand({
         Item: {
-            "OwnerRepo": { S: owner + ":" + overrideRepoName },
+            "OwnerRepo": { S: `${owner}:${overrideRepoName}` },
             "ID": { S: "reponame" },
             "RepoName": { S: repoName }
         },
