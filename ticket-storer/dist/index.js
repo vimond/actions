@@ -1,28 +1,6 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 8493:
-/***/ ((module) => {
-
-const ticketRegex = /[A-Z]{2,}-\d+/gm;
-
-function findAll(textBlocks) {
-    let ticketsFound = new Set();
-    for ( const text of textBlocks) {
-        const matches = [...text.matchAll(ticketRegex)];
-        matches.forEach( m => {
-            ticketsFound.add(m[0]);
-        })
-    }
-    return ticketsFound;
-}
-
-module.exports = {
-    findAll
-}
-
-/***/ }),
-
 /***/ 7351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -46523,7 +46501,7 @@ async function storeCommits(awsConfig, commits) {
                         "ParentSha": { S: item.parentSha }
                     };
 
-                    if (item.Branch != "" && item.branch !== undefined) {
+                    if (item.Branch !== "" && item.branch !== undefined) {
                         obj["Branch"] = { S: item.branch };
                     }
 
@@ -46555,7 +46533,7 @@ async function storeOverrideRepoName(awsConfig, owner, repoName, overrideRepoNam
     return await client.send(new PutItemCommand({
         Item: {
             "OwnerRepo": { S: owner + ":" + overrideRepoName },
-            "ID": { S: `reponame` },
+            "ID": { S: "reponame" },
             "RepoName": { S: repoName }
         },
         TableName: awsConfig.tableName
@@ -46653,6 +46631,28 @@ async function checkIfExist(jiraConfig, tickets) {
 
 module.exports = {
     checkIfExist
+}
+
+/***/ }),
+
+/***/ 7492:
+/***/ ((module) => {
+
+const ticketRegex = /[A-Z]{2,}-\d+/gm;
+
+function findAll(textBlocks) {
+    let ticketsFound = new Set();
+    for ( const text of textBlocks) {
+        const matches = [...text.matchAll(ticketRegex)];
+        matches.forEach( m => {
+            ticketsFound.add(m[0]);
+        })
+    }
+    return ticketsFound;
+}
+
+module.exports = {
+    findAll
 }
 
 /***/ }),
@@ -47000,7 +47000,7 @@ var __webpack_exports__ = {};
 (() => {
 const ticketSender = __nccwpck_require__(6868);
 const core = __nccwpck_require__(2186);
-const ticketFinder = __nccwpck_require__(8493);
+const ticketFinder = __nccwpck_require__(7492);
 const prTicketSearcher = __nccwpck_require__(8396);
 const jira = __nccwpck_require__(3845);
 
@@ -47044,9 +47044,9 @@ async function run() {
     core.setSecret(githubConfig.token);
 
 
-    if (input.overrideRepo != undefined && input.overrideRepo !== "") {
+    if (input.overrideRepo !== undefined && input.overrideRepo !== "") {
       const resp = await ticketSender.storeOverrideRepoName(awsConfig, input.owner, input.repo, input.overrideRepo);
-      console.log("Storing overriden repo name", resp);
+      console.log("Storing overridden repo name", resp);
       input.repo = input.overrideRepo;
     }
 
@@ -47061,7 +47061,7 @@ async function run() {
     for (const commit of input.commits) {
       const tickets = ticketFinder.findAll([commit.message]); // Finding tickets in the commit message
       commitTickets[commit.id] = tickets;
-      allTickets = allTickets.concat([...tickets]);
+      allTickets = allTickets.concat(...tickets);
 
       console.log("searching for PRs");
       // Getting PRs assosiated with the commit

@@ -10335,9 +10335,6 @@ THE SOFTWARE.
 isarray
 MIT
 
-javascript-action
-MIT
-
 jira-search
 MIT
 

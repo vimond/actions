@@ -1,6 +1,6 @@
 const ticketSender = require('./src/dynamodb');
 const core = require('@actions/core');
-const ticketFinder = require('../ticket-collector/src/tickets-finder');
+const ticketFinder = require('../utils/tickets-finder');
 const prTicketSearcher = require('./src/github');
 const jira = require('./src/jira');
 
@@ -44,9 +44,9 @@ async function run() {
     core.setSecret(githubConfig.token);
 
 
-    if (input.overrideRepo != undefined && input.overrideRepo !== "") {
+    if (input.overrideRepo !== undefined && input.overrideRepo !== "") {
       const resp = await ticketSender.storeOverrideRepoName(awsConfig, input.owner, input.repo, input.overrideRepo);
-      console.log("Storing overriden repo name", resp);
+      console.log("Storing overridden repo name", resp);
       input.repo = input.overrideRepo;
     }
 
@@ -61,7 +61,7 @@ async function run() {
     for (const commit of input.commits) {
       const tickets = ticketFinder.findAll([commit.message]); // Finding tickets in the commit message
       commitTickets[commit.id] = tickets;
-      allTickets = allTickets.concat([...tickets]);
+      allTickets = allTickets.concat(...tickets);
 
       console.log("searching for PRs");
       // Getting PRs assosiated with the commit

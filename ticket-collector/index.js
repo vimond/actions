@@ -2,7 +2,7 @@ const core = require('@actions/core');
 
 const fs = require('fs');
 require('dotenv').config();
-const ticketFinder = require('./src/tickets-finder');
+const ticketFinder = require('../utils/tickets-finder');
 const prMetadataCollector = require('./src/pr-metadata-collector');
 const jira = require('./src/jira');
 

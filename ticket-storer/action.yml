@@ -1,5 +1,5 @@
-name: 'ticket-collector'
-description: 'Collects ticket ids'
+name: 'ticket-storer'
+description: 'Stores tickets for pushes'
 inputs:
   owner:
     description: 'Owner of the repository'

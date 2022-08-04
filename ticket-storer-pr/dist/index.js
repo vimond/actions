@@ -28266,7 +28266,7 @@ async function storePRTickets(awsConfig, owner, repoName, prID, tickets) {
 
     return await client.send(new PutItemCommand({
         Item: {
-            "OwnerRepo": { S: owner + ":" + repoName },
+            "OwnerRepo": { S: `${owner}:${repoName}` },
             "ID": { S: `PR:${prID}` },
             "Tickets": { SS: tickets }
         },
@@ -28542,12 +28542,11 @@ async function run() {
       tableName: core.getInput("dynamodb-tablename", { required: true }),
     };
 
-    if (input.overrideRepo != undefined && input.overrideRepo !== "") {
+    if (input.overrideRepo !== undefined && input.overrideRepo !== "") {
       input.repo = input.overrideRepo;
     }
 
-    console.log("convertig tickets");
-
+    console.log("converting tickets");
     if (input.tickets === "") {
       input.tickets = readTicketFile(input.inputFile);
     } else {

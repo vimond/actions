@@ -17,7 +17,7 @@ async function storeCommits(awsConfig, commits) {
                         "ParentSha": { S: item.parentSha }
                     };
 
-                    if (item.Branch != "" && item.branch !== undefined) {
+                    if (item.Branch !== "" && item.branch !== undefined) {
                         obj["Branch"] = { S: item.branch };
                     }
 
@@ -49,7 +49,7 @@ async function storeOverrideRepoName(awsConfig, owner, repoName, overrideRepoNam
     return await client.send(new PutItemCommand({
         Item: {
             "OwnerRepo": { S: owner + ":" + overrideRepoName },
-            "ID": { S: `reponame` },
+            "ID": { S: "reponame" },
             "RepoName": { S: repoName }
         },
         TableName: awsConfig.tableName

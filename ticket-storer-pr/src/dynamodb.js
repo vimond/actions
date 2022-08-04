@@ -5,7 +5,7 @@ async function storePRTickets(awsConfig, owner, repoName, prID, tickets) {
 
     return await client.send(new PutItemCommand({
         Item: {
-            "OwnerRepo": { S: owner + ":" + repoName },
+            "OwnerRepo": { S: `${owner}:${repoName}` },
             "ID": { S: `PR:${prID}` },
             "Tickets": { SS: tickets }
         },
