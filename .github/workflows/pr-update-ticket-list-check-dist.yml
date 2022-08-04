@@ -35,7 +35,7 @@ jobs:
       - name: Setup jfrog auth
         shell: bash
         run: |
-          curl -u${{ secrets.ARTIFACTORY_USER }}:{{ secrets.ARTIFACTORY_PASSWORD }} ${{ secrets.ARTIFACTORY_CONTEXTURL }}/api/npm/auth > ~/.npmrc
+          curl -u${{ secrets.ARTIFACTORY_USER }}:${{ secrets.ARTIFACTORY_PASSWORD }} ${{ secrets.ARTIFACTORY_CONTEXTURL }}/api/npm/auth > ~/.npmrc
           npm config set registry https://${{ secrets.ARTIFACTORY_CONTEXTURL }}/api/npm/npm-virtual
           chmod 600 ~/.npmrc
               
