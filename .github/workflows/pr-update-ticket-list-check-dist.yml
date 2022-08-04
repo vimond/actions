@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - main
+      - fix/jfrog-auth
     paths:
       - 'pr-ticket-list-updater/**'
       - '!**.md'
@@ -30,6 +31,14 @@ jobs:
         uses: actions/setup-node@v3.2.0
         with:
           node-version: 16.x
+
+      - name: Setup jfrog auth
+        shell: bash
+        run: |
+          curl -u${{ secrets.ARTIFACTORY_USER }}:{{ secrets.ARTIFACTORY_PASSWORD }} ${{ secrets.ARTIFACTORY_CONTEXTURL }}/api/npm/auth > ~/.npmrc
+          npm config set registry https://${{ secrets.ARTIFACTORY_CONTEXTURL }}/api/npm/npm-virtual
+          chmod 600 ~/.npmrc
+          
 
       - name: Install dependencies
         run: npm ci
