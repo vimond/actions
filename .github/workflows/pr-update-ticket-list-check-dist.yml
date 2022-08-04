@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./pr-ticket-list-updater
+        working-directory: ./pr-update-ticket-list
     steps:
       - uses: actions/checkout@v3
 
