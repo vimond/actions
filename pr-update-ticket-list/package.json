@@ -37,5 +37,8 @@
     "eslint-plugin-n": "^15.2.3",
     "eslint-plugin-promise": "^6.0.0",
     "jest": "^27.2.5"
+  },
+  "jest": {
+    "roots": ["src", "../utils"]
   }
 }
