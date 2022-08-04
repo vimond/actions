@@ -7,9 +7,9 @@ name: "pr-update-ticket-list: Check dist/"
 
 on:
   push:
-    branches:
-      - main
-      - fix/jfrog-auth
+#    branches:
+#      - main
+#      - fix/jfrog-auth
     paths:
       - 'pr-ticket-list-updater/**'
       - '!**.md'
