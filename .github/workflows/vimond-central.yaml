@@ -35,7 +35,7 @@ jobs:
         run: "echo ${{ env.PR_ID }}"
       - name: collect tickets
         id: collect
-        uses: vimond/actions/ticket-collector@e3519b1795facaaa173f70e63195c894ce1e0496
+        uses: vimond/actions/ticket-collector@4e9fd975ff399436f3d0ca9b197db4d42ddee4d3
         with:
           owner: ${{ github.repository_owner }}
           repository: ${{ github.event.repository.name }}
@@ -53,7 +53,7 @@ jobs:
       - name: Print the list of ticket
         run: echo "${{ steps.collect.outputs.tickets }}" | base64 -d
       - name: Update PR
-        uses: vimond/actions/pr-update-ticket-list@main
+        uses: vimond/actions/pr-update-ticket-list@4e9fd975ff399436f3d0ca9b197db4d42ddee4d3
         with:
           pr-id: ${{ env.PR_ID }}
           tickets: ${{ steps.collect.outputs.tickets }}
