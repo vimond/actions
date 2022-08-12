@@ -1,3 +1,5 @@
+import fetch from 'node-fetch';
+
 async function checkIfExist(jiraConfig, tickets) {
     const auth = Buffer.from(`${jiraConfig.username}:${jiraConfig.token}`);
     const f = await fetch(`https://${jiraConfig.proxy}/rest/api/2/search?` + new URLSearchParams({
