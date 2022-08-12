@@ -1,18 +1,18 @@
-const axios = require('axios').default;
-
 async function checkIfExist(jiraConfig, tickets) {
     const auth = Buffer.from(`${jiraConfig.username}:${jiraConfig.token}`);
-    const resp = await axios.get(`https://${jiraConfig.proxy}/rest/api/2/search`, {
-        params: {
-            "jql": `issue IN ( ${tickets.join(',')} )`,
-            "fields": "*all",
-            "maxResults": 50
-        },
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Basic ${auth}`
-        }
-    });
+    const f = await fetch(`https://${jiraConfig.proxy}/rest/api/2/search?` + new URLSearchParams({
+        jql: `issue IN ( ${tickets.join(',')} )`,
+        fields: "*all",
+        maxResults: 50
+    }),
+        {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Basic ${auth}`
+            }
+        });
+
+    const resp = await f.json();
 
     console.log(`Warnings: ${resp.data.warningMessages}`);
 

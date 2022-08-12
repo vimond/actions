@@ -34602,23 +34602,23 @@ module.exports = {
 /***/ }),
 
 /***/ 8074:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const axios = (__nccwpck_require__(3778)["default"]);
+/***/ ((module) => {
 
 async function checkIfExist(jiraConfig, tickets) {
     const auth = Buffer.from(`${jiraConfig.username}:${jiraConfig.token}`);
-    const resp = await axios.get(`https://${jiraConfig.proxy}/rest/api/2/search`, {
-        params: {
-            "jql": `issue IN ( ${tickets.join(',')} )`,
-            "fields": "*all",
-            "maxResults": 50
-        },
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Basic ${auth}`
-        }
-    });
+    const f = await fetch(`https://${jiraConfig.proxy}/rest/api/2/search?` + new URLSearchParams({
+        jql: `issue IN ( ${tickets.join(',')} )`,
+        fields: "*all",
+        maxResults: 50
+    }),
+        {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Basic ${auth}`
+            }
+        });
+
+    const resp = await f.json();
 
     console.log(`Warnings: ${resp.data.warningMessages}`);
 
@@ -34663,14 +34663,6 @@ module.exports = {
 /***/ ((module) => {
 
 module.exports = eval("require")("aws-crt");
-
-
-/***/ }),
-
-/***/ 3778:
-/***/ ((module) => {
-
-module.exports = eval("require")("axios");
 
 
 /***/ }),
