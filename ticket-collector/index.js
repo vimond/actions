@@ -4,7 +4,7 @@ const fs = require('fs');
 require('dotenv').config();
 const ticketFinder = require('../utils/tickets-finder');
 const prMetadataCollector = require('./src/pr-metadata-collector');
-const jira = require('./src/jira');
+const jira = require('../utils/jira');
 
 
 // most @actions toolkit packages have async methods

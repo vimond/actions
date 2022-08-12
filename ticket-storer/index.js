@@ -2,7 +2,7 @@ const ticketSender = require('./src/dynamodb');
 const core = require('@actions/core');
 const ticketFinder = require('../utils/tickets-finder');
 const prTicketSearcher = require('./src/github');
-const jira = require('./src/jira');
+const jira = require('../utils/jira');
 
 // most @actions toolkit packages have async methods
 async function run() {
