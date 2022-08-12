@@ -140,6 +140,7 @@ const file_command_1 = __nccwpck_require__(185);
 const utils_1 = __nccwpck_require__(5278);
 const os = __importStar(__nccwpck_require__(2037));
 const path = __importStar(__nccwpck_require__(1017));
+const uuid_1 = __nccwpck_require__(5840);
 const oidc_utils_1 = __nccwpck_require__(8041);
 /**
  * The code to exit an action
@@ -169,7 +170,14 @@ function exportVariable(name, val) {
     process.env[name] = convertedVal;
     const filePath = process.env['GITHUB_ENV'] || '';
     if (filePath) {
-        const delimiter = '_GitHubActionsFileCommandDelimeter_';
+        const delimiter = `ghadelimiter_${uuid_1.v4()}`;
+        // These should realistically never happen, but just in case someone finds a way to exploit uuid generation let's not allow keys or values that contain the delimiter.
+        if (name.includes(delimiter)) {
+            throw new Error(`Unexpected input: name should not contain the delimiter "${delimiter}"`);
+        }
+        if (convertedVal.includes(delimiter)) {
+            throw new Error(`Unexpected input: value should not contain the delimiter "${delimiter}"`);
+        }
         const commandValue = `${name}<<${delimiter}${os.EOL}${convertedVal}${os.EOL}${delimiter}`;
         file_command_1.issueCommand('ENV', commandValue);
     }
@@ -2580,8 +2588,8 @@ class BatchExecuteStatementCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.BatchExecuteStatementInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.BatchExecuteStatementOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.BatchExecuteStatementInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.BatchExecuteStatementOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -2624,8 +2632,8 @@ class BatchGetItemCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.BatchGetItemInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.BatchGetItemOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.BatchGetItemInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.BatchGetItemOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -2668,8 +2676,8 @@ class BatchWriteItemCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.BatchWriteItemInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.BatchWriteItemOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.BatchWriteItemInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.BatchWriteItemOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -2712,8 +2720,8 @@ class CreateBackupCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.CreateBackupInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.CreateBackupOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.CreateBackupInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.CreateBackupOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -2756,8 +2764,8 @@ class CreateGlobalTableCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.CreateGlobalTableInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.CreateGlobalTableOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.CreateGlobalTableInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.CreateGlobalTableOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -2800,8 +2808,8 @@ class CreateTableCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.CreateTableInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.CreateTableOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.CreateTableInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.CreateTableOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -2844,8 +2852,8 @@ class DeleteBackupCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.DeleteBackupInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.DeleteBackupOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.DeleteBackupInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.DeleteBackupOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -2888,8 +2896,8 @@ class DeleteItemCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.DeleteItemInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.DeleteItemOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.DeleteItemInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.DeleteItemOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -2932,8 +2940,8 @@ class DeleteTableCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.DeleteTableInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.DeleteTableOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.DeleteTableInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.DeleteTableOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -2976,8 +2984,8 @@ class DescribeBackupCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.DescribeBackupInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.DescribeBackupOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.DescribeBackupInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.DescribeBackupOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3020,8 +3028,8 @@ class DescribeContinuousBackupsCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.DescribeContinuousBackupsInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.DescribeContinuousBackupsOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.DescribeContinuousBackupsInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.DescribeContinuousBackupsOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3064,8 +3072,8 @@ class DescribeContributorInsightsCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.DescribeContributorInsightsInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.DescribeContributorInsightsOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.DescribeContributorInsightsInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.DescribeContributorInsightsOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3108,8 +3116,8 @@ class DescribeEndpointsCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.DescribeEndpointsRequest.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.DescribeEndpointsResponse.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.DescribeEndpointsRequestFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.DescribeEndpointsResponseFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3152,8 +3160,8 @@ class DescribeExportCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.DescribeExportInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.DescribeExportOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.DescribeExportInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.DescribeExportOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3196,8 +3204,8 @@ class DescribeGlobalTableCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.DescribeGlobalTableInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.DescribeGlobalTableOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.DescribeGlobalTableInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.DescribeGlobalTableOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3240,8 +3248,8 @@ class DescribeGlobalTableSettingsCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.DescribeGlobalTableSettingsInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.DescribeGlobalTableSettingsOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.DescribeGlobalTableSettingsInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.DescribeGlobalTableSettingsOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3284,8 +3292,8 @@ class DescribeKinesisStreamingDestinationCommand extends smithy_client_1.Command
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.DescribeKinesisStreamingDestinationInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.DescribeKinesisStreamingDestinationOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.DescribeKinesisStreamingDestinationInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.DescribeKinesisStreamingDestinationOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3328,8 +3336,8 @@ class DescribeLimitsCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.DescribeLimitsInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.DescribeLimitsOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.DescribeLimitsInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.DescribeLimitsOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3372,8 +3380,8 @@ class DescribeTableCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.DescribeTableInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.DescribeTableOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.DescribeTableInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.DescribeTableOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3416,8 +3424,8 @@ class DescribeTableReplicaAutoScalingCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.DescribeTableReplicaAutoScalingInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.DescribeTableReplicaAutoScalingOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.DescribeTableReplicaAutoScalingInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.DescribeTableReplicaAutoScalingOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3460,8 +3468,8 @@ class DescribeTimeToLiveCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.DescribeTimeToLiveInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.DescribeTimeToLiveOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.DescribeTimeToLiveInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.DescribeTimeToLiveOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3504,8 +3512,8 @@ class DisableKinesisStreamingDestinationCommand extends smithy_client_1.Command 
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.KinesisStreamingDestinationInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.KinesisStreamingDestinationOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.KinesisStreamingDestinationInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.KinesisStreamingDestinationOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3548,8 +3556,8 @@ class EnableKinesisStreamingDestinationCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.KinesisStreamingDestinationInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.KinesisStreamingDestinationOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.KinesisStreamingDestinationInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.KinesisStreamingDestinationOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3592,8 +3600,8 @@ class ExecuteStatementCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.ExecuteStatementInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.ExecuteStatementOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.ExecuteStatementInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.ExecuteStatementOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3636,8 +3644,8 @@ class ExecuteTransactionCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.ExecuteTransactionInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.ExecuteTransactionOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.ExecuteTransactionInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.ExecuteTransactionOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3680,8 +3688,8 @@ class ExportTableToPointInTimeCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.ExportTableToPointInTimeInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.ExportTableToPointInTimeOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.ExportTableToPointInTimeInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.ExportTableToPointInTimeOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3724,8 +3732,8 @@ class GetItemCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.GetItemInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.GetItemOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.GetItemInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.GetItemOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3768,8 +3776,8 @@ class ListBackupsCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.ListBackupsInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.ListBackupsOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.ListBackupsInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.ListBackupsOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3812,8 +3820,8 @@ class ListContributorInsightsCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.ListContributorInsightsInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.ListContributorInsightsOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.ListContributorInsightsInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.ListContributorInsightsOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3856,8 +3864,8 @@ class ListExportsCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.ListExportsInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.ListExportsOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.ListExportsInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.ListExportsOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3900,8 +3908,8 @@ class ListGlobalTablesCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.ListGlobalTablesInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.ListGlobalTablesOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.ListGlobalTablesInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.ListGlobalTablesOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3944,8 +3952,8 @@ class ListTablesCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.ListTablesInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.ListTablesOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.ListTablesInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.ListTablesOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -3988,8 +3996,8 @@ class ListTagsOfResourceCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.ListTagsOfResourceInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.ListTagsOfResourceOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.ListTagsOfResourceInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.ListTagsOfResourceOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -4032,8 +4040,8 @@ class PutItemCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.PutItemInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.PutItemOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.PutItemInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.PutItemOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -4076,8 +4084,8 @@ class QueryCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.QueryInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.QueryOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.QueryInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.QueryOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -4120,8 +4128,8 @@ class RestoreTableFromBackupCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.RestoreTableFromBackupInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.RestoreTableFromBackupOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.RestoreTableFromBackupInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.RestoreTableFromBackupOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -4164,8 +4172,8 @@ class RestoreTableToPointInTimeCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.RestoreTableToPointInTimeInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.RestoreTableToPointInTimeOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.RestoreTableToPointInTimeInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.RestoreTableToPointInTimeOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -4208,8 +4216,8 @@ class ScanCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.ScanInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.ScanOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.ScanInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.ScanOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -4252,7 +4260,7 @@ class TagResourceCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.TagResourceInput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.TagResourceInputFilterSensitiveLog,
             outputFilterSensitiveLog: (output) => output,
         };
         const { requestHandler } = configuration;
@@ -4296,8 +4304,8 @@ class TransactGetItemsCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.TransactGetItemsInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.TransactGetItemsOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.TransactGetItemsInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.TransactGetItemsOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -4340,8 +4348,8 @@ class TransactWriteItemsCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.TransactWriteItemsInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.TransactWriteItemsOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.TransactWriteItemsInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.TransactWriteItemsOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -4384,7 +4392,7 @@ class UntagResourceCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.UntagResourceInput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.UntagResourceInputFilterSensitiveLog,
             outputFilterSensitiveLog: (output) => output,
         };
         const { requestHandler } = configuration;
@@ -4428,8 +4436,8 @@ class UpdateContinuousBackupsCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.UpdateContinuousBackupsInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.UpdateContinuousBackupsOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.UpdateContinuousBackupsInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.UpdateContinuousBackupsOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -4472,8 +4480,8 @@ class UpdateContributorInsightsCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.UpdateContributorInsightsInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.UpdateContributorInsightsOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.UpdateContributorInsightsInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.UpdateContributorInsightsOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -4516,8 +4524,8 @@ class UpdateGlobalTableCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.UpdateGlobalTableInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.UpdateGlobalTableOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.UpdateGlobalTableInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.UpdateGlobalTableOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -4560,8 +4568,8 @@ class UpdateGlobalTableSettingsCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.UpdateGlobalTableSettingsInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.UpdateGlobalTableSettingsOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.UpdateGlobalTableSettingsInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.UpdateGlobalTableSettingsOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -4604,8 +4612,8 @@ class UpdateItemCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.UpdateItemInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.UpdateItemOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.UpdateItemInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.UpdateItemOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -4648,8 +4656,8 @@ class UpdateTableCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.UpdateTableInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.UpdateTableOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.UpdateTableInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.UpdateTableOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -4692,8 +4700,8 @@ class UpdateTableReplicaAutoScalingCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.UpdateTableReplicaAutoScalingInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.UpdateTableReplicaAutoScalingOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.UpdateTableReplicaAutoScalingInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.UpdateTableReplicaAutoScalingOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -4736,8 +4744,8 @@ class UpdateTimeToLiveCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.UpdateTimeToLiveInput.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.UpdateTimeToLiveOutput.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.UpdateTimeToLiveInputFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.UpdateTimeToLiveOutputFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -5083,138 +5091,18 @@ tslib_1.__exportStar(__nccwpck_require__(3295), exports);
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ProvisionedThroughputOverride = exports.CreateGlobalTableInput = exports.Replica = exports.CreateGlobalSecondaryIndexAction = exports.TableNotFoundException = exports.TableInUseException = exports.LimitExceededException = exports.CreateBackupOutput = exports.CreateBackupInput = exports.ContributorInsightsSummary = exports.ContinuousBackupsUnavailableException = exports.ContinuousBackupsDescription = exports.PointInTimeRecoveryDescription = exports.ConditionalCheckFailedException = exports.BillingModeSummary = exports.ItemCollectionSizeLimitExceededException = exports.ResourceNotFoundException = exports.ProvisionedThroughputExceededException = exports.InvalidEndpointException = exports.RequestLimitExceeded = exports.InternalServerError = exports.BatchStatementError = exports.BatchStatementErrorCodeEnum = exports.ConsumedCapacity = exports.Capacity = exports.BackupTypeFilter = exports.BackupSummary = exports.BackupNotFoundException = exports.BackupInUseException = exports.BackupDescription = exports.SourceTableFeatureDetails = exports.TimeToLiveDescription = exports.StreamSpecification = exports.SSEDescription = exports.LocalSecondaryIndexInfo = exports.GlobalSecondaryIndexInfo = exports.Projection = exports.SourceTableDetails = exports.ProvisionedThroughput = exports.KeySchemaElement = exports.BackupDetails = exports.BackupType = exports.AutoScalingSettingsUpdate = exports.AutoScalingSettingsDescription = exports.AutoScalingPolicyUpdate = exports.AutoScalingTargetTrackingScalingPolicyConfigurationUpdate = exports.AutoScalingPolicyDescription = exports.AutoScalingTargetTrackingScalingPolicyConfigurationDescription = exports.AttributeDefinition = exports.ArchivalSummary = void 0;
-exports.DescribeGlobalTableSettingsInput = exports.GlobalTableNotFoundException = exports.DescribeGlobalTableOutput = exports.DescribeGlobalTableInput = exports.ExportNotFoundException = exports.DescribeExportOutput = exports.ExportDescription = exports.ExportStatus = exports.ExportFormat = exports.DescribeExportInput = exports.DescribeEndpointsResponse = exports.Endpoint = exports.DescribeEndpointsRequest = exports.DescribeContributorInsightsOutput = exports.FailureException = exports.DescribeContributorInsightsInput = exports.DescribeContinuousBackupsOutput = exports.DescribeContinuousBackupsInput = exports.DescribeBackupOutput = exports.DescribeBackupInput = exports.DeleteTableOutput = exports.DeleteTableInput = exports.DeleteReplicationGroupMemberAction = exports.DeleteReplicaAction = exports.TransactionConflictException = exports.DeleteGlobalSecondaryIndexAction = exports.DeleteBackupOutput = exports.DeleteBackupInput = exports.ResourceInUseException = exports.CreateTableOutput = exports.TableDescription = exports.RestoreSummary = exports.LocalSecondaryIndexDescription = exports.GlobalSecondaryIndexDescription = exports.ProvisionedThroughputDescription = exports.CreateTableInput = exports.Tag = exports.SSESpecification = exports.LocalSecondaryIndex = exports.GlobalSecondaryIndex = exports.CreateReplicationGroupMemberAction = exports.ReplicaGlobalSecondaryIndex = exports.CreateReplicaAction = exports.GlobalTableAlreadyExistsException = exports.CreateGlobalTableOutput = exports.GlobalTableDescription = exports.ReplicaDescription = exports.TableClassSummary = exports.TableClass = exports.ReplicaGlobalSecondaryIndexDescription = void 0;
-exports.PointInTimeRecoverySpecification = exports.UntagResourceInput = exports.TagResourceInput = exports.RestoreTableToPointInTimeOutput = exports.RestoreTableToPointInTimeInput = exports.InvalidRestoreTimeException = exports.TableAlreadyExistsException = exports.RestoreTableFromBackupOutput = exports.RestoreTableFromBackupInput = exports.ListTagsOfResourceOutput = exports.ListTagsOfResourceInput = exports.ListTablesOutput = exports.ListTablesInput = exports.ListGlobalTablesOutput = exports.GlobalTable = exports.ListGlobalTablesInput = exports.ListExportsOutput = exports.ExportSummary = exports.ListExportsInput = exports.ListContributorInsightsOutput = exports.ListContributorInsightsInput = exports.ListBackupsOutput = exports.ListBackupsInput = exports.PointInTimeRecoveryUnavailableException = exports.InvalidExportTimeException = exports.ExportTableToPointInTimeOutput = exports.ExportTableToPointInTimeInput = exports.ExportConflictException = exports.TransactionInProgressException = exports.IdempotentParameterMismatchException = exports.DuplicateItemException = exports.KinesisStreamingDestinationOutput = exports.KinesisStreamingDestinationInput = exports.DescribeTimeToLiveOutput = exports.DescribeTimeToLiveInput = exports.DescribeTableReplicaAutoScalingOutput = exports.TableAutoScalingDescription = exports.ReplicaAutoScalingDescription = exports.ReplicaGlobalSecondaryIndexAutoScalingDescription = exports.DescribeTableReplicaAutoScalingInput = exports.DescribeTableOutput = exports.DescribeTableInput = exports.DescribeLimitsOutput = exports.DescribeLimitsInput = exports.DescribeKinesisStreamingDestinationOutput = exports.KinesisDataStreamDestination = exports.DescribeKinesisStreamingDestinationInput = exports.DescribeGlobalTableSettingsOutput = exports.ReplicaSettingsDescription = exports.ReplicaGlobalSecondaryIndexSettingsDescription = void 0;
-exports.ExecuteTransactionOutput = exports.ExecuteTransactionInput = exports.BatchExecuteStatementOutput = exports.BatchExecuteStatementInput = exports.TransactGetItem = exports.KeysAndAttributes = exports.PutRequest = exports.ParameterizedStatement = exports.ItemResponse = exports.ItemCollectionMetrics = exports.GetItemOutput = exports.GetItemInput = exports.Get = exports.ExecuteStatementInput = exports.DeleteRequest = exports.Condition = exports.CancellationReason = exports.BatchStatementResponse = exports.BatchStatementRequest = exports.AttributeValueUpdate = exports.AttributeValue = exports.UpdateTimeToLiveOutput = exports.UpdateTimeToLiveInput = exports.TimeToLiveSpecification = exports.UpdateTableReplicaAutoScalingOutput = exports.UpdateTableReplicaAutoScalingInput = exports.ReplicaAutoScalingUpdate = exports.ReplicaGlobalSecondaryIndexAutoScalingUpdate = exports.GlobalSecondaryIndexAutoScalingUpdate = exports.UpdateTableOutput = exports.UpdateTableInput = exports.ReplicationGroupUpdate = exports.UpdateReplicationGroupMemberAction = exports.GlobalSecondaryIndexUpdate = exports.UpdateGlobalSecondaryIndexAction = exports.UpdateGlobalTableSettingsOutput = exports.UpdateGlobalTableSettingsInput = exports.ReplicaSettingsUpdate = exports.ReplicaGlobalSecondaryIndexSettingsUpdate = exports.GlobalTableGlobalSecondaryIndexSettingsUpdate = exports.IndexNotFoundException = exports.UpdateGlobalTableOutput = exports.UpdateGlobalTableInput = exports.ReplicaUpdate = exports.ReplicaNotFoundException = exports.ReplicaAlreadyExistsException = exports.UpdateContributorInsightsOutput = exports.UpdateContributorInsightsInput = exports.UpdateContinuousBackupsOutput = exports.UpdateContinuousBackupsInput = void 0;
-exports.TransactWriteItemsInput = exports.TransactWriteItem = exports.UpdateItemInput = exports.BatchWriteItemOutput = exports.QueryInput = exports.PutItemInput = exports.DeleteItemInput = exports.BatchWriteItemInput = exports.ScanInput = exports.BatchGetItemOutput = exports.WriteRequest = exports.UpdateItemOutput = exports.ScanOutput = exports.QueryOutput = exports.PutItemOutput = exports.ExecuteStatementOutput = exports.DeleteItemOutput = exports.Update = exports.Put = exports.Delete = exports.ConditionCheck = exports.TransactWriteItemsOutput = exports.TransactGetItemsInput = exports.ExpectedAttributeValue = exports.BatchGetItemInput = exports.TransactionCanceledException = exports.TransactGetItemsOutput = void 0;
+exports.ProjectionFilterSensitiveLog = exports.SourceTableDetailsFilterSensitiveLog = exports.ProvisionedThroughputFilterSensitiveLog = exports.KeySchemaElementFilterSensitiveLog = exports.BackupDetailsFilterSensitiveLog = exports.AutoScalingSettingsUpdateFilterSensitiveLog = exports.AutoScalingSettingsDescriptionFilterSensitiveLog = exports.AutoScalingPolicyUpdateFilterSensitiveLog = exports.AutoScalingTargetTrackingScalingPolicyConfigurationUpdateFilterSensitiveLog = exports.AutoScalingPolicyDescriptionFilterSensitiveLog = exports.AutoScalingTargetTrackingScalingPolicyConfigurationDescriptionFilterSensitiveLog = exports.AttributeDefinitionFilterSensitiveLog = exports.ArchivalSummaryFilterSensitiveLog = exports.TransactionCanceledException = exports.AttributeValue = exports.IndexNotFoundException = exports.ReplicaNotFoundException = exports.ReplicaAlreadyExistsException = exports.InvalidRestoreTimeException = exports.TableAlreadyExistsException = exports.PointInTimeRecoveryUnavailableException = exports.InvalidExportTimeException = exports.ExportConflictException = exports.TransactionInProgressException = exports.IdempotentParameterMismatchException = exports.DuplicateItemException = exports.GlobalTableNotFoundException = exports.ExportNotFoundException = exports.ExportStatus = exports.ExportFormat = exports.TransactionConflictException = exports.ResourceInUseException = exports.GlobalTableAlreadyExistsException = exports.TableClass = exports.TableNotFoundException = exports.TableInUseException = exports.LimitExceededException = exports.ContinuousBackupsUnavailableException = exports.ConditionalCheckFailedException = exports.ItemCollectionSizeLimitExceededException = exports.ResourceNotFoundException = exports.ProvisionedThroughputExceededException = exports.InvalidEndpointException = exports.RequestLimitExceeded = exports.InternalServerError = exports.BatchStatementErrorCodeEnum = exports.BackupTypeFilter = exports.BackupNotFoundException = exports.BackupInUseException = exports.BackupType = void 0;
+exports.DescribeContinuousBackupsInputFilterSensitiveLog = exports.DescribeBackupOutputFilterSensitiveLog = exports.DescribeBackupInputFilterSensitiveLog = exports.DeleteTableOutputFilterSensitiveLog = exports.DeleteTableInputFilterSensitiveLog = exports.DeleteReplicationGroupMemberActionFilterSensitiveLog = exports.DeleteReplicaActionFilterSensitiveLog = exports.DeleteGlobalSecondaryIndexActionFilterSensitiveLog = exports.DeleteBackupOutputFilterSensitiveLog = exports.DeleteBackupInputFilterSensitiveLog = exports.CreateTableOutputFilterSensitiveLog = exports.TableDescriptionFilterSensitiveLog = exports.RestoreSummaryFilterSensitiveLog = exports.LocalSecondaryIndexDescriptionFilterSensitiveLog = exports.GlobalSecondaryIndexDescriptionFilterSensitiveLog = exports.ProvisionedThroughputDescriptionFilterSensitiveLog = exports.CreateTableInputFilterSensitiveLog = exports.TagFilterSensitiveLog = exports.SSESpecificationFilterSensitiveLog = exports.LocalSecondaryIndexFilterSensitiveLog = exports.GlobalSecondaryIndexFilterSensitiveLog = exports.CreateReplicationGroupMemberActionFilterSensitiveLog = exports.ReplicaGlobalSecondaryIndexFilterSensitiveLog = exports.CreateReplicaActionFilterSensitiveLog = exports.CreateGlobalTableOutputFilterSensitiveLog = exports.GlobalTableDescriptionFilterSensitiveLog = exports.ReplicaDescriptionFilterSensitiveLog = exports.TableClassSummaryFilterSensitiveLog = exports.ReplicaGlobalSecondaryIndexDescriptionFilterSensitiveLog = exports.ProvisionedThroughputOverrideFilterSensitiveLog = exports.CreateGlobalTableInputFilterSensitiveLog = exports.ReplicaFilterSensitiveLog = exports.CreateGlobalSecondaryIndexActionFilterSensitiveLog = exports.CreateBackupOutputFilterSensitiveLog = exports.CreateBackupInputFilterSensitiveLog = exports.ContributorInsightsSummaryFilterSensitiveLog = exports.ContinuousBackupsDescriptionFilterSensitiveLog = exports.PointInTimeRecoveryDescriptionFilterSensitiveLog = exports.BillingModeSummaryFilterSensitiveLog = exports.BatchStatementErrorFilterSensitiveLog = exports.ConsumedCapacityFilterSensitiveLog = exports.CapacityFilterSensitiveLog = exports.BackupSummaryFilterSensitiveLog = exports.BackupDescriptionFilterSensitiveLog = exports.SourceTableFeatureDetailsFilterSensitiveLog = exports.TimeToLiveDescriptionFilterSensitiveLog = exports.StreamSpecificationFilterSensitiveLog = exports.SSEDescriptionFilterSensitiveLog = exports.LocalSecondaryIndexInfoFilterSensitiveLog = exports.GlobalSecondaryIndexInfoFilterSensitiveLog = void 0;
+exports.RestoreTableFromBackupOutputFilterSensitiveLog = exports.RestoreTableFromBackupInputFilterSensitiveLog = exports.ListTagsOfResourceOutputFilterSensitiveLog = exports.ListTagsOfResourceInputFilterSensitiveLog = exports.ListTablesOutputFilterSensitiveLog = exports.ListTablesInputFilterSensitiveLog = exports.ListGlobalTablesOutputFilterSensitiveLog = exports.GlobalTableFilterSensitiveLog = exports.ListGlobalTablesInputFilterSensitiveLog = exports.ListExportsOutputFilterSensitiveLog = exports.ExportSummaryFilterSensitiveLog = exports.ListExportsInputFilterSensitiveLog = exports.ListContributorInsightsOutputFilterSensitiveLog = exports.ListContributorInsightsInputFilterSensitiveLog = exports.ListBackupsOutputFilterSensitiveLog = exports.ListBackupsInputFilterSensitiveLog = exports.ExportTableToPointInTimeOutputFilterSensitiveLog = exports.ExportTableToPointInTimeInputFilterSensitiveLog = exports.KinesisStreamingDestinationOutputFilterSensitiveLog = exports.KinesisStreamingDestinationInputFilterSensitiveLog = exports.DescribeTimeToLiveOutputFilterSensitiveLog = exports.DescribeTimeToLiveInputFilterSensitiveLog = exports.DescribeTableReplicaAutoScalingOutputFilterSensitiveLog = exports.TableAutoScalingDescriptionFilterSensitiveLog = exports.ReplicaAutoScalingDescriptionFilterSensitiveLog = exports.ReplicaGlobalSecondaryIndexAutoScalingDescriptionFilterSensitiveLog = exports.DescribeTableReplicaAutoScalingInputFilterSensitiveLog = exports.DescribeTableOutputFilterSensitiveLog = exports.DescribeTableInputFilterSensitiveLog = exports.DescribeLimitsOutputFilterSensitiveLog = exports.DescribeLimitsInputFilterSensitiveLog = exports.DescribeKinesisStreamingDestinationOutputFilterSensitiveLog = exports.KinesisDataStreamDestinationFilterSensitiveLog = exports.DescribeKinesisStreamingDestinationInputFilterSensitiveLog = exports.DescribeGlobalTableSettingsOutputFilterSensitiveLog = exports.ReplicaSettingsDescriptionFilterSensitiveLog = exports.ReplicaGlobalSecondaryIndexSettingsDescriptionFilterSensitiveLog = exports.DescribeGlobalTableSettingsInputFilterSensitiveLog = exports.DescribeGlobalTableOutputFilterSensitiveLog = exports.DescribeGlobalTableInputFilterSensitiveLog = exports.DescribeExportOutputFilterSensitiveLog = exports.ExportDescriptionFilterSensitiveLog = exports.DescribeExportInputFilterSensitiveLog = exports.DescribeEndpointsResponseFilterSensitiveLog = exports.EndpointFilterSensitiveLog = exports.DescribeEndpointsRequestFilterSensitiveLog = exports.DescribeContributorInsightsOutputFilterSensitiveLog = exports.FailureExceptionFilterSensitiveLog = exports.DescribeContributorInsightsInputFilterSensitiveLog = exports.DescribeContinuousBackupsOutputFilterSensitiveLog = void 0;
+exports.BatchExecuteStatementOutputFilterSensitiveLog = exports.BatchExecuteStatementInputFilterSensitiveLog = exports.TransactGetItemFilterSensitiveLog = exports.KeysAndAttributesFilterSensitiveLog = exports.PutRequestFilterSensitiveLog = exports.ParameterizedStatementFilterSensitiveLog = exports.ItemResponseFilterSensitiveLog = exports.ItemCollectionMetricsFilterSensitiveLog = exports.GetItemOutputFilterSensitiveLog = exports.GetItemInputFilterSensitiveLog = exports.GetFilterSensitiveLog = exports.ExecuteStatementInputFilterSensitiveLog = exports.DeleteRequestFilterSensitiveLog = exports.ConditionFilterSensitiveLog = exports.CancellationReasonFilterSensitiveLog = exports.BatchStatementResponseFilterSensitiveLog = exports.BatchStatementRequestFilterSensitiveLog = exports.AttributeValueUpdateFilterSensitiveLog = exports.AttributeValueFilterSensitiveLog = exports.UpdateTimeToLiveOutputFilterSensitiveLog = exports.UpdateTimeToLiveInputFilterSensitiveLog = exports.TimeToLiveSpecificationFilterSensitiveLog = exports.UpdateTableReplicaAutoScalingOutputFilterSensitiveLog = exports.UpdateTableReplicaAutoScalingInputFilterSensitiveLog = exports.ReplicaAutoScalingUpdateFilterSensitiveLog = exports.ReplicaGlobalSecondaryIndexAutoScalingUpdateFilterSensitiveLog = exports.GlobalSecondaryIndexAutoScalingUpdateFilterSensitiveLog = exports.UpdateTableOutputFilterSensitiveLog = exports.UpdateTableInputFilterSensitiveLog = exports.ReplicationGroupUpdateFilterSensitiveLog = exports.UpdateReplicationGroupMemberActionFilterSensitiveLog = exports.GlobalSecondaryIndexUpdateFilterSensitiveLog = exports.UpdateGlobalSecondaryIndexActionFilterSensitiveLog = exports.UpdateGlobalTableSettingsOutputFilterSensitiveLog = exports.UpdateGlobalTableSettingsInputFilterSensitiveLog = exports.ReplicaSettingsUpdateFilterSensitiveLog = exports.ReplicaGlobalSecondaryIndexSettingsUpdateFilterSensitiveLog = exports.GlobalTableGlobalSecondaryIndexSettingsUpdateFilterSensitiveLog = exports.UpdateGlobalTableOutputFilterSensitiveLog = exports.UpdateGlobalTableInputFilterSensitiveLog = exports.ReplicaUpdateFilterSensitiveLog = exports.UpdateContributorInsightsOutputFilterSensitiveLog = exports.UpdateContributorInsightsInputFilterSensitiveLog = exports.UpdateContinuousBackupsOutputFilterSensitiveLog = exports.UpdateContinuousBackupsInputFilterSensitiveLog = exports.PointInTimeRecoverySpecificationFilterSensitiveLog = exports.UntagResourceInputFilterSensitiveLog = exports.TagResourceInputFilterSensitiveLog = exports.RestoreTableToPointInTimeOutputFilterSensitiveLog = exports.RestoreTableToPointInTimeInputFilterSensitiveLog = void 0;
+exports.TransactWriteItemsInputFilterSensitiveLog = exports.TransactWriteItemFilterSensitiveLog = exports.UpdateItemInputFilterSensitiveLog = exports.BatchWriteItemOutputFilterSensitiveLog = exports.QueryInputFilterSensitiveLog = exports.PutItemInputFilterSensitiveLog = exports.DeleteItemInputFilterSensitiveLog = exports.BatchWriteItemInputFilterSensitiveLog = exports.ScanInputFilterSensitiveLog = exports.BatchGetItemOutputFilterSensitiveLog = exports.WriteRequestFilterSensitiveLog = exports.UpdateItemOutputFilterSensitiveLog = exports.ScanOutputFilterSensitiveLog = exports.QueryOutputFilterSensitiveLog = exports.PutItemOutputFilterSensitiveLog = exports.ExecuteStatementOutputFilterSensitiveLog = exports.DeleteItemOutputFilterSensitiveLog = exports.UpdateFilterSensitiveLog = exports.PutFilterSensitiveLog = exports.DeleteFilterSensitiveLog = exports.ConditionCheckFilterSensitiveLog = exports.TransactWriteItemsOutputFilterSensitiveLog = exports.TransactGetItemsInputFilterSensitiveLog = exports.ExpectedAttributeValueFilterSensitiveLog = exports.BatchGetItemInputFilterSensitiveLog = exports.TransactGetItemsOutputFilterSensitiveLog = exports.ExecuteTransactionOutputFilterSensitiveLog = exports.ExecuteTransactionInputFilterSensitiveLog = void 0;
 const DynamoDBServiceException_1 = __nccwpck_require__(834);
-var ArchivalSummary;
-(function (ArchivalSummary) {
-    ArchivalSummary.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ArchivalSummary = exports.ArchivalSummary || (exports.ArchivalSummary = {}));
-var AttributeDefinition;
-(function (AttributeDefinition) {
-    AttributeDefinition.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(AttributeDefinition = exports.AttributeDefinition || (exports.AttributeDefinition = {}));
-var AutoScalingTargetTrackingScalingPolicyConfigurationDescription;
-(function (AutoScalingTargetTrackingScalingPolicyConfigurationDescription) {
-    AutoScalingTargetTrackingScalingPolicyConfigurationDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(AutoScalingTargetTrackingScalingPolicyConfigurationDescription = exports.AutoScalingTargetTrackingScalingPolicyConfigurationDescription || (exports.AutoScalingTargetTrackingScalingPolicyConfigurationDescription = {}));
-var AutoScalingPolicyDescription;
-(function (AutoScalingPolicyDescription) {
-    AutoScalingPolicyDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(AutoScalingPolicyDescription = exports.AutoScalingPolicyDescription || (exports.AutoScalingPolicyDescription = {}));
-var AutoScalingTargetTrackingScalingPolicyConfigurationUpdate;
-(function (AutoScalingTargetTrackingScalingPolicyConfigurationUpdate) {
-    AutoScalingTargetTrackingScalingPolicyConfigurationUpdate.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(AutoScalingTargetTrackingScalingPolicyConfigurationUpdate = exports.AutoScalingTargetTrackingScalingPolicyConfigurationUpdate || (exports.AutoScalingTargetTrackingScalingPolicyConfigurationUpdate = {}));
-var AutoScalingPolicyUpdate;
-(function (AutoScalingPolicyUpdate) {
-    AutoScalingPolicyUpdate.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(AutoScalingPolicyUpdate = exports.AutoScalingPolicyUpdate || (exports.AutoScalingPolicyUpdate = {}));
-var AutoScalingSettingsDescription;
-(function (AutoScalingSettingsDescription) {
-    AutoScalingSettingsDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(AutoScalingSettingsDescription = exports.AutoScalingSettingsDescription || (exports.AutoScalingSettingsDescription = {}));
-var AutoScalingSettingsUpdate;
-(function (AutoScalingSettingsUpdate) {
-    AutoScalingSettingsUpdate.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(AutoScalingSettingsUpdate = exports.AutoScalingSettingsUpdate || (exports.AutoScalingSettingsUpdate = {}));
 var BackupType;
 (function (BackupType) {
     BackupType["AWS_BACKUP"] = "AWS_BACKUP";
     BackupType["SYSTEM"] = "SYSTEM";
     BackupType["USER"] = "USER";
 })(BackupType = exports.BackupType || (exports.BackupType = {}));
-var BackupDetails;
-(function (BackupDetails) {
-    BackupDetails.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(BackupDetails = exports.BackupDetails || (exports.BackupDetails = {}));
-var KeySchemaElement;
-(function (KeySchemaElement) {
-    KeySchemaElement.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(KeySchemaElement = exports.KeySchemaElement || (exports.KeySchemaElement = {}));
-var ProvisionedThroughput;
-(function (ProvisionedThroughput) {
-    ProvisionedThroughput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ProvisionedThroughput = exports.ProvisionedThroughput || (exports.ProvisionedThroughput = {}));
-var SourceTableDetails;
-(function (SourceTableDetails) {
-    SourceTableDetails.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(SourceTableDetails = exports.SourceTableDetails || (exports.SourceTableDetails = {}));
-var Projection;
-(function (Projection) {
-    Projection.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(Projection = exports.Projection || (exports.Projection = {}));
-var GlobalSecondaryIndexInfo;
-(function (GlobalSecondaryIndexInfo) {
-    GlobalSecondaryIndexInfo.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(GlobalSecondaryIndexInfo = exports.GlobalSecondaryIndexInfo || (exports.GlobalSecondaryIndexInfo = {}));
-var LocalSecondaryIndexInfo;
-(function (LocalSecondaryIndexInfo) {
-    LocalSecondaryIndexInfo.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(LocalSecondaryIndexInfo = exports.LocalSecondaryIndexInfo || (exports.LocalSecondaryIndexInfo = {}));
-var SSEDescription;
-(function (SSEDescription) {
-    SSEDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(SSEDescription = exports.SSEDescription || (exports.SSEDescription = {}));
-var StreamSpecification;
-(function (StreamSpecification) {
-    StreamSpecification.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(StreamSpecification = exports.StreamSpecification || (exports.StreamSpecification = {}));
-var TimeToLiveDescription;
-(function (TimeToLiveDescription) {
-    TimeToLiveDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(TimeToLiveDescription = exports.TimeToLiveDescription || (exports.TimeToLiveDescription = {}));
-var SourceTableFeatureDetails;
-(function (SourceTableFeatureDetails) {
-    SourceTableFeatureDetails.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(SourceTableFeatureDetails = exports.SourceTableFeatureDetails || (exports.SourceTableFeatureDetails = {}));
-var BackupDescription;
-(function (BackupDescription) {
-    BackupDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(BackupDescription = exports.BackupDescription || (exports.BackupDescription = {}));
 class BackupInUseException extends DynamoDBServiceException_1.DynamoDBServiceException {
     constructor(opts) {
         super({
@@ -5241,12 +5129,6 @@ class BackupNotFoundException extends DynamoDBServiceException_1.DynamoDBService
     }
 }
 exports.BackupNotFoundException = BackupNotFoundException;
-var BackupSummary;
-(function (BackupSummary) {
-    BackupSummary.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(BackupSummary = exports.BackupSummary || (exports.BackupSummary = {}));
 var BackupTypeFilter;
 (function (BackupTypeFilter) {
     BackupTypeFilter["ALL"] = "ALL";
@@ -5254,18 +5136,6 @@ var BackupTypeFilter;
     BackupTypeFilter["SYSTEM"] = "SYSTEM";
     BackupTypeFilter["USER"] = "USER";
 })(BackupTypeFilter = exports.BackupTypeFilter || (exports.BackupTypeFilter = {}));
-var Capacity;
-(function (Capacity) {
-    Capacity.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(Capacity = exports.Capacity || (exports.Capacity = {}));
-var ConsumedCapacity;
-(function (ConsumedCapacity) {
-    ConsumedCapacity.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ConsumedCapacity = exports.ConsumedCapacity || (exports.ConsumedCapacity = {}));
 var BatchStatementErrorCodeEnum;
 (function (BatchStatementErrorCodeEnum) {
     BatchStatementErrorCodeEnum["AccessDenied"] = "AccessDenied";
@@ -5280,12 +5150,6 @@ var BatchStatementErrorCodeEnum;
     BatchStatementErrorCodeEnum["TransactionConflict"] = "TransactionConflict";
     BatchStatementErrorCodeEnum["ValidationError"] = "ValidationError";
 })(BatchStatementErrorCodeEnum = exports.BatchStatementErrorCodeEnum || (exports.BatchStatementErrorCodeEnum = {}));
-var BatchStatementError;
-(function (BatchStatementError) {
-    BatchStatementError.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(BatchStatementError = exports.BatchStatementError || (exports.BatchStatementError = {}));
 class InternalServerError extends DynamoDBServiceException_1.DynamoDBServiceException {
     constructor(opts) {
         super({
@@ -5365,12 +5229,6 @@ class ItemCollectionSizeLimitExceededException extends DynamoDBServiceException_
     }
 }
 exports.ItemCollectionSizeLimitExceededException = ItemCollectionSizeLimitExceededException;
-var BillingModeSummary;
-(function (BillingModeSummary) {
-    BillingModeSummary.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(BillingModeSummary = exports.BillingModeSummary || (exports.BillingModeSummary = {}));
 class ConditionalCheckFailedException extends DynamoDBServiceException_1.DynamoDBServiceException {
     constructor(opts) {
         super({
@@ -5384,18 +5242,6 @@ class ConditionalCheckFailedException extends DynamoDBServiceException_1.DynamoD
     }
 }
 exports.ConditionalCheckFailedException = ConditionalCheckFailedException;
-var PointInTimeRecoveryDescription;
-(function (PointInTimeRecoveryDescription) {
-    PointInTimeRecoveryDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(PointInTimeRecoveryDescription = exports.PointInTimeRecoveryDescription || (exports.PointInTimeRecoveryDescription = {}));
-var ContinuousBackupsDescription;
-(function (ContinuousBackupsDescription) {
-    ContinuousBackupsDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ContinuousBackupsDescription = exports.ContinuousBackupsDescription || (exports.ContinuousBackupsDescription = {}));
 class ContinuousBackupsUnavailableException extends DynamoDBServiceException_1.DynamoDBServiceException {
     constructor(opts) {
         super({
@@ -5409,24 +5255,6 @@ class ContinuousBackupsUnavailableException extends DynamoDBServiceException_1.D
     }
 }
 exports.ContinuousBackupsUnavailableException = ContinuousBackupsUnavailableException;
-var ContributorInsightsSummary;
-(function (ContributorInsightsSummary) {
-    ContributorInsightsSummary.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ContributorInsightsSummary = exports.ContributorInsightsSummary || (exports.ContributorInsightsSummary = {}));
-var CreateBackupInput;
-(function (CreateBackupInput) {
-    CreateBackupInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(CreateBackupInput = exports.CreateBackupInput || (exports.CreateBackupInput = {}));
-var CreateBackupOutput;
-(function (CreateBackupOutput) {
-    CreateBackupOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(CreateBackupOutput = exports.CreateBackupOutput || (exports.CreateBackupOutput = {}));
 class LimitExceededException extends DynamoDBServiceException_1.DynamoDBServiceException {
     constructor(opts) {
         super({
@@ -5466,65 +5294,11 @@ class TableNotFoundException extends DynamoDBServiceException_1.DynamoDBServiceE
     }
 }
 exports.TableNotFoundException = TableNotFoundException;
-var CreateGlobalSecondaryIndexAction;
-(function (CreateGlobalSecondaryIndexAction) {
-    CreateGlobalSecondaryIndexAction.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(CreateGlobalSecondaryIndexAction = exports.CreateGlobalSecondaryIndexAction || (exports.CreateGlobalSecondaryIndexAction = {}));
-var Replica;
-(function (Replica) {
-    Replica.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(Replica = exports.Replica || (exports.Replica = {}));
-var CreateGlobalTableInput;
-(function (CreateGlobalTableInput) {
-    CreateGlobalTableInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(CreateGlobalTableInput = exports.CreateGlobalTableInput || (exports.CreateGlobalTableInput = {}));
-var ProvisionedThroughputOverride;
-(function (ProvisionedThroughputOverride) {
-    ProvisionedThroughputOverride.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ProvisionedThroughputOverride = exports.ProvisionedThroughputOverride || (exports.ProvisionedThroughputOverride = {}));
-var ReplicaGlobalSecondaryIndexDescription;
-(function (ReplicaGlobalSecondaryIndexDescription) {
-    ReplicaGlobalSecondaryIndexDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ReplicaGlobalSecondaryIndexDescription = exports.ReplicaGlobalSecondaryIndexDescription || (exports.ReplicaGlobalSecondaryIndexDescription = {}));
 var TableClass;
 (function (TableClass) {
     TableClass["STANDARD"] = "STANDARD";
     TableClass["STANDARD_INFREQUENT_ACCESS"] = "STANDARD_INFREQUENT_ACCESS";
 })(TableClass = exports.TableClass || (exports.TableClass = {}));
-var TableClassSummary;
-(function (TableClassSummary) {
-    TableClassSummary.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(TableClassSummary = exports.TableClassSummary || (exports.TableClassSummary = {}));
-var ReplicaDescription;
-(function (ReplicaDescription) {
-    ReplicaDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ReplicaDescription = exports.ReplicaDescription || (exports.ReplicaDescription = {}));
-var GlobalTableDescription;
-(function (GlobalTableDescription) {
-    GlobalTableDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(GlobalTableDescription = exports.GlobalTableDescription || (exports.GlobalTableDescription = {}));
-var CreateGlobalTableOutput;
-(function (CreateGlobalTableOutput) {
-    CreateGlobalTableOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(CreateGlobalTableOutput = exports.CreateGlobalTableOutput || (exports.CreateGlobalTableOutput = {}));
 class GlobalTableAlreadyExistsException extends DynamoDBServiceException_1.DynamoDBServiceException {
     constructor(opts) {
         super({
@@ -5538,90 +5312,6 @@ class GlobalTableAlreadyExistsException extends DynamoDBServiceException_1.Dynam
     }
 }
 exports.GlobalTableAlreadyExistsException = GlobalTableAlreadyExistsException;
-var CreateReplicaAction;
-(function (CreateReplicaAction) {
-    CreateReplicaAction.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(CreateReplicaAction = exports.CreateReplicaAction || (exports.CreateReplicaAction = {}));
-var ReplicaGlobalSecondaryIndex;
-(function (ReplicaGlobalSecondaryIndex) {
-    ReplicaGlobalSecondaryIndex.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ReplicaGlobalSecondaryIndex = exports.ReplicaGlobalSecondaryIndex || (exports.ReplicaGlobalSecondaryIndex = {}));
-var CreateReplicationGroupMemberAction;
-(function (CreateReplicationGroupMemberAction) {
-    CreateReplicationGroupMemberAction.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(CreateReplicationGroupMemberAction = exports.CreateReplicationGroupMemberAction || (exports.CreateReplicationGroupMemberAction = {}));
-var GlobalSecondaryIndex;
-(function (GlobalSecondaryIndex) {
-    GlobalSecondaryIndex.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(GlobalSecondaryIndex = exports.GlobalSecondaryIndex || (exports.GlobalSecondaryIndex = {}));
-var LocalSecondaryIndex;
-(function (LocalSecondaryIndex) {
-    LocalSecondaryIndex.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(LocalSecondaryIndex = exports.LocalSecondaryIndex || (exports.LocalSecondaryIndex = {}));
-var SSESpecification;
-(function (SSESpecification) {
-    SSESpecification.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(SSESpecification = exports.SSESpecification || (exports.SSESpecification = {}));
-var Tag;
-(function (Tag) {
-    Tag.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(Tag = exports.Tag || (exports.Tag = {}));
-var CreateTableInput;
-(function (CreateTableInput) {
-    CreateTableInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(CreateTableInput = exports.CreateTableInput || (exports.CreateTableInput = {}));
-var ProvisionedThroughputDescription;
-(function (ProvisionedThroughputDescription) {
-    ProvisionedThroughputDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ProvisionedThroughputDescription = exports.ProvisionedThroughputDescription || (exports.ProvisionedThroughputDescription = {}));
-var GlobalSecondaryIndexDescription;
-(function (GlobalSecondaryIndexDescription) {
-    GlobalSecondaryIndexDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(GlobalSecondaryIndexDescription = exports.GlobalSecondaryIndexDescription || (exports.GlobalSecondaryIndexDescription = {}));
-var LocalSecondaryIndexDescription;
-(function (LocalSecondaryIndexDescription) {
-    LocalSecondaryIndexDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(LocalSecondaryIndexDescription = exports.LocalSecondaryIndexDescription || (exports.LocalSecondaryIndexDescription = {}));
-var RestoreSummary;
-(function (RestoreSummary) {
-    RestoreSummary.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(RestoreSummary = exports.RestoreSummary || (exports.RestoreSummary = {}));
-var TableDescription;
-(function (TableDescription) {
-    TableDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(TableDescription = exports.TableDescription || (exports.TableDescription = {}));
-var CreateTableOutput;
-(function (CreateTableOutput) {
-    CreateTableOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(CreateTableOutput = exports.CreateTableOutput || (exports.CreateTableOutput = {}));
 class ResourceInUseException extends DynamoDBServiceException_1.DynamoDBServiceException {
     constructor(opts) {
         super({
@@ -5635,24 +5325,6 @@ class ResourceInUseException extends DynamoDBServiceException_1.DynamoDBServiceE
     }
 }
 exports.ResourceInUseException = ResourceInUseException;
-var DeleteBackupInput;
-(function (DeleteBackupInput) {
-    DeleteBackupInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DeleteBackupInput = exports.DeleteBackupInput || (exports.DeleteBackupInput = {}));
-var DeleteBackupOutput;
-(function (DeleteBackupOutput) {
-    DeleteBackupOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DeleteBackupOutput = exports.DeleteBackupOutput || (exports.DeleteBackupOutput = {}));
-var DeleteGlobalSecondaryIndexAction;
-(function (DeleteGlobalSecondaryIndexAction) {
-    DeleteGlobalSecondaryIndexAction.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DeleteGlobalSecondaryIndexAction = exports.DeleteGlobalSecondaryIndexAction || (exports.DeleteGlobalSecondaryIndexAction = {}));
 class TransactionConflictException extends DynamoDBServiceException_1.DynamoDBServiceException {
     constructor(opts) {
         super({
@@ -5666,96 +5338,6 @@ class TransactionConflictException extends DynamoDBServiceException_1.DynamoDBSe
     }
 }
 exports.TransactionConflictException = TransactionConflictException;
-var DeleteReplicaAction;
-(function (DeleteReplicaAction) {
-    DeleteReplicaAction.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DeleteReplicaAction = exports.DeleteReplicaAction || (exports.DeleteReplicaAction = {}));
-var DeleteReplicationGroupMemberAction;
-(function (DeleteReplicationGroupMemberAction) {
-    DeleteReplicationGroupMemberAction.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DeleteReplicationGroupMemberAction = exports.DeleteReplicationGroupMemberAction || (exports.DeleteReplicationGroupMemberAction = {}));
-var DeleteTableInput;
-(function (DeleteTableInput) {
-    DeleteTableInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DeleteTableInput = exports.DeleteTableInput || (exports.DeleteTableInput = {}));
-var DeleteTableOutput;
-(function (DeleteTableOutput) {
-    DeleteTableOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DeleteTableOutput = exports.DeleteTableOutput || (exports.DeleteTableOutput = {}));
-var DescribeBackupInput;
-(function (DescribeBackupInput) {
-    DescribeBackupInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeBackupInput = exports.DescribeBackupInput || (exports.DescribeBackupInput = {}));
-var DescribeBackupOutput;
-(function (DescribeBackupOutput) {
-    DescribeBackupOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeBackupOutput = exports.DescribeBackupOutput || (exports.DescribeBackupOutput = {}));
-var DescribeContinuousBackupsInput;
-(function (DescribeContinuousBackupsInput) {
-    DescribeContinuousBackupsInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeContinuousBackupsInput = exports.DescribeContinuousBackupsInput || (exports.DescribeContinuousBackupsInput = {}));
-var DescribeContinuousBackupsOutput;
-(function (DescribeContinuousBackupsOutput) {
-    DescribeContinuousBackupsOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeContinuousBackupsOutput = exports.DescribeContinuousBackupsOutput || (exports.DescribeContinuousBackupsOutput = {}));
-var DescribeContributorInsightsInput;
-(function (DescribeContributorInsightsInput) {
-    DescribeContributorInsightsInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeContributorInsightsInput = exports.DescribeContributorInsightsInput || (exports.DescribeContributorInsightsInput = {}));
-var FailureException;
-(function (FailureException) {
-    FailureException.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(FailureException = exports.FailureException || (exports.FailureException = {}));
-var DescribeContributorInsightsOutput;
-(function (DescribeContributorInsightsOutput) {
-    DescribeContributorInsightsOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeContributorInsightsOutput = exports.DescribeContributorInsightsOutput || (exports.DescribeContributorInsightsOutput = {}));
-var DescribeEndpointsRequest;
-(function (DescribeEndpointsRequest) {
-    DescribeEndpointsRequest.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeEndpointsRequest = exports.DescribeEndpointsRequest || (exports.DescribeEndpointsRequest = {}));
-var Endpoint;
-(function (Endpoint) {
-    Endpoint.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(Endpoint = exports.Endpoint || (exports.Endpoint = {}));
-var DescribeEndpointsResponse;
-(function (DescribeEndpointsResponse) {
-    DescribeEndpointsResponse.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeEndpointsResponse = exports.DescribeEndpointsResponse || (exports.DescribeEndpointsResponse = {}));
-var DescribeExportInput;
-(function (DescribeExportInput) {
-    DescribeExportInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeExportInput = exports.DescribeExportInput || (exports.DescribeExportInput = {}));
 var ExportFormat;
 (function (ExportFormat) {
     ExportFormat["DYNAMODB_JSON"] = "DYNAMODB_JSON";
@@ -5767,18 +5349,6 @@ var ExportStatus;
     ExportStatus["FAILED"] = "FAILED";
     ExportStatus["IN_PROGRESS"] = "IN_PROGRESS";
 })(ExportStatus = exports.ExportStatus || (exports.ExportStatus = {}));
-var ExportDescription;
-(function (ExportDescription) {
-    ExportDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ExportDescription = exports.ExportDescription || (exports.ExportDescription = {}));
-var DescribeExportOutput;
-(function (DescribeExportOutput) {
-    DescribeExportOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeExportOutput = exports.DescribeExportOutput || (exports.DescribeExportOutput = {}));
 class ExportNotFoundException extends DynamoDBServiceException_1.DynamoDBServiceException {
     constructor(opts) {
         super({
@@ -5792,18 +5362,6 @@ class ExportNotFoundException extends DynamoDBServiceException_1.DynamoDBService
     }
 }
 exports.ExportNotFoundException = ExportNotFoundException;
-var DescribeGlobalTableInput;
-(function (DescribeGlobalTableInput) {
-    DescribeGlobalTableInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeGlobalTableInput = exports.DescribeGlobalTableInput || (exports.DescribeGlobalTableInput = {}));
-var DescribeGlobalTableOutput;
-(function (DescribeGlobalTableOutput) {
-    DescribeGlobalTableOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeGlobalTableOutput = exports.DescribeGlobalTableOutput || (exports.DescribeGlobalTableOutput = {}));
 class GlobalTableNotFoundException extends DynamoDBServiceException_1.DynamoDBServiceException {
     constructor(opts) {
         super({
@@ -5817,126 +5375,6 @@ class GlobalTableNotFoundException extends DynamoDBServiceException_1.DynamoDBSe
     }
 }
 exports.GlobalTableNotFoundException = GlobalTableNotFoundException;
-var DescribeGlobalTableSettingsInput;
-(function (DescribeGlobalTableSettingsInput) {
-    DescribeGlobalTableSettingsInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeGlobalTableSettingsInput = exports.DescribeGlobalTableSettingsInput || (exports.DescribeGlobalTableSettingsInput = {}));
-var ReplicaGlobalSecondaryIndexSettingsDescription;
-(function (ReplicaGlobalSecondaryIndexSettingsDescription) {
-    ReplicaGlobalSecondaryIndexSettingsDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ReplicaGlobalSecondaryIndexSettingsDescription = exports.ReplicaGlobalSecondaryIndexSettingsDescription || (exports.ReplicaGlobalSecondaryIndexSettingsDescription = {}));
-var ReplicaSettingsDescription;
-(function (ReplicaSettingsDescription) {
-    ReplicaSettingsDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ReplicaSettingsDescription = exports.ReplicaSettingsDescription || (exports.ReplicaSettingsDescription = {}));
-var DescribeGlobalTableSettingsOutput;
-(function (DescribeGlobalTableSettingsOutput) {
-    DescribeGlobalTableSettingsOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeGlobalTableSettingsOutput = exports.DescribeGlobalTableSettingsOutput || (exports.DescribeGlobalTableSettingsOutput = {}));
-var DescribeKinesisStreamingDestinationInput;
-(function (DescribeKinesisStreamingDestinationInput) {
-    DescribeKinesisStreamingDestinationInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeKinesisStreamingDestinationInput = exports.DescribeKinesisStreamingDestinationInput || (exports.DescribeKinesisStreamingDestinationInput = {}));
-var KinesisDataStreamDestination;
-(function (KinesisDataStreamDestination) {
-    KinesisDataStreamDestination.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(KinesisDataStreamDestination = exports.KinesisDataStreamDestination || (exports.KinesisDataStreamDestination = {}));
-var DescribeKinesisStreamingDestinationOutput;
-(function (DescribeKinesisStreamingDestinationOutput) {
-    DescribeKinesisStreamingDestinationOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeKinesisStreamingDestinationOutput = exports.DescribeKinesisStreamingDestinationOutput || (exports.DescribeKinesisStreamingDestinationOutput = {}));
-var DescribeLimitsInput;
-(function (DescribeLimitsInput) {
-    DescribeLimitsInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeLimitsInput = exports.DescribeLimitsInput || (exports.DescribeLimitsInput = {}));
-var DescribeLimitsOutput;
-(function (DescribeLimitsOutput) {
-    DescribeLimitsOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeLimitsOutput = exports.DescribeLimitsOutput || (exports.DescribeLimitsOutput = {}));
-var DescribeTableInput;
-(function (DescribeTableInput) {
-    DescribeTableInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeTableInput = exports.DescribeTableInput || (exports.DescribeTableInput = {}));
-var DescribeTableOutput;
-(function (DescribeTableOutput) {
-    DescribeTableOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeTableOutput = exports.DescribeTableOutput || (exports.DescribeTableOutput = {}));
-var DescribeTableReplicaAutoScalingInput;
-(function (DescribeTableReplicaAutoScalingInput) {
-    DescribeTableReplicaAutoScalingInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeTableReplicaAutoScalingInput = exports.DescribeTableReplicaAutoScalingInput || (exports.DescribeTableReplicaAutoScalingInput = {}));
-var ReplicaGlobalSecondaryIndexAutoScalingDescription;
-(function (ReplicaGlobalSecondaryIndexAutoScalingDescription) {
-    ReplicaGlobalSecondaryIndexAutoScalingDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ReplicaGlobalSecondaryIndexAutoScalingDescription = exports.ReplicaGlobalSecondaryIndexAutoScalingDescription || (exports.ReplicaGlobalSecondaryIndexAutoScalingDescription = {}));
-var ReplicaAutoScalingDescription;
-(function (ReplicaAutoScalingDescription) {
-    ReplicaAutoScalingDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ReplicaAutoScalingDescription = exports.ReplicaAutoScalingDescription || (exports.ReplicaAutoScalingDescription = {}));
-var TableAutoScalingDescription;
-(function (TableAutoScalingDescription) {
-    TableAutoScalingDescription.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(TableAutoScalingDescription = exports.TableAutoScalingDescription || (exports.TableAutoScalingDescription = {}));
-var DescribeTableReplicaAutoScalingOutput;
-(function (DescribeTableReplicaAutoScalingOutput) {
-    DescribeTableReplicaAutoScalingOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeTableReplicaAutoScalingOutput = exports.DescribeTableReplicaAutoScalingOutput || (exports.DescribeTableReplicaAutoScalingOutput = {}));
-var DescribeTimeToLiveInput;
-(function (DescribeTimeToLiveInput) {
-    DescribeTimeToLiveInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeTimeToLiveInput = exports.DescribeTimeToLiveInput || (exports.DescribeTimeToLiveInput = {}));
-var DescribeTimeToLiveOutput;
-(function (DescribeTimeToLiveOutput) {
-    DescribeTimeToLiveOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DescribeTimeToLiveOutput = exports.DescribeTimeToLiveOutput || (exports.DescribeTimeToLiveOutput = {}));
-var KinesisStreamingDestinationInput;
-(function (KinesisStreamingDestinationInput) {
-    KinesisStreamingDestinationInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(KinesisStreamingDestinationInput = exports.KinesisStreamingDestinationInput || (exports.KinesisStreamingDestinationInput = {}));
-var KinesisStreamingDestinationOutput;
-(function (KinesisStreamingDestinationOutput) {
-    KinesisStreamingDestinationOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(KinesisStreamingDestinationOutput = exports.KinesisStreamingDestinationOutput || (exports.KinesisStreamingDestinationOutput = {}));
 class DuplicateItemException extends DynamoDBServiceException_1.DynamoDBServiceException {
     constructor(opts) {
         super({
@@ -5991,18 +5429,6 @@ class ExportConflictException extends DynamoDBServiceException_1.DynamoDBService
     }
 }
 exports.ExportConflictException = ExportConflictException;
-var ExportTableToPointInTimeInput;
-(function (ExportTableToPointInTimeInput) {
-    ExportTableToPointInTimeInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ExportTableToPointInTimeInput = exports.ExportTableToPointInTimeInput || (exports.ExportTableToPointInTimeInput = {}));
-var ExportTableToPointInTimeOutput;
-(function (ExportTableToPointInTimeOutput) {
-    ExportTableToPointInTimeOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ExportTableToPointInTimeOutput = exports.ExportTableToPointInTimeOutput || (exports.ExportTableToPointInTimeOutput = {}));
 class InvalidExportTimeException extends DynamoDBServiceException_1.DynamoDBServiceException {
     constructor(opts) {
         super({
@@ -6029,102 +5455,6 @@ class PointInTimeRecoveryUnavailableException extends DynamoDBServiceException_1
     }
 }
 exports.PointInTimeRecoveryUnavailableException = PointInTimeRecoveryUnavailableException;
-var ListBackupsInput;
-(function (ListBackupsInput) {
-    ListBackupsInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ListBackupsInput = exports.ListBackupsInput || (exports.ListBackupsInput = {}));
-var ListBackupsOutput;
-(function (ListBackupsOutput) {
-    ListBackupsOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ListBackupsOutput = exports.ListBackupsOutput || (exports.ListBackupsOutput = {}));
-var ListContributorInsightsInput;
-(function (ListContributorInsightsInput) {
-    ListContributorInsightsInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ListContributorInsightsInput = exports.ListContributorInsightsInput || (exports.ListContributorInsightsInput = {}));
-var ListContributorInsightsOutput;
-(function (ListContributorInsightsOutput) {
-    ListContributorInsightsOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ListContributorInsightsOutput = exports.ListContributorInsightsOutput || (exports.ListContributorInsightsOutput = {}));
-var ListExportsInput;
-(function (ListExportsInput) {
-    ListExportsInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ListExportsInput = exports.ListExportsInput || (exports.ListExportsInput = {}));
-var ExportSummary;
-(function (ExportSummary) {
-    ExportSummary.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ExportSummary = exports.ExportSummary || (exports.ExportSummary = {}));
-var ListExportsOutput;
-(function (ListExportsOutput) {
-    ListExportsOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ListExportsOutput = exports.ListExportsOutput || (exports.ListExportsOutput = {}));
-var ListGlobalTablesInput;
-(function (ListGlobalTablesInput) {
-    ListGlobalTablesInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ListGlobalTablesInput = exports.ListGlobalTablesInput || (exports.ListGlobalTablesInput = {}));
-var GlobalTable;
-(function (GlobalTable) {
-    GlobalTable.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(GlobalTable = exports.GlobalTable || (exports.GlobalTable = {}));
-var ListGlobalTablesOutput;
-(function (ListGlobalTablesOutput) {
-    ListGlobalTablesOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ListGlobalTablesOutput = exports.ListGlobalTablesOutput || (exports.ListGlobalTablesOutput = {}));
-var ListTablesInput;
-(function (ListTablesInput) {
-    ListTablesInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ListTablesInput = exports.ListTablesInput || (exports.ListTablesInput = {}));
-var ListTablesOutput;
-(function (ListTablesOutput) {
-    ListTablesOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ListTablesOutput = exports.ListTablesOutput || (exports.ListTablesOutput = {}));
-var ListTagsOfResourceInput;
-(function (ListTagsOfResourceInput) {
-    ListTagsOfResourceInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ListTagsOfResourceInput = exports.ListTagsOfResourceInput || (exports.ListTagsOfResourceInput = {}));
-var ListTagsOfResourceOutput;
-(function (ListTagsOfResourceOutput) {
-    ListTagsOfResourceOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ListTagsOfResourceOutput = exports.ListTagsOfResourceOutput || (exports.ListTagsOfResourceOutput = {}));
-var RestoreTableFromBackupInput;
-(function (RestoreTableFromBackupInput) {
-    RestoreTableFromBackupInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(RestoreTableFromBackupInput = exports.RestoreTableFromBackupInput || (exports.RestoreTableFromBackupInput = {}));
-var RestoreTableFromBackupOutput;
-(function (RestoreTableFromBackupOutput) {
-    RestoreTableFromBackupOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(RestoreTableFromBackupOutput = exports.RestoreTableFromBackupOutput || (exports.RestoreTableFromBackupOutput = {}));
 class TableAlreadyExistsException extends DynamoDBServiceException_1.DynamoDBServiceException {
     constructor(opts) {
         super({
@@ -6151,60 +5481,6 @@ class InvalidRestoreTimeException extends DynamoDBServiceException_1.DynamoDBSer
     }
 }
 exports.InvalidRestoreTimeException = InvalidRestoreTimeException;
-var RestoreTableToPointInTimeInput;
-(function (RestoreTableToPointInTimeInput) {
-    RestoreTableToPointInTimeInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(RestoreTableToPointInTimeInput = exports.RestoreTableToPointInTimeInput || (exports.RestoreTableToPointInTimeInput = {}));
-var RestoreTableToPointInTimeOutput;
-(function (RestoreTableToPointInTimeOutput) {
-    RestoreTableToPointInTimeOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(RestoreTableToPointInTimeOutput = exports.RestoreTableToPointInTimeOutput || (exports.RestoreTableToPointInTimeOutput = {}));
-var TagResourceInput;
-(function (TagResourceInput) {
-    TagResourceInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(TagResourceInput = exports.TagResourceInput || (exports.TagResourceInput = {}));
-var UntagResourceInput;
-(function (UntagResourceInput) {
-    UntagResourceInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(UntagResourceInput = exports.UntagResourceInput || (exports.UntagResourceInput = {}));
-var PointInTimeRecoverySpecification;
-(function (PointInTimeRecoverySpecification) {
-    PointInTimeRecoverySpecification.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(PointInTimeRecoverySpecification = exports.PointInTimeRecoverySpecification || (exports.PointInTimeRecoverySpecification = {}));
-var UpdateContinuousBackupsInput;
-(function (UpdateContinuousBackupsInput) {
-    UpdateContinuousBackupsInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(UpdateContinuousBackupsInput = exports.UpdateContinuousBackupsInput || (exports.UpdateContinuousBackupsInput = {}));
-var UpdateContinuousBackupsOutput;
-(function (UpdateContinuousBackupsOutput) {
-    UpdateContinuousBackupsOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(UpdateContinuousBackupsOutput = exports.UpdateContinuousBackupsOutput || (exports.UpdateContinuousBackupsOutput = {}));
-var UpdateContributorInsightsInput;
-(function (UpdateContributorInsightsInput) {
-    UpdateContributorInsightsInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(UpdateContributorInsightsInput = exports.UpdateContributorInsightsInput || (exports.UpdateContributorInsightsInput = {}));
-var UpdateContributorInsightsOutput;
-(function (UpdateContributorInsightsOutput) {
-    UpdateContributorInsightsOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(UpdateContributorInsightsOutput = exports.UpdateContributorInsightsOutput || (exports.UpdateContributorInsightsOutput = {}));
 class ReplicaAlreadyExistsException extends DynamoDBServiceException_1.DynamoDBServiceException {
     constructor(opts) {
         super({
@@ -6231,24 +5507,6 @@ class ReplicaNotFoundException extends DynamoDBServiceException_1.DynamoDBServic
     }
 }
 exports.ReplicaNotFoundException = ReplicaNotFoundException;
-var ReplicaUpdate;
-(function (ReplicaUpdate) {
-    ReplicaUpdate.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ReplicaUpdate = exports.ReplicaUpdate || (exports.ReplicaUpdate = {}));
-var UpdateGlobalTableInput;
-(function (UpdateGlobalTableInput) {
-    UpdateGlobalTableInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(UpdateGlobalTableInput = exports.UpdateGlobalTableInput || (exports.UpdateGlobalTableInput = {}));
-var UpdateGlobalTableOutput;
-(function (UpdateGlobalTableOutput) {
-    UpdateGlobalTableOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(UpdateGlobalTableOutput = exports.UpdateGlobalTableOutput || (exports.UpdateGlobalTableOutput = {}));
 class IndexNotFoundException extends DynamoDBServiceException_1.DynamoDBServiceException {
     constructor(opts) {
         super({
@@ -6262,120 +5520,6 @@ class IndexNotFoundException extends DynamoDBServiceException_1.DynamoDBServiceE
     }
 }
 exports.IndexNotFoundException = IndexNotFoundException;
-var GlobalTableGlobalSecondaryIndexSettingsUpdate;
-(function (GlobalTableGlobalSecondaryIndexSettingsUpdate) {
-    GlobalTableGlobalSecondaryIndexSettingsUpdate.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(GlobalTableGlobalSecondaryIndexSettingsUpdate = exports.GlobalTableGlobalSecondaryIndexSettingsUpdate || (exports.GlobalTableGlobalSecondaryIndexSettingsUpdate = {}));
-var ReplicaGlobalSecondaryIndexSettingsUpdate;
-(function (ReplicaGlobalSecondaryIndexSettingsUpdate) {
-    ReplicaGlobalSecondaryIndexSettingsUpdate.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ReplicaGlobalSecondaryIndexSettingsUpdate = exports.ReplicaGlobalSecondaryIndexSettingsUpdate || (exports.ReplicaGlobalSecondaryIndexSettingsUpdate = {}));
-var ReplicaSettingsUpdate;
-(function (ReplicaSettingsUpdate) {
-    ReplicaSettingsUpdate.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ReplicaSettingsUpdate = exports.ReplicaSettingsUpdate || (exports.ReplicaSettingsUpdate = {}));
-var UpdateGlobalTableSettingsInput;
-(function (UpdateGlobalTableSettingsInput) {
-    UpdateGlobalTableSettingsInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(UpdateGlobalTableSettingsInput = exports.UpdateGlobalTableSettingsInput || (exports.UpdateGlobalTableSettingsInput = {}));
-var UpdateGlobalTableSettingsOutput;
-(function (UpdateGlobalTableSettingsOutput) {
-    UpdateGlobalTableSettingsOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(UpdateGlobalTableSettingsOutput = exports.UpdateGlobalTableSettingsOutput || (exports.UpdateGlobalTableSettingsOutput = {}));
-var UpdateGlobalSecondaryIndexAction;
-(function (UpdateGlobalSecondaryIndexAction) {
-    UpdateGlobalSecondaryIndexAction.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(UpdateGlobalSecondaryIndexAction = exports.UpdateGlobalSecondaryIndexAction || (exports.UpdateGlobalSecondaryIndexAction = {}));
-var GlobalSecondaryIndexUpdate;
-(function (GlobalSecondaryIndexUpdate) {
-    GlobalSecondaryIndexUpdate.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(GlobalSecondaryIndexUpdate = exports.GlobalSecondaryIndexUpdate || (exports.GlobalSecondaryIndexUpdate = {}));
-var UpdateReplicationGroupMemberAction;
-(function (UpdateReplicationGroupMemberAction) {
-    UpdateReplicationGroupMemberAction.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(UpdateReplicationGroupMemberAction = exports.UpdateReplicationGroupMemberAction || (exports.UpdateReplicationGroupMemberAction = {}));
-var ReplicationGroupUpdate;
-(function (ReplicationGroupUpdate) {
-    ReplicationGroupUpdate.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ReplicationGroupUpdate = exports.ReplicationGroupUpdate || (exports.ReplicationGroupUpdate = {}));
-var UpdateTableInput;
-(function (UpdateTableInput) {
-    UpdateTableInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(UpdateTableInput = exports.UpdateTableInput || (exports.UpdateTableInput = {}));
-var UpdateTableOutput;
-(function (UpdateTableOutput) {
-    UpdateTableOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(UpdateTableOutput = exports.UpdateTableOutput || (exports.UpdateTableOutput = {}));
-var GlobalSecondaryIndexAutoScalingUpdate;
-(function (GlobalSecondaryIndexAutoScalingUpdate) {
-    GlobalSecondaryIndexAutoScalingUpdate.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(GlobalSecondaryIndexAutoScalingUpdate = exports.GlobalSecondaryIndexAutoScalingUpdate || (exports.GlobalSecondaryIndexAutoScalingUpdate = {}));
-var ReplicaGlobalSecondaryIndexAutoScalingUpdate;
-(function (ReplicaGlobalSecondaryIndexAutoScalingUpdate) {
-    ReplicaGlobalSecondaryIndexAutoScalingUpdate.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ReplicaGlobalSecondaryIndexAutoScalingUpdate = exports.ReplicaGlobalSecondaryIndexAutoScalingUpdate || (exports.ReplicaGlobalSecondaryIndexAutoScalingUpdate = {}));
-var ReplicaAutoScalingUpdate;
-(function (ReplicaAutoScalingUpdate) {
-    ReplicaAutoScalingUpdate.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ReplicaAutoScalingUpdate = exports.ReplicaAutoScalingUpdate || (exports.ReplicaAutoScalingUpdate = {}));
-var UpdateTableReplicaAutoScalingInput;
-(function (UpdateTableReplicaAutoScalingInput) {
-    UpdateTableReplicaAutoScalingInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(UpdateTableReplicaAutoScalingInput = exports.UpdateTableReplicaAutoScalingInput || (exports.UpdateTableReplicaAutoScalingInput = {}));
-var UpdateTableReplicaAutoScalingOutput;
-(function (UpdateTableReplicaAutoScalingOutput) {
-    UpdateTableReplicaAutoScalingOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(UpdateTableReplicaAutoScalingOutput = exports.UpdateTableReplicaAutoScalingOutput || (exports.UpdateTableReplicaAutoScalingOutput = {}));
-var TimeToLiveSpecification;
-(function (TimeToLiveSpecification) {
-    TimeToLiveSpecification.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(TimeToLiveSpecification = exports.TimeToLiveSpecification || (exports.TimeToLiveSpecification = {}));
-var UpdateTimeToLiveInput;
-(function (UpdateTimeToLiveInput) {
-    UpdateTimeToLiveInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(UpdateTimeToLiveInput = exports.UpdateTimeToLiveInput || (exports.UpdateTimeToLiveInput = {}));
-var UpdateTimeToLiveOutput;
-(function (UpdateTimeToLiveOutput) {
-    UpdateTimeToLiveOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(UpdateTimeToLiveOutput = exports.UpdateTimeToLiveOutput || (exports.UpdateTimeToLiveOutput = {}));
 var AttributeValue;
 (function (AttributeValue) {
     AttributeValue.visit = (value, visitor) => {
@@ -6401,237 +5545,7 @@ var AttributeValue;
             return visitor.BOOL(value.BOOL);
         return visitor._(value.$unknown[0], value.$unknown[1]);
     };
-    AttributeValue.filterSensitiveLog = (obj) => {
-        if (obj.S !== undefined)
-            return { S: obj.S };
-        if (obj.N !== undefined)
-            return { N: obj.N };
-        if (obj.B !== undefined)
-            return { B: obj.B };
-        if (obj.SS !== undefined)
-            return { SS: obj.SS };
-        if (obj.NS !== undefined)
-            return { NS: obj.NS };
-        if (obj.BS !== undefined)
-            return { BS: obj.BS };
-        if (obj.M !== undefined)
-            return {
-                M: Object.entries(obj.M).reduce((acc, [key, value]) => ({
-                    ...acc,
-                    [key]: AttributeValue.filterSensitiveLog(value),
-                }), {}),
-            };
-        if (obj.L !== undefined)
-            return { L: obj.L.map((item) => AttributeValue.filterSensitiveLog(item)) };
-        if (obj.NULL !== undefined)
-            return { NULL: obj.NULL };
-        if (obj.BOOL !== undefined)
-            return { BOOL: obj.BOOL };
-        if (obj.$unknown !== undefined)
-            return { [obj.$unknown[0]]: "UNKNOWN" };
-    };
 })(AttributeValue = exports.AttributeValue || (exports.AttributeValue = {}));
-var AttributeValueUpdate;
-(function (AttributeValueUpdate) {
-    AttributeValueUpdate.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Value && { Value: AttributeValue.filterSensitiveLog(obj.Value) }),
-    });
-})(AttributeValueUpdate = exports.AttributeValueUpdate || (exports.AttributeValueUpdate = {}));
-var BatchStatementRequest;
-(function (BatchStatementRequest) {
-    BatchStatementRequest.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Parameters && { Parameters: obj.Parameters.map((item) => AttributeValue.filterSensitiveLog(item)) }),
-    });
-})(BatchStatementRequest = exports.BatchStatementRequest || (exports.BatchStatementRequest = {}));
-var BatchStatementResponse;
-(function (BatchStatementResponse) {
-    BatchStatementResponse.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Item && {
-            Item: Object.entries(obj.Item).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(BatchStatementResponse = exports.BatchStatementResponse || (exports.BatchStatementResponse = {}));
-var CancellationReason;
-(function (CancellationReason) {
-    CancellationReason.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Item && {
-            Item: Object.entries(obj.Item).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(CancellationReason = exports.CancellationReason || (exports.CancellationReason = {}));
-var Condition;
-(function (Condition) {
-    Condition.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.AttributeValueList && {
-            AttributeValueList: obj.AttributeValueList.map((item) => AttributeValue.filterSensitiveLog(item)),
-        }),
-    });
-})(Condition = exports.Condition || (exports.Condition = {}));
-var DeleteRequest;
-(function (DeleteRequest) {
-    DeleteRequest.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Key && {
-            Key: Object.entries(obj.Key).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(DeleteRequest = exports.DeleteRequest || (exports.DeleteRequest = {}));
-var ExecuteStatementInput;
-(function (ExecuteStatementInput) {
-    ExecuteStatementInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Parameters && { Parameters: obj.Parameters.map((item) => AttributeValue.filterSensitiveLog(item)) }),
-    });
-})(ExecuteStatementInput = exports.ExecuteStatementInput || (exports.ExecuteStatementInput = {}));
-var Get;
-(function (Get) {
-    Get.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Key && {
-            Key: Object.entries(obj.Key).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(Get = exports.Get || (exports.Get = {}));
-var GetItemInput;
-(function (GetItemInput) {
-    GetItemInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Key && {
-            Key: Object.entries(obj.Key).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(GetItemInput = exports.GetItemInput || (exports.GetItemInput = {}));
-var GetItemOutput;
-(function (GetItemOutput) {
-    GetItemOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Item && {
-            Item: Object.entries(obj.Item).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(GetItemOutput = exports.GetItemOutput || (exports.GetItemOutput = {}));
-var ItemCollectionMetrics;
-(function (ItemCollectionMetrics) {
-    ItemCollectionMetrics.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.ItemCollectionKey && {
-            ItemCollectionKey: Object.entries(obj.ItemCollectionKey).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(ItemCollectionMetrics = exports.ItemCollectionMetrics || (exports.ItemCollectionMetrics = {}));
-var ItemResponse;
-(function (ItemResponse) {
-    ItemResponse.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Item && {
-            Item: Object.entries(obj.Item).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(ItemResponse = exports.ItemResponse || (exports.ItemResponse = {}));
-var ParameterizedStatement;
-(function (ParameterizedStatement) {
-    ParameterizedStatement.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Parameters && { Parameters: obj.Parameters.map((item) => AttributeValue.filterSensitiveLog(item)) }),
-    });
-})(ParameterizedStatement = exports.ParameterizedStatement || (exports.ParameterizedStatement = {}));
-var PutRequest;
-(function (PutRequest) {
-    PutRequest.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Item && {
-            Item: Object.entries(obj.Item).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(PutRequest = exports.PutRequest || (exports.PutRequest = {}));
-var KeysAndAttributes;
-(function (KeysAndAttributes) {
-    KeysAndAttributes.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Keys && {
-            Keys: obj.Keys.map((item) => Object.entries(item).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {})),
-        }),
-    });
-})(KeysAndAttributes = exports.KeysAndAttributes || (exports.KeysAndAttributes = {}));
-var TransactGetItem;
-(function (TransactGetItem) {
-    TransactGetItem.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Get && { Get: Get.filterSensitiveLog(obj.Get) }),
-    });
-})(TransactGetItem = exports.TransactGetItem || (exports.TransactGetItem = {}));
-var BatchExecuteStatementInput;
-(function (BatchExecuteStatementInput) {
-    BatchExecuteStatementInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Statements && { Statements: obj.Statements.map((item) => BatchStatementRequest.filterSensitiveLog(item)) }),
-    });
-})(BatchExecuteStatementInput = exports.BatchExecuteStatementInput || (exports.BatchExecuteStatementInput = {}));
-var BatchExecuteStatementOutput;
-(function (BatchExecuteStatementOutput) {
-    BatchExecuteStatementOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Responses && { Responses: obj.Responses.map((item) => BatchStatementResponse.filterSensitiveLog(item)) }),
-    });
-})(BatchExecuteStatementOutput = exports.BatchExecuteStatementOutput || (exports.BatchExecuteStatementOutput = {}));
-var ExecuteTransactionInput;
-(function (ExecuteTransactionInput) {
-    ExecuteTransactionInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.TransactStatements && {
-            TransactStatements: obj.TransactStatements.map((item) => ParameterizedStatement.filterSensitiveLog(item)),
-        }),
-    });
-})(ExecuteTransactionInput = exports.ExecuteTransactionInput || (exports.ExecuteTransactionInput = {}));
-var ExecuteTransactionOutput;
-(function (ExecuteTransactionOutput) {
-    ExecuteTransactionOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Responses && { Responses: obj.Responses.map((item) => ItemResponse.filterSensitiveLog(item)) }),
-    });
-})(ExecuteTransactionOutput = exports.ExecuteTransactionOutput || (exports.ExecuteTransactionOutput = {}));
-var TransactGetItemsOutput;
-(function (TransactGetItemsOutput) {
-    TransactGetItemsOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Responses && { Responses: obj.Responses.map((item) => ItemResponse.filterSensitiveLog(item)) }),
-    });
-})(TransactGetItemsOutput = exports.TransactGetItemsOutput || (exports.TransactGetItemsOutput = {}));
 class TransactionCanceledException extends DynamoDBServiceException_1.DynamoDBServiceException {
     constructor(opts) {
         super({
@@ -6647,430 +5561,1143 @@ class TransactionCanceledException extends DynamoDBServiceException_1.DynamoDBSe
     }
 }
 exports.TransactionCanceledException = TransactionCanceledException;
-var BatchGetItemInput;
-(function (BatchGetItemInput) {
-    BatchGetItemInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.RequestItems && {
-            RequestItems: Object.entries(obj.RequestItems).reduce((acc, [key, value]) => ({
+const ArchivalSummaryFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ArchivalSummaryFilterSensitiveLog = ArchivalSummaryFilterSensitiveLog;
+const AttributeDefinitionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.AttributeDefinitionFilterSensitiveLog = AttributeDefinitionFilterSensitiveLog;
+const AutoScalingTargetTrackingScalingPolicyConfigurationDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.AutoScalingTargetTrackingScalingPolicyConfigurationDescriptionFilterSensitiveLog = AutoScalingTargetTrackingScalingPolicyConfigurationDescriptionFilterSensitiveLog;
+const AutoScalingPolicyDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.AutoScalingPolicyDescriptionFilterSensitiveLog = AutoScalingPolicyDescriptionFilterSensitiveLog;
+const AutoScalingTargetTrackingScalingPolicyConfigurationUpdateFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.AutoScalingTargetTrackingScalingPolicyConfigurationUpdateFilterSensitiveLog = AutoScalingTargetTrackingScalingPolicyConfigurationUpdateFilterSensitiveLog;
+const AutoScalingPolicyUpdateFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.AutoScalingPolicyUpdateFilterSensitiveLog = AutoScalingPolicyUpdateFilterSensitiveLog;
+const AutoScalingSettingsDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.AutoScalingSettingsDescriptionFilterSensitiveLog = AutoScalingSettingsDescriptionFilterSensitiveLog;
+const AutoScalingSettingsUpdateFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.AutoScalingSettingsUpdateFilterSensitiveLog = AutoScalingSettingsUpdateFilterSensitiveLog;
+const BackupDetailsFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.BackupDetailsFilterSensitiveLog = BackupDetailsFilterSensitiveLog;
+const KeySchemaElementFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.KeySchemaElementFilterSensitiveLog = KeySchemaElementFilterSensitiveLog;
+const ProvisionedThroughputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ProvisionedThroughputFilterSensitiveLog = ProvisionedThroughputFilterSensitiveLog;
+const SourceTableDetailsFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.SourceTableDetailsFilterSensitiveLog = SourceTableDetailsFilterSensitiveLog;
+const ProjectionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ProjectionFilterSensitiveLog = ProjectionFilterSensitiveLog;
+const GlobalSecondaryIndexInfoFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.GlobalSecondaryIndexInfoFilterSensitiveLog = GlobalSecondaryIndexInfoFilterSensitiveLog;
+const LocalSecondaryIndexInfoFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.LocalSecondaryIndexInfoFilterSensitiveLog = LocalSecondaryIndexInfoFilterSensitiveLog;
+const SSEDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.SSEDescriptionFilterSensitiveLog = SSEDescriptionFilterSensitiveLog;
+const StreamSpecificationFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.StreamSpecificationFilterSensitiveLog = StreamSpecificationFilterSensitiveLog;
+const TimeToLiveDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.TimeToLiveDescriptionFilterSensitiveLog = TimeToLiveDescriptionFilterSensitiveLog;
+const SourceTableFeatureDetailsFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.SourceTableFeatureDetailsFilterSensitiveLog = SourceTableFeatureDetailsFilterSensitiveLog;
+const BackupDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.BackupDescriptionFilterSensitiveLog = BackupDescriptionFilterSensitiveLog;
+const BackupSummaryFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.BackupSummaryFilterSensitiveLog = BackupSummaryFilterSensitiveLog;
+const CapacityFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.CapacityFilterSensitiveLog = CapacityFilterSensitiveLog;
+const ConsumedCapacityFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ConsumedCapacityFilterSensitiveLog = ConsumedCapacityFilterSensitiveLog;
+const BatchStatementErrorFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.BatchStatementErrorFilterSensitiveLog = BatchStatementErrorFilterSensitiveLog;
+const BillingModeSummaryFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.BillingModeSummaryFilterSensitiveLog = BillingModeSummaryFilterSensitiveLog;
+const PointInTimeRecoveryDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.PointInTimeRecoveryDescriptionFilterSensitiveLog = PointInTimeRecoveryDescriptionFilterSensitiveLog;
+const ContinuousBackupsDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ContinuousBackupsDescriptionFilterSensitiveLog = ContinuousBackupsDescriptionFilterSensitiveLog;
+const ContributorInsightsSummaryFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ContributorInsightsSummaryFilterSensitiveLog = ContributorInsightsSummaryFilterSensitiveLog;
+const CreateBackupInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.CreateBackupInputFilterSensitiveLog = CreateBackupInputFilterSensitiveLog;
+const CreateBackupOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.CreateBackupOutputFilterSensitiveLog = CreateBackupOutputFilterSensitiveLog;
+const CreateGlobalSecondaryIndexActionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.CreateGlobalSecondaryIndexActionFilterSensitiveLog = CreateGlobalSecondaryIndexActionFilterSensitiveLog;
+const ReplicaFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ReplicaFilterSensitiveLog = ReplicaFilterSensitiveLog;
+const CreateGlobalTableInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.CreateGlobalTableInputFilterSensitiveLog = CreateGlobalTableInputFilterSensitiveLog;
+const ProvisionedThroughputOverrideFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ProvisionedThroughputOverrideFilterSensitiveLog = ProvisionedThroughputOverrideFilterSensitiveLog;
+const ReplicaGlobalSecondaryIndexDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ReplicaGlobalSecondaryIndexDescriptionFilterSensitiveLog = ReplicaGlobalSecondaryIndexDescriptionFilterSensitiveLog;
+const TableClassSummaryFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.TableClassSummaryFilterSensitiveLog = TableClassSummaryFilterSensitiveLog;
+const ReplicaDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ReplicaDescriptionFilterSensitiveLog = ReplicaDescriptionFilterSensitiveLog;
+const GlobalTableDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.GlobalTableDescriptionFilterSensitiveLog = GlobalTableDescriptionFilterSensitiveLog;
+const CreateGlobalTableOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.CreateGlobalTableOutputFilterSensitiveLog = CreateGlobalTableOutputFilterSensitiveLog;
+const CreateReplicaActionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.CreateReplicaActionFilterSensitiveLog = CreateReplicaActionFilterSensitiveLog;
+const ReplicaGlobalSecondaryIndexFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ReplicaGlobalSecondaryIndexFilterSensitiveLog = ReplicaGlobalSecondaryIndexFilterSensitiveLog;
+const CreateReplicationGroupMemberActionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.CreateReplicationGroupMemberActionFilterSensitiveLog = CreateReplicationGroupMemberActionFilterSensitiveLog;
+const GlobalSecondaryIndexFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.GlobalSecondaryIndexFilterSensitiveLog = GlobalSecondaryIndexFilterSensitiveLog;
+const LocalSecondaryIndexFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.LocalSecondaryIndexFilterSensitiveLog = LocalSecondaryIndexFilterSensitiveLog;
+const SSESpecificationFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.SSESpecificationFilterSensitiveLog = SSESpecificationFilterSensitiveLog;
+const TagFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.TagFilterSensitiveLog = TagFilterSensitiveLog;
+const CreateTableInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.CreateTableInputFilterSensitiveLog = CreateTableInputFilterSensitiveLog;
+const ProvisionedThroughputDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ProvisionedThroughputDescriptionFilterSensitiveLog = ProvisionedThroughputDescriptionFilterSensitiveLog;
+const GlobalSecondaryIndexDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.GlobalSecondaryIndexDescriptionFilterSensitiveLog = GlobalSecondaryIndexDescriptionFilterSensitiveLog;
+const LocalSecondaryIndexDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.LocalSecondaryIndexDescriptionFilterSensitiveLog = LocalSecondaryIndexDescriptionFilterSensitiveLog;
+const RestoreSummaryFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.RestoreSummaryFilterSensitiveLog = RestoreSummaryFilterSensitiveLog;
+const TableDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.TableDescriptionFilterSensitiveLog = TableDescriptionFilterSensitiveLog;
+const CreateTableOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.CreateTableOutputFilterSensitiveLog = CreateTableOutputFilterSensitiveLog;
+const DeleteBackupInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DeleteBackupInputFilterSensitiveLog = DeleteBackupInputFilterSensitiveLog;
+const DeleteBackupOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DeleteBackupOutputFilterSensitiveLog = DeleteBackupOutputFilterSensitiveLog;
+const DeleteGlobalSecondaryIndexActionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DeleteGlobalSecondaryIndexActionFilterSensitiveLog = DeleteGlobalSecondaryIndexActionFilterSensitiveLog;
+const DeleteReplicaActionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DeleteReplicaActionFilterSensitiveLog = DeleteReplicaActionFilterSensitiveLog;
+const DeleteReplicationGroupMemberActionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DeleteReplicationGroupMemberActionFilterSensitiveLog = DeleteReplicationGroupMemberActionFilterSensitiveLog;
+const DeleteTableInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DeleteTableInputFilterSensitiveLog = DeleteTableInputFilterSensitiveLog;
+const DeleteTableOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DeleteTableOutputFilterSensitiveLog = DeleteTableOutputFilterSensitiveLog;
+const DescribeBackupInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeBackupInputFilterSensitiveLog = DescribeBackupInputFilterSensitiveLog;
+const DescribeBackupOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeBackupOutputFilterSensitiveLog = DescribeBackupOutputFilterSensitiveLog;
+const DescribeContinuousBackupsInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeContinuousBackupsInputFilterSensitiveLog = DescribeContinuousBackupsInputFilterSensitiveLog;
+const DescribeContinuousBackupsOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeContinuousBackupsOutputFilterSensitiveLog = DescribeContinuousBackupsOutputFilterSensitiveLog;
+const DescribeContributorInsightsInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeContributorInsightsInputFilterSensitiveLog = DescribeContributorInsightsInputFilterSensitiveLog;
+const FailureExceptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.FailureExceptionFilterSensitiveLog = FailureExceptionFilterSensitiveLog;
+const DescribeContributorInsightsOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeContributorInsightsOutputFilterSensitiveLog = DescribeContributorInsightsOutputFilterSensitiveLog;
+const DescribeEndpointsRequestFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeEndpointsRequestFilterSensitiveLog = DescribeEndpointsRequestFilterSensitiveLog;
+const EndpointFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.EndpointFilterSensitiveLog = EndpointFilterSensitiveLog;
+const DescribeEndpointsResponseFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeEndpointsResponseFilterSensitiveLog = DescribeEndpointsResponseFilterSensitiveLog;
+const DescribeExportInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeExportInputFilterSensitiveLog = DescribeExportInputFilterSensitiveLog;
+const ExportDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ExportDescriptionFilterSensitiveLog = ExportDescriptionFilterSensitiveLog;
+const DescribeExportOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeExportOutputFilterSensitiveLog = DescribeExportOutputFilterSensitiveLog;
+const DescribeGlobalTableInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeGlobalTableInputFilterSensitiveLog = DescribeGlobalTableInputFilterSensitiveLog;
+const DescribeGlobalTableOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeGlobalTableOutputFilterSensitiveLog = DescribeGlobalTableOutputFilterSensitiveLog;
+const DescribeGlobalTableSettingsInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeGlobalTableSettingsInputFilterSensitiveLog = DescribeGlobalTableSettingsInputFilterSensitiveLog;
+const ReplicaGlobalSecondaryIndexSettingsDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ReplicaGlobalSecondaryIndexSettingsDescriptionFilterSensitiveLog = ReplicaGlobalSecondaryIndexSettingsDescriptionFilterSensitiveLog;
+const ReplicaSettingsDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ReplicaSettingsDescriptionFilterSensitiveLog = ReplicaSettingsDescriptionFilterSensitiveLog;
+const DescribeGlobalTableSettingsOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeGlobalTableSettingsOutputFilterSensitiveLog = DescribeGlobalTableSettingsOutputFilterSensitiveLog;
+const DescribeKinesisStreamingDestinationInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeKinesisStreamingDestinationInputFilterSensitiveLog = DescribeKinesisStreamingDestinationInputFilterSensitiveLog;
+const KinesisDataStreamDestinationFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.KinesisDataStreamDestinationFilterSensitiveLog = KinesisDataStreamDestinationFilterSensitiveLog;
+const DescribeKinesisStreamingDestinationOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeKinesisStreamingDestinationOutputFilterSensitiveLog = DescribeKinesisStreamingDestinationOutputFilterSensitiveLog;
+const DescribeLimitsInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeLimitsInputFilterSensitiveLog = DescribeLimitsInputFilterSensitiveLog;
+const DescribeLimitsOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeLimitsOutputFilterSensitiveLog = DescribeLimitsOutputFilterSensitiveLog;
+const DescribeTableInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeTableInputFilterSensitiveLog = DescribeTableInputFilterSensitiveLog;
+const DescribeTableOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeTableOutputFilterSensitiveLog = DescribeTableOutputFilterSensitiveLog;
+const DescribeTableReplicaAutoScalingInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeTableReplicaAutoScalingInputFilterSensitiveLog = DescribeTableReplicaAutoScalingInputFilterSensitiveLog;
+const ReplicaGlobalSecondaryIndexAutoScalingDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ReplicaGlobalSecondaryIndexAutoScalingDescriptionFilterSensitiveLog = ReplicaGlobalSecondaryIndexAutoScalingDescriptionFilterSensitiveLog;
+const ReplicaAutoScalingDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ReplicaAutoScalingDescriptionFilterSensitiveLog = ReplicaAutoScalingDescriptionFilterSensitiveLog;
+const TableAutoScalingDescriptionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.TableAutoScalingDescriptionFilterSensitiveLog = TableAutoScalingDescriptionFilterSensitiveLog;
+const DescribeTableReplicaAutoScalingOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeTableReplicaAutoScalingOutputFilterSensitiveLog = DescribeTableReplicaAutoScalingOutputFilterSensitiveLog;
+const DescribeTimeToLiveInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeTimeToLiveInputFilterSensitiveLog = DescribeTimeToLiveInputFilterSensitiveLog;
+const DescribeTimeToLiveOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DescribeTimeToLiveOutputFilterSensitiveLog = DescribeTimeToLiveOutputFilterSensitiveLog;
+const KinesisStreamingDestinationInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.KinesisStreamingDestinationInputFilterSensitiveLog = KinesisStreamingDestinationInputFilterSensitiveLog;
+const KinesisStreamingDestinationOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.KinesisStreamingDestinationOutputFilterSensitiveLog = KinesisStreamingDestinationOutputFilterSensitiveLog;
+const ExportTableToPointInTimeInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ExportTableToPointInTimeInputFilterSensitiveLog = ExportTableToPointInTimeInputFilterSensitiveLog;
+const ExportTableToPointInTimeOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ExportTableToPointInTimeOutputFilterSensitiveLog = ExportTableToPointInTimeOutputFilterSensitiveLog;
+const ListBackupsInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ListBackupsInputFilterSensitiveLog = ListBackupsInputFilterSensitiveLog;
+const ListBackupsOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ListBackupsOutputFilterSensitiveLog = ListBackupsOutputFilterSensitiveLog;
+const ListContributorInsightsInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ListContributorInsightsInputFilterSensitiveLog = ListContributorInsightsInputFilterSensitiveLog;
+const ListContributorInsightsOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ListContributorInsightsOutputFilterSensitiveLog = ListContributorInsightsOutputFilterSensitiveLog;
+const ListExportsInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ListExportsInputFilterSensitiveLog = ListExportsInputFilterSensitiveLog;
+const ExportSummaryFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ExportSummaryFilterSensitiveLog = ExportSummaryFilterSensitiveLog;
+const ListExportsOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ListExportsOutputFilterSensitiveLog = ListExportsOutputFilterSensitiveLog;
+const ListGlobalTablesInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ListGlobalTablesInputFilterSensitiveLog = ListGlobalTablesInputFilterSensitiveLog;
+const GlobalTableFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.GlobalTableFilterSensitiveLog = GlobalTableFilterSensitiveLog;
+const ListGlobalTablesOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ListGlobalTablesOutputFilterSensitiveLog = ListGlobalTablesOutputFilterSensitiveLog;
+const ListTablesInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ListTablesInputFilterSensitiveLog = ListTablesInputFilterSensitiveLog;
+const ListTablesOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ListTablesOutputFilterSensitiveLog = ListTablesOutputFilterSensitiveLog;
+const ListTagsOfResourceInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ListTagsOfResourceInputFilterSensitiveLog = ListTagsOfResourceInputFilterSensitiveLog;
+const ListTagsOfResourceOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ListTagsOfResourceOutputFilterSensitiveLog = ListTagsOfResourceOutputFilterSensitiveLog;
+const RestoreTableFromBackupInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.RestoreTableFromBackupInputFilterSensitiveLog = RestoreTableFromBackupInputFilterSensitiveLog;
+const RestoreTableFromBackupOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.RestoreTableFromBackupOutputFilterSensitiveLog = RestoreTableFromBackupOutputFilterSensitiveLog;
+const RestoreTableToPointInTimeInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.RestoreTableToPointInTimeInputFilterSensitiveLog = RestoreTableToPointInTimeInputFilterSensitiveLog;
+const RestoreTableToPointInTimeOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.RestoreTableToPointInTimeOutputFilterSensitiveLog = RestoreTableToPointInTimeOutputFilterSensitiveLog;
+const TagResourceInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.TagResourceInputFilterSensitiveLog = TagResourceInputFilterSensitiveLog;
+const UntagResourceInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.UntagResourceInputFilterSensitiveLog = UntagResourceInputFilterSensitiveLog;
+const PointInTimeRecoverySpecificationFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.PointInTimeRecoverySpecificationFilterSensitiveLog = PointInTimeRecoverySpecificationFilterSensitiveLog;
+const UpdateContinuousBackupsInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.UpdateContinuousBackupsInputFilterSensitiveLog = UpdateContinuousBackupsInputFilterSensitiveLog;
+const UpdateContinuousBackupsOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.UpdateContinuousBackupsOutputFilterSensitiveLog = UpdateContinuousBackupsOutputFilterSensitiveLog;
+const UpdateContributorInsightsInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.UpdateContributorInsightsInputFilterSensitiveLog = UpdateContributorInsightsInputFilterSensitiveLog;
+const UpdateContributorInsightsOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.UpdateContributorInsightsOutputFilterSensitiveLog = UpdateContributorInsightsOutputFilterSensitiveLog;
+const ReplicaUpdateFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ReplicaUpdateFilterSensitiveLog = ReplicaUpdateFilterSensitiveLog;
+const UpdateGlobalTableInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.UpdateGlobalTableInputFilterSensitiveLog = UpdateGlobalTableInputFilterSensitiveLog;
+const UpdateGlobalTableOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.UpdateGlobalTableOutputFilterSensitiveLog = UpdateGlobalTableOutputFilterSensitiveLog;
+const GlobalTableGlobalSecondaryIndexSettingsUpdateFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.GlobalTableGlobalSecondaryIndexSettingsUpdateFilterSensitiveLog = GlobalTableGlobalSecondaryIndexSettingsUpdateFilterSensitiveLog;
+const ReplicaGlobalSecondaryIndexSettingsUpdateFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ReplicaGlobalSecondaryIndexSettingsUpdateFilterSensitiveLog = ReplicaGlobalSecondaryIndexSettingsUpdateFilterSensitiveLog;
+const ReplicaSettingsUpdateFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ReplicaSettingsUpdateFilterSensitiveLog = ReplicaSettingsUpdateFilterSensitiveLog;
+const UpdateGlobalTableSettingsInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.UpdateGlobalTableSettingsInputFilterSensitiveLog = UpdateGlobalTableSettingsInputFilterSensitiveLog;
+const UpdateGlobalTableSettingsOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.UpdateGlobalTableSettingsOutputFilterSensitiveLog = UpdateGlobalTableSettingsOutputFilterSensitiveLog;
+const UpdateGlobalSecondaryIndexActionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.UpdateGlobalSecondaryIndexActionFilterSensitiveLog = UpdateGlobalSecondaryIndexActionFilterSensitiveLog;
+const GlobalSecondaryIndexUpdateFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.GlobalSecondaryIndexUpdateFilterSensitiveLog = GlobalSecondaryIndexUpdateFilterSensitiveLog;
+const UpdateReplicationGroupMemberActionFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.UpdateReplicationGroupMemberActionFilterSensitiveLog = UpdateReplicationGroupMemberActionFilterSensitiveLog;
+const ReplicationGroupUpdateFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ReplicationGroupUpdateFilterSensitiveLog = ReplicationGroupUpdateFilterSensitiveLog;
+const UpdateTableInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.UpdateTableInputFilterSensitiveLog = UpdateTableInputFilterSensitiveLog;
+const UpdateTableOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.UpdateTableOutputFilterSensitiveLog = UpdateTableOutputFilterSensitiveLog;
+const GlobalSecondaryIndexAutoScalingUpdateFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.GlobalSecondaryIndexAutoScalingUpdateFilterSensitiveLog = GlobalSecondaryIndexAutoScalingUpdateFilterSensitiveLog;
+const ReplicaGlobalSecondaryIndexAutoScalingUpdateFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ReplicaGlobalSecondaryIndexAutoScalingUpdateFilterSensitiveLog = ReplicaGlobalSecondaryIndexAutoScalingUpdateFilterSensitiveLog;
+const ReplicaAutoScalingUpdateFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ReplicaAutoScalingUpdateFilterSensitiveLog = ReplicaAutoScalingUpdateFilterSensitiveLog;
+const UpdateTableReplicaAutoScalingInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.UpdateTableReplicaAutoScalingInputFilterSensitiveLog = UpdateTableReplicaAutoScalingInputFilterSensitiveLog;
+const UpdateTableReplicaAutoScalingOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.UpdateTableReplicaAutoScalingOutputFilterSensitiveLog = UpdateTableReplicaAutoScalingOutputFilterSensitiveLog;
+const TimeToLiveSpecificationFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.TimeToLiveSpecificationFilterSensitiveLog = TimeToLiveSpecificationFilterSensitiveLog;
+const UpdateTimeToLiveInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.UpdateTimeToLiveInputFilterSensitiveLog = UpdateTimeToLiveInputFilterSensitiveLog;
+const UpdateTimeToLiveOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.UpdateTimeToLiveOutputFilterSensitiveLog = UpdateTimeToLiveOutputFilterSensitiveLog;
+const AttributeValueFilterSensitiveLog = (obj) => {
+    if (obj.S !== undefined)
+        return { S: obj.S };
+    if (obj.N !== undefined)
+        return { N: obj.N };
+    if (obj.B !== undefined)
+        return { B: obj.B };
+    if (obj.SS !== undefined)
+        return { SS: obj.SS };
+    if (obj.NS !== undefined)
+        return { NS: obj.NS };
+    if (obj.BS !== undefined)
+        return { BS: obj.BS };
+    if (obj.M !== undefined)
+        return {
+            M: Object.entries(obj.M).reduce((acc, [key, value]) => ({
                 ...acc,
-                [key]: KeysAndAttributes.filterSensitiveLog(value),
+                [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
             }), {}),
-        }),
-    });
-})(BatchGetItemInput = exports.BatchGetItemInput || (exports.BatchGetItemInput = {}));
-var ExpectedAttributeValue;
-(function (ExpectedAttributeValue) {
-    ExpectedAttributeValue.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Value && { Value: AttributeValue.filterSensitiveLog(obj.Value) }),
-        ...(obj.AttributeValueList && {
-            AttributeValueList: obj.AttributeValueList.map((item) => AttributeValue.filterSensitiveLog(item)),
-        }),
-    });
-})(ExpectedAttributeValue = exports.ExpectedAttributeValue || (exports.ExpectedAttributeValue = {}));
-var TransactGetItemsInput;
-(function (TransactGetItemsInput) {
-    TransactGetItemsInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.TransactItems && {
-            TransactItems: obj.TransactItems.map((item) => TransactGetItem.filterSensitiveLog(item)),
-        }),
-    });
-})(TransactGetItemsInput = exports.TransactGetItemsInput || (exports.TransactGetItemsInput = {}));
-var TransactWriteItemsOutput;
-(function (TransactWriteItemsOutput) {
-    TransactWriteItemsOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.ItemCollectionMetrics && {
-            ItemCollectionMetrics: Object.entries(obj.ItemCollectionMetrics).reduce((acc, [key, value]) => ({
+        };
+    if (obj.L !== undefined)
+        return { L: obj.L.map((item) => (0, exports.AttributeValueFilterSensitiveLog)(item)) };
+    if (obj.NULL !== undefined)
+        return { NULL: obj.NULL };
+    if (obj.BOOL !== undefined)
+        return { BOOL: obj.BOOL };
+    if (obj.$unknown !== undefined)
+        return { [obj.$unknown[0]]: "UNKNOWN" };
+};
+exports.AttributeValueFilterSensitiveLog = AttributeValueFilterSensitiveLog;
+const AttributeValueUpdateFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Value && { Value: (0, exports.AttributeValueFilterSensitiveLog)(obj.Value) }),
+});
+exports.AttributeValueUpdateFilterSensitiveLog = AttributeValueUpdateFilterSensitiveLog;
+const BatchStatementRequestFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Parameters && { Parameters: obj.Parameters.map((item) => (0, exports.AttributeValueFilterSensitiveLog)(item)) }),
+});
+exports.BatchStatementRequestFilterSensitiveLog = BatchStatementRequestFilterSensitiveLog;
+const BatchStatementResponseFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Item && {
+        Item: Object.entries(obj.Item).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.BatchStatementResponseFilterSensitiveLog = BatchStatementResponseFilterSensitiveLog;
+const CancellationReasonFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Item && {
+        Item: Object.entries(obj.Item).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.CancellationReasonFilterSensitiveLog = CancellationReasonFilterSensitiveLog;
+const ConditionFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.AttributeValueList && {
+        AttributeValueList: obj.AttributeValueList.map((item) => (0, exports.AttributeValueFilterSensitiveLog)(item)),
+    }),
+});
+exports.ConditionFilterSensitiveLog = ConditionFilterSensitiveLog;
+const DeleteRequestFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Key && {
+        Key: Object.entries(obj.Key).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.DeleteRequestFilterSensitiveLog = DeleteRequestFilterSensitiveLog;
+const ExecuteStatementInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Parameters && { Parameters: obj.Parameters.map((item) => (0, exports.AttributeValueFilterSensitiveLog)(item)) }),
+});
+exports.ExecuteStatementInputFilterSensitiveLog = ExecuteStatementInputFilterSensitiveLog;
+const GetFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Key && {
+        Key: Object.entries(obj.Key).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.GetFilterSensitiveLog = GetFilterSensitiveLog;
+const GetItemInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Key && {
+        Key: Object.entries(obj.Key).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.GetItemInputFilterSensitiveLog = GetItemInputFilterSensitiveLog;
+const GetItemOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Item && {
+        Item: Object.entries(obj.Item).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.GetItemOutputFilterSensitiveLog = GetItemOutputFilterSensitiveLog;
+const ItemCollectionMetricsFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.ItemCollectionKey && {
+        ItemCollectionKey: Object.entries(obj.ItemCollectionKey).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.ItemCollectionMetricsFilterSensitiveLog = ItemCollectionMetricsFilterSensitiveLog;
+const ItemResponseFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Item && {
+        Item: Object.entries(obj.Item).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.ItemResponseFilterSensitiveLog = ItemResponseFilterSensitiveLog;
+const ParameterizedStatementFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Parameters && { Parameters: obj.Parameters.map((item) => (0, exports.AttributeValueFilterSensitiveLog)(item)) }),
+});
+exports.ParameterizedStatementFilterSensitiveLog = ParameterizedStatementFilterSensitiveLog;
+const PutRequestFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Item && {
+        Item: Object.entries(obj.Item).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.PutRequestFilterSensitiveLog = PutRequestFilterSensitiveLog;
+const KeysAndAttributesFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Keys && {
+        Keys: obj.Keys.map((item) => Object.entries(item).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {})),
+    }),
+});
+exports.KeysAndAttributesFilterSensitiveLog = KeysAndAttributesFilterSensitiveLog;
+const TransactGetItemFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Get && { Get: (0, exports.GetFilterSensitiveLog)(obj.Get) }),
+});
+exports.TransactGetItemFilterSensitiveLog = TransactGetItemFilterSensitiveLog;
+const BatchExecuteStatementInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Statements && { Statements: obj.Statements.map((item) => (0, exports.BatchStatementRequestFilterSensitiveLog)(item)) }),
+});
+exports.BatchExecuteStatementInputFilterSensitiveLog = BatchExecuteStatementInputFilterSensitiveLog;
+const BatchExecuteStatementOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Responses && { Responses: obj.Responses.map((item) => (0, exports.BatchStatementResponseFilterSensitiveLog)(item)) }),
+});
+exports.BatchExecuteStatementOutputFilterSensitiveLog = BatchExecuteStatementOutputFilterSensitiveLog;
+const ExecuteTransactionInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.TransactStatements && {
+        TransactStatements: obj.TransactStatements.map((item) => (0, exports.ParameterizedStatementFilterSensitiveLog)(item)),
+    }),
+});
+exports.ExecuteTransactionInputFilterSensitiveLog = ExecuteTransactionInputFilterSensitiveLog;
+const ExecuteTransactionOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Responses && { Responses: obj.Responses.map((item) => (0, exports.ItemResponseFilterSensitiveLog)(item)) }),
+});
+exports.ExecuteTransactionOutputFilterSensitiveLog = ExecuteTransactionOutputFilterSensitiveLog;
+const TransactGetItemsOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Responses && { Responses: obj.Responses.map((item) => (0, exports.ItemResponseFilterSensitiveLog)(item)) }),
+});
+exports.TransactGetItemsOutputFilterSensitiveLog = TransactGetItemsOutputFilterSensitiveLog;
+const BatchGetItemInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.RequestItems && {
+        RequestItems: Object.entries(obj.RequestItems).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.KeysAndAttributesFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.BatchGetItemInputFilterSensitiveLog = BatchGetItemInputFilterSensitiveLog;
+const ExpectedAttributeValueFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Value && { Value: (0, exports.AttributeValueFilterSensitiveLog)(obj.Value) }),
+    ...(obj.AttributeValueList && {
+        AttributeValueList: obj.AttributeValueList.map((item) => (0, exports.AttributeValueFilterSensitiveLog)(item)),
+    }),
+});
+exports.ExpectedAttributeValueFilterSensitiveLog = ExpectedAttributeValueFilterSensitiveLog;
+const TransactGetItemsInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.TransactItems && { TransactItems: obj.TransactItems.map((item) => (0, exports.TransactGetItemFilterSensitiveLog)(item)) }),
+});
+exports.TransactGetItemsInputFilterSensitiveLog = TransactGetItemsInputFilterSensitiveLog;
+const TransactWriteItemsOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.ItemCollectionMetrics && {
+        ItemCollectionMetrics: Object.entries(obj.ItemCollectionMetrics).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: value.map((item) => (0, exports.ItemCollectionMetricsFilterSensitiveLog)(item)),
+        }), {}),
+    }),
+});
+exports.TransactWriteItemsOutputFilterSensitiveLog = TransactWriteItemsOutputFilterSensitiveLog;
+const ConditionCheckFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Key && {
+        Key: Object.entries(obj.Key).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+    ...(obj.ExpressionAttributeValues && {
+        ExpressionAttributeValues: Object.entries(obj.ExpressionAttributeValues).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.ConditionCheckFilterSensitiveLog = ConditionCheckFilterSensitiveLog;
+const DeleteFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Key && {
+        Key: Object.entries(obj.Key).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+    ...(obj.ExpressionAttributeValues && {
+        ExpressionAttributeValues: Object.entries(obj.ExpressionAttributeValues).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.DeleteFilterSensitiveLog = DeleteFilterSensitiveLog;
+const PutFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Item && {
+        Item: Object.entries(obj.Item).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+    ...(obj.ExpressionAttributeValues && {
+        ExpressionAttributeValues: Object.entries(obj.ExpressionAttributeValues).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.PutFilterSensitiveLog = PutFilterSensitiveLog;
+const UpdateFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Key && {
+        Key: Object.entries(obj.Key).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+    ...(obj.ExpressionAttributeValues && {
+        ExpressionAttributeValues: Object.entries(obj.ExpressionAttributeValues).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.UpdateFilterSensitiveLog = UpdateFilterSensitiveLog;
+const DeleteItemOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Attributes && {
+        Attributes: Object.entries(obj.Attributes).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+    ...(obj.ItemCollectionMetrics && {
+        ItemCollectionMetrics: (0, exports.ItemCollectionMetricsFilterSensitiveLog)(obj.ItemCollectionMetrics),
+    }),
+});
+exports.DeleteItemOutputFilterSensitiveLog = DeleteItemOutputFilterSensitiveLog;
+const ExecuteStatementOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Items && {
+        Items: obj.Items.map((item) => Object.entries(item).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {})),
+    }),
+    ...(obj.LastEvaluatedKey && {
+        LastEvaluatedKey: Object.entries(obj.LastEvaluatedKey).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.ExecuteStatementOutputFilterSensitiveLog = ExecuteStatementOutputFilterSensitiveLog;
+const PutItemOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Attributes && {
+        Attributes: Object.entries(obj.Attributes).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+    ...(obj.ItemCollectionMetrics && {
+        ItemCollectionMetrics: (0, exports.ItemCollectionMetricsFilterSensitiveLog)(obj.ItemCollectionMetrics),
+    }),
+});
+exports.PutItemOutputFilterSensitiveLog = PutItemOutputFilterSensitiveLog;
+const QueryOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Items && {
+        Items: obj.Items.map((item) => Object.entries(item).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {})),
+    }),
+    ...(obj.LastEvaluatedKey && {
+        LastEvaluatedKey: Object.entries(obj.LastEvaluatedKey).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.QueryOutputFilterSensitiveLog = QueryOutputFilterSensitiveLog;
+const ScanOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Items && {
+        Items: obj.Items.map((item) => Object.entries(item).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {})),
+    }),
+    ...(obj.LastEvaluatedKey && {
+        LastEvaluatedKey: Object.entries(obj.LastEvaluatedKey).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.ScanOutputFilterSensitiveLog = ScanOutputFilterSensitiveLog;
+const UpdateItemOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Attributes && {
+        Attributes: Object.entries(obj.Attributes).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+    ...(obj.ItemCollectionMetrics && {
+        ItemCollectionMetrics: (0, exports.ItemCollectionMetricsFilterSensitiveLog)(obj.ItemCollectionMetrics),
+    }),
+});
+exports.UpdateItemOutputFilterSensitiveLog = UpdateItemOutputFilterSensitiveLog;
+const WriteRequestFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.PutRequest && { PutRequest: (0, exports.PutRequestFilterSensitiveLog)(obj.PutRequest) }),
+    ...(obj.DeleteRequest && { DeleteRequest: (0, exports.DeleteRequestFilterSensitiveLog)(obj.DeleteRequest) }),
+});
+exports.WriteRequestFilterSensitiveLog = WriteRequestFilterSensitiveLog;
+const BatchGetItemOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Responses && {
+        Responses: Object.entries(obj.Responses).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: value.map((item) => Object.entries(item).reduce((acc, [key, value]) => ({
                 ...acc,
-                [key]: value.map((item) => ItemCollectionMetrics.filterSensitiveLog(item)),
-            }), {}),
-        }),
-    });
-})(TransactWriteItemsOutput = exports.TransactWriteItemsOutput || (exports.TransactWriteItemsOutput = {}));
-var ConditionCheck;
-(function (ConditionCheck) {
-    ConditionCheck.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Key && {
-            Key: Object.entries(obj.Key).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-        ...(obj.ExpressionAttributeValues && {
-            ExpressionAttributeValues: Object.entries(obj.ExpressionAttributeValues).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(ConditionCheck = exports.ConditionCheck || (exports.ConditionCheck = {}));
-var Delete;
-(function (Delete) {
-    Delete.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Key && {
-            Key: Object.entries(obj.Key).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-        ...(obj.ExpressionAttributeValues && {
-            ExpressionAttributeValues: Object.entries(obj.ExpressionAttributeValues).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(Delete = exports.Delete || (exports.Delete = {}));
-var Put;
-(function (Put) {
-    Put.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Item && {
-            Item: Object.entries(obj.Item).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-        ...(obj.ExpressionAttributeValues && {
-            ExpressionAttributeValues: Object.entries(obj.ExpressionAttributeValues).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(Put = exports.Put || (exports.Put = {}));
-var Update;
-(function (Update) {
-    Update.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Key && {
-            Key: Object.entries(obj.Key).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-        ...(obj.ExpressionAttributeValues && {
-            ExpressionAttributeValues: Object.entries(obj.ExpressionAttributeValues).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(Update = exports.Update || (exports.Update = {}));
-var DeleteItemOutput;
-(function (DeleteItemOutput) {
-    DeleteItemOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Attributes && {
-            Attributes: Object.entries(obj.Attributes).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-        ...(obj.ItemCollectionMetrics && {
-            ItemCollectionMetrics: ItemCollectionMetrics.filterSensitiveLog(obj.ItemCollectionMetrics),
-        }),
-    });
-})(DeleteItemOutput = exports.DeleteItemOutput || (exports.DeleteItemOutput = {}));
-var ExecuteStatementOutput;
-(function (ExecuteStatementOutput) {
-    ExecuteStatementOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Items && {
-            Items: obj.Items.map((item) => Object.entries(item).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
+                [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
             }), {})),
-        }),
-        ...(obj.LastEvaluatedKey && {
-            LastEvaluatedKey: Object.entries(obj.LastEvaluatedKey).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(ExecuteStatementOutput = exports.ExecuteStatementOutput || (exports.ExecuteStatementOutput = {}));
-var PutItemOutput;
-(function (PutItemOutput) {
-    PutItemOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Attributes && {
-            Attributes: Object.entries(obj.Attributes).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-        ...(obj.ItemCollectionMetrics && {
-            ItemCollectionMetrics: ItemCollectionMetrics.filterSensitiveLog(obj.ItemCollectionMetrics),
-        }),
-    });
-})(PutItemOutput = exports.PutItemOutput || (exports.PutItemOutput = {}));
-var QueryOutput;
-(function (QueryOutput) {
-    QueryOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Items && {
-            Items: obj.Items.map((item) => Object.entries(item).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {})),
-        }),
-        ...(obj.LastEvaluatedKey && {
-            LastEvaluatedKey: Object.entries(obj.LastEvaluatedKey).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(QueryOutput = exports.QueryOutput || (exports.QueryOutput = {}));
-var ScanOutput;
-(function (ScanOutput) {
-    ScanOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Items && {
-            Items: obj.Items.map((item) => Object.entries(item).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {})),
-        }),
-        ...(obj.LastEvaluatedKey && {
-            LastEvaluatedKey: Object.entries(obj.LastEvaluatedKey).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(ScanOutput = exports.ScanOutput || (exports.ScanOutput = {}));
-var UpdateItemOutput;
-(function (UpdateItemOutput) {
-    UpdateItemOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Attributes && {
-            Attributes: Object.entries(obj.Attributes).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-        ...(obj.ItemCollectionMetrics && {
-            ItemCollectionMetrics: ItemCollectionMetrics.filterSensitiveLog(obj.ItemCollectionMetrics),
-        }),
-    });
-})(UpdateItemOutput = exports.UpdateItemOutput || (exports.UpdateItemOutput = {}));
-var WriteRequest;
-(function (WriteRequest) {
-    WriteRequest.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.PutRequest && { PutRequest: PutRequest.filterSensitiveLog(obj.PutRequest) }),
-        ...(obj.DeleteRequest && { DeleteRequest: DeleteRequest.filterSensitiveLog(obj.DeleteRequest) }),
-    });
-})(WriteRequest = exports.WriteRequest || (exports.WriteRequest = {}));
-var BatchGetItemOutput;
-(function (BatchGetItemOutput) {
-    BatchGetItemOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Responses && {
-            Responses: Object.entries(obj.Responses).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: value.map((item) => Object.entries(item).reduce((acc, [key, value]) => ({
-                    ...acc,
-                    [key]: AttributeValue.filterSensitiveLog(value),
-                }), {})),
-            }), {}),
-        }),
-        ...(obj.UnprocessedKeys && {
-            UnprocessedKeys: Object.entries(obj.UnprocessedKeys).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: KeysAndAttributes.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(BatchGetItemOutput = exports.BatchGetItemOutput || (exports.BatchGetItemOutput = {}));
-var ScanInput;
-(function (ScanInput) {
-    ScanInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.ScanFilter && {
-            ScanFilter: Object.entries(obj.ScanFilter).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: Condition.filterSensitiveLog(value),
-            }), {}),
-        }),
-        ...(obj.ExclusiveStartKey && {
-            ExclusiveStartKey: Object.entries(obj.ExclusiveStartKey).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-        ...(obj.ExpressionAttributeValues && {
-            ExpressionAttributeValues: Object.entries(obj.ExpressionAttributeValues).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(ScanInput = exports.ScanInput || (exports.ScanInput = {}));
-var BatchWriteItemInput;
-(function (BatchWriteItemInput) {
-    BatchWriteItemInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.RequestItems && {
-            RequestItems: Object.entries(obj.RequestItems).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: value.map((item) => WriteRequest.filterSensitiveLog(item)),
-            }), {}),
-        }),
-    });
-})(BatchWriteItemInput = exports.BatchWriteItemInput || (exports.BatchWriteItemInput = {}));
-var DeleteItemInput;
-(function (DeleteItemInput) {
-    DeleteItemInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Key && {
-            Key: Object.entries(obj.Key).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-        ...(obj.Expected && {
-            Expected: Object.entries(obj.Expected).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: ExpectedAttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-        ...(obj.ExpressionAttributeValues && {
-            ExpressionAttributeValues: Object.entries(obj.ExpressionAttributeValues).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(DeleteItemInput = exports.DeleteItemInput || (exports.DeleteItemInput = {}));
-var PutItemInput;
-(function (PutItemInput) {
-    PutItemInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Item && {
-            Item: Object.entries(obj.Item).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-        ...(obj.Expected && {
-            Expected: Object.entries(obj.Expected).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: ExpectedAttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-        ...(obj.ExpressionAttributeValues && {
-            ExpressionAttributeValues: Object.entries(obj.ExpressionAttributeValues).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(PutItemInput = exports.PutItemInput || (exports.PutItemInput = {}));
-var QueryInput;
-(function (QueryInput) {
-    QueryInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.KeyConditions && {
-            KeyConditions: Object.entries(obj.KeyConditions).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: Condition.filterSensitiveLog(value),
-            }), {}),
-        }),
-        ...(obj.QueryFilter && {
-            QueryFilter: Object.entries(obj.QueryFilter).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: Condition.filterSensitiveLog(value),
-            }), {}),
-        }),
-        ...(obj.ExclusiveStartKey && {
-            ExclusiveStartKey: Object.entries(obj.ExclusiveStartKey).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-        ...(obj.ExpressionAttributeValues && {
-            ExpressionAttributeValues: Object.entries(obj.ExpressionAttributeValues).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(QueryInput = exports.QueryInput || (exports.QueryInput = {}));
-var BatchWriteItemOutput;
-(function (BatchWriteItemOutput) {
-    BatchWriteItemOutput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.UnprocessedItems && {
-            UnprocessedItems: Object.entries(obj.UnprocessedItems).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: value.map((item) => WriteRequest.filterSensitiveLog(item)),
-            }), {}),
-        }),
-        ...(obj.ItemCollectionMetrics && {
-            ItemCollectionMetrics: Object.entries(obj.ItemCollectionMetrics).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: value.map((item) => ItemCollectionMetrics.filterSensitiveLog(item)),
-            }), {}),
-        }),
-    });
-})(BatchWriteItemOutput = exports.BatchWriteItemOutput || (exports.BatchWriteItemOutput = {}));
-var UpdateItemInput;
-(function (UpdateItemInput) {
-    UpdateItemInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.Key && {
-            Key: Object.entries(obj.Key).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-        ...(obj.AttributeUpdates && {
-            AttributeUpdates: Object.entries(obj.AttributeUpdates).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValueUpdate.filterSensitiveLog(value),
-            }), {}),
-        }),
-        ...(obj.Expected && {
-            Expected: Object.entries(obj.Expected).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: ExpectedAttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-        ...(obj.ExpressionAttributeValues && {
-            ExpressionAttributeValues: Object.entries(obj.ExpressionAttributeValues).reduce((acc, [key, value]) => ({
-                ...acc,
-                [key]: AttributeValue.filterSensitiveLog(value),
-            }), {}),
-        }),
-    });
-})(UpdateItemInput = exports.UpdateItemInput || (exports.UpdateItemInput = {}));
-var TransactWriteItem;
-(function (TransactWriteItem) {
-    TransactWriteItem.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.ConditionCheck && { ConditionCheck: ConditionCheck.filterSensitiveLog(obj.ConditionCheck) }),
-        ...(obj.Put && { Put: Put.filterSensitiveLog(obj.Put) }),
-        ...(obj.Delete && { Delete: Delete.filterSensitiveLog(obj.Delete) }),
-        ...(obj.Update && { Update: Update.filterSensitiveLog(obj.Update) }),
-    });
-})(TransactWriteItem = exports.TransactWriteItem || (exports.TransactWriteItem = {}));
-var TransactWriteItemsInput;
-(function (TransactWriteItemsInput) {
-    TransactWriteItemsInput.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.TransactItems && {
-            TransactItems: obj.TransactItems.map((item) => TransactWriteItem.filterSensitiveLog(item)),
-        }),
-    });
-})(TransactWriteItemsInput = exports.TransactWriteItemsInput || (exports.TransactWriteItemsInput = {}));
+        }), {}),
+    }),
+    ...(obj.UnprocessedKeys && {
+        UnprocessedKeys: Object.entries(obj.UnprocessedKeys).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.KeysAndAttributesFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.BatchGetItemOutputFilterSensitiveLog = BatchGetItemOutputFilterSensitiveLog;
+const ScanInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.ScanFilter && {
+        ScanFilter: Object.entries(obj.ScanFilter).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.ConditionFilterSensitiveLog)(value),
+        }), {}),
+    }),
+    ...(obj.ExclusiveStartKey && {
+        ExclusiveStartKey: Object.entries(obj.ExclusiveStartKey).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+    ...(obj.ExpressionAttributeValues && {
+        ExpressionAttributeValues: Object.entries(obj.ExpressionAttributeValues).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.ScanInputFilterSensitiveLog = ScanInputFilterSensitiveLog;
+const BatchWriteItemInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.RequestItems && {
+        RequestItems: Object.entries(obj.RequestItems).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: value.map((item) => (0, exports.WriteRequestFilterSensitiveLog)(item)),
+        }), {}),
+    }),
+});
+exports.BatchWriteItemInputFilterSensitiveLog = BatchWriteItemInputFilterSensitiveLog;
+const DeleteItemInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Key && {
+        Key: Object.entries(obj.Key).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+    ...(obj.Expected && {
+        Expected: Object.entries(obj.Expected).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.ExpectedAttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+    ...(obj.ExpressionAttributeValues && {
+        ExpressionAttributeValues: Object.entries(obj.ExpressionAttributeValues).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.DeleteItemInputFilterSensitiveLog = DeleteItemInputFilterSensitiveLog;
+const PutItemInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Item && {
+        Item: Object.entries(obj.Item).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+    ...(obj.Expected && {
+        Expected: Object.entries(obj.Expected).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.ExpectedAttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+    ...(obj.ExpressionAttributeValues && {
+        ExpressionAttributeValues: Object.entries(obj.ExpressionAttributeValues).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.PutItemInputFilterSensitiveLog = PutItemInputFilterSensitiveLog;
+const QueryInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.KeyConditions && {
+        KeyConditions: Object.entries(obj.KeyConditions).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.ConditionFilterSensitiveLog)(value),
+        }), {}),
+    }),
+    ...(obj.QueryFilter && {
+        QueryFilter: Object.entries(obj.QueryFilter).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.ConditionFilterSensitiveLog)(value),
+        }), {}),
+    }),
+    ...(obj.ExclusiveStartKey && {
+        ExclusiveStartKey: Object.entries(obj.ExclusiveStartKey).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+    ...(obj.ExpressionAttributeValues && {
+        ExpressionAttributeValues: Object.entries(obj.ExpressionAttributeValues).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.QueryInputFilterSensitiveLog = QueryInputFilterSensitiveLog;
+const BatchWriteItemOutputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.UnprocessedItems && {
+        UnprocessedItems: Object.entries(obj.UnprocessedItems).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: value.map((item) => (0, exports.WriteRequestFilterSensitiveLog)(item)),
+        }), {}),
+    }),
+    ...(obj.ItemCollectionMetrics && {
+        ItemCollectionMetrics: Object.entries(obj.ItemCollectionMetrics).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: value.map((item) => (0, exports.ItemCollectionMetricsFilterSensitiveLog)(item)),
+        }), {}),
+    }),
+});
+exports.BatchWriteItemOutputFilterSensitiveLog = BatchWriteItemOutputFilterSensitiveLog;
+const UpdateItemInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.Key && {
+        Key: Object.entries(obj.Key).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+    ...(obj.AttributeUpdates && {
+        AttributeUpdates: Object.entries(obj.AttributeUpdates).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueUpdateFilterSensitiveLog)(value),
+        }), {}),
+    }),
+    ...(obj.Expected && {
+        Expected: Object.entries(obj.Expected).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.ExpectedAttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+    ...(obj.ExpressionAttributeValues && {
+        ExpressionAttributeValues: Object.entries(obj.ExpressionAttributeValues).reduce((acc, [key, value]) => ({
+            ...acc,
+            [key]: (0, exports.AttributeValueFilterSensitiveLog)(value),
+        }), {}),
+    }),
+});
+exports.UpdateItemInputFilterSensitiveLog = UpdateItemInputFilterSensitiveLog;
+const TransactWriteItemFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.ConditionCheck && { ConditionCheck: (0, exports.ConditionCheckFilterSensitiveLog)(obj.ConditionCheck) }),
+    ...(obj.Put && { Put: (0, exports.PutFilterSensitiveLog)(obj.Put) }),
+    ...(obj.Delete && { Delete: (0, exports.DeleteFilterSensitiveLog)(obj.Delete) }),
+    ...(obj.Update && { Update: (0, exports.UpdateFilterSensitiveLog)(obj.Update) }),
+});
+exports.TransactWriteItemFilterSensitiveLog = TransactWriteItemFilterSensitiveLog;
+const TransactWriteItemsInputFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.TransactItems && {
+        TransactItems: obj.TransactItems.map((item) => (0, exports.TransactWriteItemFilterSensitiveLog)(item)),
+    }),
+});
+exports.TransactWriteItemsInputFilterSensitiveLog = TransactWriteItemsInputFilterSensitiveLog;
 
 
 /***/ }),
@@ -7854,7 +7481,6 @@ const deserializeAws_json1_0BatchExecuteStatementCommandError = async (output, c
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -7865,14 +7491,12 @@ const deserializeAws_json1_0BatchExecuteStatementCommandError = async (output, c
             throw await deserializeAws_json1_0RequestLimitExceededResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0BatchGetItemCommand = async (output, context) => {
@@ -7894,7 +7518,6 @@ const deserializeAws_json1_0BatchGetItemCommandError = async (output, context) =
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -7914,14 +7537,12 @@ const deserializeAws_json1_0BatchGetItemCommandError = async (output, context) =
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0BatchWriteItemCommand = async (output, context) => {
@@ -7943,7 +7564,6 @@ const deserializeAws_json1_0BatchWriteItemCommandError = async (output, context)
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -7966,14 +7586,12 @@ const deserializeAws_json1_0BatchWriteItemCommandError = async (output, context)
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0CreateBackupCommand = async (output, context) => {
@@ -7995,7 +7613,6 @@ const deserializeAws_json1_0CreateBackupCommandError = async (output, context) =
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "BackupInUseException":
@@ -8021,14 +7638,12 @@ const deserializeAws_json1_0CreateBackupCommandError = async (output, context) =
             throw await deserializeAws_json1_0TableNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0CreateGlobalTableCommand = async (output, context) => {
@@ -8050,7 +7665,6 @@ const deserializeAws_json1_0CreateGlobalTableCommandError = async (output, conte
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "GlobalTableAlreadyExistsException":
@@ -8070,14 +7684,12 @@ const deserializeAws_json1_0CreateGlobalTableCommandError = async (output, conte
             throw await deserializeAws_json1_0TableNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0CreateTableCommand = async (output, context) => {
@@ -8099,7 +7711,6 @@ const deserializeAws_json1_0CreateTableCommandError = async (output, context) =>
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -8116,14 +7727,12 @@ const deserializeAws_json1_0CreateTableCommandError = async (output, context) =>
             throw await deserializeAws_json1_0ResourceInUseExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0DeleteBackupCommand = async (output, context) => {
@@ -8145,7 +7754,6 @@ const deserializeAws_json1_0DeleteBackupCommandError = async (output, context) =
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "BackupInUseException":
@@ -8165,14 +7773,12 @@ const deserializeAws_json1_0DeleteBackupCommandError = async (output, context) =
             throw await deserializeAws_json1_0LimitExceededExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0DeleteItemCommand = async (output, context) => {
@@ -8194,7 +7800,6 @@ const deserializeAws_json1_0DeleteItemCommandError = async (output, context) => 
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "ConditionalCheckFailedException":
@@ -8223,14 +7828,12 @@ const deserializeAws_json1_0DeleteItemCommandError = async (output, context) => 
             throw await deserializeAws_json1_0TransactionConflictExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0DeleteTableCommand = async (output, context) => {
@@ -8252,7 +7855,6 @@ const deserializeAws_json1_0DeleteTableCommandError = async (output, context) =>
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -8272,14 +7874,12 @@ const deserializeAws_json1_0DeleteTableCommandError = async (output, context) =>
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0DescribeBackupCommand = async (output, context) => {
@@ -8301,7 +7901,6 @@ const deserializeAws_json1_0DescribeBackupCommandError = async (output, context)
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "BackupNotFoundException":
@@ -8315,14 +7914,12 @@ const deserializeAws_json1_0DescribeBackupCommandError = async (output, context)
             throw await deserializeAws_json1_0InvalidEndpointExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0DescribeContinuousBackupsCommand = async (output, context) => {
@@ -8344,7 +7941,6 @@ const deserializeAws_json1_0DescribeContinuousBackupsCommandError = async (outpu
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -8358,14 +7954,12 @@ const deserializeAws_json1_0DescribeContinuousBackupsCommandError = async (outpu
             throw await deserializeAws_json1_0TableNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0DescribeContributorInsightsCommand = async (output, context) => {
@@ -8387,7 +7981,6 @@ const deserializeAws_json1_0DescribeContributorInsightsCommandError = async (out
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -8398,14 +7991,12 @@ const deserializeAws_json1_0DescribeContributorInsightsCommandError = async (out
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0DescribeEndpointsCommand = async (output, context) => {
@@ -8427,20 +8018,14 @@ const deserializeAws_json1_0DescribeEndpointsCommandError = async (output, conte
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
-    switch (errorCode) {
-        default:
-            const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
-            });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
-    }
+    const parsedBody = parsedOutput.body;
+    (0, smithy_client_1.throwDefaultError)({
+        output,
+        parsedBody,
+        exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+        errorCode,
+    });
 };
 const deserializeAws_json1_0DescribeExportCommand = async (output, context) => {
     if (output.statusCode >= 300) {
@@ -8461,7 +8046,6 @@ const deserializeAws_json1_0DescribeExportCommandError = async (output, context)
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "ExportNotFoundException":
@@ -8475,14 +8059,12 @@ const deserializeAws_json1_0DescribeExportCommandError = async (output, context)
             throw await deserializeAws_json1_0LimitExceededExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0DescribeGlobalTableCommand = async (output, context) => {
@@ -8504,7 +8086,6 @@ const deserializeAws_json1_0DescribeGlobalTableCommandError = async (output, con
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "GlobalTableNotFoundException":
@@ -8518,14 +8099,12 @@ const deserializeAws_json1_0DescribeGlobalTableCommandError = async (output, con
             throw await deserializeAws_json1_0InvalidEndpointExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0DescribeGlobalTableSettingsCommand = async (output, context) => {
@@ -8547,7 +8126,6 @@ const deserializeAws_json1_0DescribeGlobalTableSettingsCommandError = async (out
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "GlobalTableNotFoundException":
@@ -8561,14 +8139,12 @@ const deserializeAws_json1_0DescribeGlobalTableSettingsCommandError = async (out
             throw await deserializeAws_json1_0InvalidEndpointExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0DescribeKinesisStreamingDestinationCommand = async (output, context) => {
@@ -8590,7 +8166,6 @@ const deserializeAws_json1_0DescribeKinesisStreamingDestinationCommandError = as
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -8604,14 +8179,12 @@ const deserializeAws_json1_0DescribeKinesisStreamingDestinationCommandError = as
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0DescribeLimitsCommand = async (output, context) => {
@@ -8633,7 +8206,6 @@ const deserializeAws_json1_0DescribeLimitsCommandError = async (output, context)
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -8644,14 +8216,12 @@ const deserializeAws_json1_0DescribeLimitsCommandError = async (output, context)
             throw await deserializeAws_json1_0InvalidEndpointExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0DescribeTableCommand = async (output, context) => {
@@ -8673,7 +8243,6 @@ const deserializeAws_json1_0DescribeTableCommandError = async (output, context) 
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -8687,14 +8256,12 @@ const deserializeAws_json1_0DescribeTableCommandError = async (output, context) 
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0DescribeTableReplicaAutoScalingCommand = async (output, context) => {
@@ -8716,7 +8283,6 @@ const deserializeAws_json1_0DescribeTableReplicaAutoScalingCommandError = async 
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -8727,14 +8293,12 @@ const deserializeAws_json1_0DescribeTableReplicaAutoScalingCommandError = async 
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0DescribeTimeToLiveCommand = async (output, context) => {
@@ -8756,7 +8320,6 @@ const deserializeAws_json1_0DescribeTimeToLiveCommandError = async (output, cont
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -8770,14 +8333,12 @@ const deserializeAws_json1_0DescribeTimeToLiveCommandError = async (output, cont
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0DisableKinesisStreamingDestinationCommand = async (output, context) => {
@@ -8799,7 +8360,6 @@ const deserializeAws_json1_0DisableKinesisStreamingDestinationCommandError = asy
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -8819,14 +8379,12 @@ const deserializeAws_json1_0DisableKinesisStreamingDestinationCommandError = asy
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0EnableKinesisStreamingDestinationCommand = async (output, context) => {
@@ -8848,7 +8406,6 @@ const deserializeAws_json1_0EnableKinesisStreamingDestinationCommandError = asyn
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -8868,14 +8425,12 @@ const deserializeAws_json1_0EnableKinesisStreamingDestinationCommandError = asyn
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0ExecuteStatementCommand = async (output, context) => {
@@ -8897,7 +8452,6 @@ const deserializeAws_json1_0ExecuteStatementCommandError = async (output, contex
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "ConditionalCheckFailedException":
@@ -8926,14 +8480,12 @@ const deserializeAws_json1_0ExecuteStatementCommandError = async (output, contex
             throw await deserializeAws_json1_0TransactionConflictExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0ExecuteTransactionCommand = async (output, context) => {
@@ -8955,7 +8507,6 @@ const deserializeAws_json1_0ExecuteTransactionCommandError = async (output, cont
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "IdempotentParameterMismatchException":
@@ -8981,14 +8532,12 @@ const deserializeAws_json1_0ExecuteTransactionCommandError = async (output, cont
             throw await deserializeAws_json1_0TransactionInProgressExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0ExportTableToPointInTimeCommand = async (output, context) => {
@@ -9010,7 +8559,6 @@ const deserializeAws_json1_0ExportTableToPointInTimeCommandError = async (output
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "ExportConflictException":
@@ -9033,14 +8581,12 @@ const deserializeAws_json1_0ExportTableToPointInTimeCommandError = async (output
             throw await deserializeAws_json1_0TableNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0GetItemCommand = async (output, context) => {
@@ -9062,7 +8608,6 @@ const deserializeAws_json1_0GetItemCommandError = async (output, context) => {
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -9082,14 +8627,12 @@ const deserializeAws_json1_0GetItemCommandError = async (output, context) => {
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0ListBackupsCommand = async (output, context) => {
@@ -9111,7 +8654,6 @@ const deserializeAws_json1_0ListBackupsCommandError = async (output, context) =>
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -9122,14 +8664,12 @@ const deserializeAws_json1_0ListBackupsCommandError = async (output, context) =>
             throw await deserializeAws_json1_0InvalidEndpointExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0ListContributorInsightsCommand = async (output, context) => {
@@ -9151,7 +8691,6 @@ const deserializeAws_json1_0ListContributorInsightsCommandError = async (output,
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -9162,14 +8701,12 @@ const deserializeAws_json1_0ListContributorInsightsCommandError = async (output,
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0ListExportsCommand = async (output, context) => {
@@ -9191,7 +8728,6 @@ const deserializeAws_json1_0ListExportsCommandError = async (output, context) =>
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -9202,14 +8738,12 @@ const deserializeAws_json1_0ListExportsCommandError = async (output, context) =>
             throw await deserializeAws_json1_0LimitExceededExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0ListGlobalTablesCommand = async (output, context) => {
@@ -9231,7 +8765,6 @@ const deserializeAws_json1_0ListGlobalTablesCommandError = async (output, contex
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -9242,14 +8775,12 @@ const deserializeAws_json1_0ListGlobalTablesCommandError = async (output, contex
             throw await deserializeAws_json1_0InvalidEndpointExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0ListTablesCommand = async (output, context) => {
@@ -9271,7 +8802,6 @@ const deserializeAws_json1_0ListTablesCommandError = async (output, context) => 
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -9282,14 +8812,12 @@ const deserializeAws_json1_0ListTablesCommandError = async (output, context) => 
             throw await deserializeAws_json1_0InvalidEndpointExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0ListTagsOfResourceCommand = async (output, context) => {
@@ -9311,7 +8839,6 @@ const deserializeAws_json1_0ListTagsOfResourceCommandError = async (output, cont
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -9325,14 +8852,12 @@ const deserializeAws_json1_0ListTagsOfResourceCommandError = async (output, cont
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0PutItemCommand = async (output, context) => {
@@ -9354,7 +8879,6 @@ const deserializeAws_json1_0PutItemCommandError = async (output, context) => {
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "ConditionalCheckFailedException":
@@ -9383,14 +8907,12 @@ const deserializeAws_json1_0PutItemCommandError = async (output, context) => {
             throw await deserializeAws_json1_0TransactionConflictExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0QueryCommand = async (output, context) => {
@@ -9412,7 +8934,6 @@ const deserializeAws_json1_0QueryCommandError = async (output, context) => {
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -9432,14 +8953,12 @@ const deserializeAws_json1_0QueryCommandError = async (output, context) => {
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0RestoreTableFromBackupCommand = async (output, context) => {
@@ -9461,7 +8980,6 @@ const deserializeAws_json1_0RestoreTableFromBackupCommandError = async (output, 
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "BackupInUseException":
@@ -9487,14 +9005,12 @@ const deserializeAws_json1_0RestoreTableFromBackupCommandError = async (output, 
             throw await deserializeAws_json1_0TableInUseExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0RestoreTableToPointInTimeCommand = async (output, context) => {
@@ -9516,7 +9032,6 @@ const deserializeAws_json1_0RestoreTableToPointInTimeCommandError = async (outpu
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -9545,14 +9060,12 @@ const deserializeAws_json1_0RestoreTableToPointInTimeCommandError = async (outpu
             throw await deserializeAws_json1_0TableNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0ScanCommand = async (output, context) => {
@@ -9574,7 +9087,6 @@ const deserializeAws_json1_0ScanCommandError = async (output, context) => {
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -9594,14 +9106,12 @@ const deserializeAws_json1_0ScanCommandError = async (output, context) => {
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0TagResourceCommand = async (output, context) => {
@@ -9620,7 +9130,6 @@ const deserializeAws_json1_0TagResourceCommandError = async (output, context) =>
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -9640,14 +9149,12 @@ const deserializeAws_json1_0TagResourceCommandError = async (output, context) =>
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0TransactGetItemsCommand = async (output, context) => {
@@ -9669,7 +9176,6 @@ const deserializeAws_json1_0TransactGetItemsCommandError = async (output, contex
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -9692,14 +9198,12 @@ const deserializeAws_json1_0TransactGetItemsCommandError = async (output, contex
             throw await deserializeAws_json1_0TransactionCanceledExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0TransactWriteItemsCommand = async (output, context) => {
@@ -9721,7 +9225,6 @@ const deserializeAws_json1_0TransactWriteItemsCommandError = async (output, cont
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "IdempotentParameterMismatchException":
@@ -9750,14 +9253,12 @@ const deserializeAws_json1_0TransactWriteItemsCommandError = async (output, cont
             throw await deserializeAws_json1_0TransactionInProgressExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0UntagResourceCommand = async (output, context) => {
@@ -9776,7 +9277,6 @@ const deserializeAws_json1_0UntagResourceCommandError = async (output, context) 
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -9796,14 +9296,12 @@ const deserializeAws_json1_0UntagResourceCommandError = async (output, context) 
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0UpdateContinuousBackupsCommand = async (output, context) => {
@@ -9825,7 +9323,6 @@ const deserializeAws_json1_0UpdateContinuousBackupsCommandError = async (output,
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "ContinuousBackupsUnavailableException":
@@ -9842,14 +9339,12 @@ const deserializeAws_json1_0UpdateContinuousBackupsCommandError = async (output,
             throw await deserializeAws_json1_0TableNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0UpdateContributorInsightsCommand = async (output, context) => {
@@ -9871,7 +9366,6 @@ const deserializeAws_json1_0UpdateContributorInsightsCommandError = async (outpu
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -9882,14 +9376,12 @@ const deserializeAws_json1_0UpdateContributorInsightsCommandError = async (outpu
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0UpdateGlobalTableCommand = async (output, context) => {
@@ -9911,7 +9403,6 @@ const deserializeAws_json1_0UpdateGlobalTableCommandError = async (output, conte
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "GlobalTableNotFoundException":
@@ -9934,14 +9425,12 @@ const deserializeAws_json1_0UpdateGlobalTableCommandError = async (output, conte
             throw await deserializeAws_json1_0TableNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0UpdateGlobalTableSettingsCommand = async (output, context) => {
@@ -9963,7 +9452,6 @@ const deserializeAws_json1_0UpdateGlobalTableSettingsCommandError = async (outpu
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "GlobalTableNotFoundException":
@@ -9989,14 +9477,12 @@ const deserializeAws_json1_0UpdateGlobalTableSettingsCommandError = async (outpu
             throw await deserializeAws_json1_0ResourceInUseExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0UpdateItemCommand = async (output, context) => {
@@ -10018,7 +9504,6 @@ const deserializeAws_json1_0UpdateItemCommandError = async (output, context) => 
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "ConditionalCheckFailedException":
@@ -10047,14 +9532,12 @@ const deserializeAws_json1_0UpdateItemCommandError = async (output, context) => 
             throw await deserializeAws_json1_0TransactionConflictExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0UpdateTableCommand = async (output, context) => {
@@ -10076,7 +9559,6 @@ const deserializeAws_json1_0UpdateTableCommandError = async (output, context) =>
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -10096,14 +9578,12 @@ const deserializeAws_json1_0UpdateTableCommandError = async (output, context) =>
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0UpdateTableReplicaAutoScalingCommand = async (output, context) => {
@@ -10125,7 +9605,6 @@ const deserializeAws_json1_0UpdateTableReplicaAutoScalingCommandError = async (o
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -10142,14 +9621,12 @@ const deserializeAws_json1_0UpdateTableReplicaAutoScalingCommandError = async (o
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0UpdateTimeToLiveCommand = async (output, context) => {
@@ -10171,7 +9648,6 @@ const deserializeAws_json1_0UpdateTimeToLiveCommandError = async (output, contex
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InternalServerError":
@@ -10191,14 +9667,12 @@ const deserializeAws_json1_0UpdateTimeToLiveCommandError = async (output, contex
             throw await deserializeAws_json1_0ResourceNotFoundExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new DynamoDBServiceException_1.DynamoDBServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: DynamoDBServiceException_1.DynamoDBServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_json1_0BackupInUseExceptionResponse = async (parsedOutput, context) => {
@@ -10481,9 +9955,6 @@ const serializeAws_json1_0AttributeDefinitions = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0AttributeDefinition(entry, context);
     });
 };
@@ -10491,9 +9962,6 @@ const serializeAws_json1_0AttributeNameList = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return entry;
     });
 };
@@ -10527,9 +9995,6 @@ const serializeAws_json1_0AttributeValueList = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0AttributeValue(entry, context);
     });
 };
@@ -10626,9 +10091,6 @@ const serializeAws_json1_0BinarySetAttributeValue = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return context.base64Encoder(entry);
     });
 };
@@ -10985,9 +10447,6 @@ const serializeAws_json1_0GlobalSecondaryIndexAutoScalingUpdateList = (input, co
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0GlobalSecondaryIndexAutoScalingUpdate(entry, context);
     });
 };
@@ -10995,9 +10454,6 @@ const serializeAws_json1_0GlobalSecondaryIndexList = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0GlobalSecondaryIndex(entry, context);
     });
 };
@@ -11018,9 +10474,6 @@ const serializeAws_json1_0GlobalSecondaryIndexUpdateList = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0GlobalSecondaryIndexUpdate(entry, context);
     });
 };
@@ -11039,9 +10492,6 @@ const serializeAws_json1_0GlobalTableGlobalSecondaryIndexSettingsUpdateList = (i
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0GlobalTableGlobalSecondaryIndexSettingsUpdate(entry, context);
     });
 };
@@ -11071,9 +10521,6 @@ const serializeAws_json1_0KeyList = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0Key(entry, context);
     });
 };
@@ -11094,9 +10541,6 @@ const serializeAws_json1_0KeySchema = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0KeySchemaElement(entry, context);
     });
 };
@@ -11116,9 +10560,6 @@ const serializeAws_json1_0ListAttributeValue = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0AttributeValue(entry, context);
     });
 };
@@ -11182,9 +10623,6 @@ const serializeAws_json1_0LocalSecondaryIndexList = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0LocalSecondaryIndex(entry, context);
     });
 };
@@ -11203,9 +10641,6 @@ const serializeAws_json1_0NonKeyAttributeNameList = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return entry;
     });
 };
@@ -11213,9 +10648,6 @@ const serializeAws_json1_0NumberSetAttributeValue = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return entry;
     });
 };
@@ -11231,9 +10663,6 @@ const serializeAws_json1_0ParameterizedStatements = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0ParameterizedStatement(entry, context);
     });
 };
@@ -11241,9 +10670,6 @@ const serializeAws_json1_0PartiQLBatchRequest = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0BatchStatementRequest(entry, context);
     });
 };
@@ -11256,9 +10682,6 @@ const serializeAws_json1_0PreparedStatementParameters = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0AttributeValue(entry, context);
     });
 };
@@ -11386,9 +10809,6 @@ const serializeAws_json1_0ReplicaAutoScalingUpdateList = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0ReplicaAutoScalingUpdate(entry, context);
     });
 };
@@ -11412,9 +10832,6 @@ const serializeAws_json1_0ReplicaGlobalSecondaryIndexAutoScalingUpdateList = (in
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0ReplicaGlobalSecondaryIndexAutoScalingUpdate(entry, context);
     });
 };
@@ -11422,9 +10839,6 @@ const serializeAws_json1_0ReplicaGlobalSecondaryIndexList = (input, context) => 
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0ReplicaGlobalSecondaryIndex(entry, context);
     });
 };
@@ -11443,9 +10857,6 @@ const serializeAws_json1_0ReplicaGlobalSecondaryIndexSettingsUpdateList = (input
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0ReplicaGlobalSecondaryIndexSettingsUpdate(entry, context);
     });
 };
@@ -11453,9 +10864,6 @@ const serializeAws_json1_0ReplicaList = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0Replica(entry, context);
     });
 };
@@ -11478,9 +10886,6 @@ const serializeAws_json1_0ReplicaSettingsUpdateList = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0ReplicaSettingsUpdate(entry, context);
     });
 };
@@ -11501,9 +10906,6 @@ const serializeAws_json1_0ReplicationGroupUpdateList = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0ReplicationGroupUpdate(entry, context);
     });
 };
@@ -11517,9 +10919,6 @@ const serializeAws_json1_0ReplicaUpdateList = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0ReplicaUpdate(entry, context);
     });
 };
@@ -11609,9 +11008,6 @@ const serializeAws_json1_0StringSetAttributeValue = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return entry;
     });
 };
@@ -11625,9 +11021,6 @@ const serializeAws_json1_0TagKeyList = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return entry;
     });
 };
@@ -11635,9 +11028,6 @@ const serializeAws_json1_0TagList = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0Tag(entry, context);
     });
 };
@@ -11662,9 +11052,6 @@ const serializeAws_json1_0TransactGetItemList = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0TransactGetItem(entry, context);
     });
 };
@@ -11690,9 +11077,6 @@ const serializeAws_json1_0TransactWriteItemList = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0TransactWriteItem(entry, context);
     });
 };
@@ -11877,9 +11261,6 @@ const serializeAws_json1_0WriteRequests = (input, context) => {
     return input
         .filter((e) => e != null)
         .map((entry) => {
-        if (entry === null) {
-            return null;
-        }
         return serializeAws_json1_0WriteRequest(entry, context);
     });
 };
@@ -11932,7 +11313,7 @@ const deserializeAws_json1_0AttributeNameList = (output, context) => {
     return retVal;
 };
 const deserializeAws_json1_0AttributeValue = (output, context) => {
-    if (output.B !== undefined && output.B !== null) {
+    if (output.B != null) {
         return {
             B: context.base64Decoder(output.B),
         };
@@ -11940,17 +11321,17 @@ const deserializeAws_json1_0AttributeValue = (output, context) => {
     if ((0, smithy_client_1.expectBoolean)(output.BOOL) !== undefined) {
         return { BOOL: (0, smithy_client_1.expectBoolean)(output.BOOL) };
     }
-    if (output.BS !== undefined && output.BS !== null) {
+    if (output.BS != null) {
         return {
             BS: deserializeAws_json1_0BinarySetAttributeValue(output.BS, context),
         };
     }
-    if (output.L !== undefined && output.L !== null) {
+    if (output.L != null) {
         return {
             L: deserializeAws_json1_0ListAttributeValue(output.L, context),
         };
     }
-    if (output.M !== undefined && output.M !== null) {
+    if (output.M != null) {
         return {
             M: deserializeAws_json1_0MapAttributeValue(output.M, context),
         };
@@ -11958,7 +11339,7 @@ const deserializeAws_json1_0AttributeValue = (output, context) => {
     if ((0, smithy_client_1.expectString)(output.N) !== undefined) {
         return { N: (0, smithy_client_1.expectString)(output.N) };
     }
-    if (output.NS !== undefined && output.NS !== null) {
+    if (output.NS != null) {
         return {
             NS: deserializeAws_json1_0NumberSetAttributeValue(output.NS, context),
         };
@@ -11969,7 +11350,7 @@ const deserializeAws_json1_0AttributeValue = (output, context) => {
     if ((0, smithy_client_1.expectString)(output.S) !== undefined) {
         return { S: (0, smithy_client_1.expectString)(output.S) };
     }
-    if (output.SS !== undefined && output.SS !== null) {
+    if (output.SS != null) {
         return {
             SS: deserializeAws_json1_0StringSetAttributeValue(output.SS, context),
         };
@@ -13984,8 +13365,8 @@ class GetRoleCredentialsCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.GetRoleCredentialsRequest.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.GetRoleCredentialsResponse.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.GetRoleCredentialsRequestFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.GetRoleCredentialsResponseFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -14028,8 +13409,8 @@ class ListAccountRolesCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.ListAccountRolesRequest.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.ListAccountRolesResponse.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.ListAccountRolesRequestFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.ListAccountRolesResponseFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -14072,8 +13453,8 @@ class ListAccountsCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.ListAccountsRequest.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.ListAccountsResponse.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.ListAccountsRequestFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.ListAccountsResponseFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -14116,7 +13497,7 @@ class LogoutCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.LogoutRequest.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.LogoutRequestFilterSensitiveLog,
             outputFilterSensitiveLog: (output) => output,
         };
         const { requestHandler } = configuration;
@@ -14534,37 +13915,9 @@ tslib_1.__exportStar(__nccwpck_require__(6390), exports);
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.LogoutRequest = exports.ListAccountsResponse = exports.ListAccountsRequest = exports.ListAccountRolesResponse = exports.RoleInfo = exports.ListAccountRolesRequest = exports.UnauthorizedException = exports.TooManyRequestsException = exports.ResourceNotFoundException = exports.InvalidRequestException = exports.GetRoleCredentialsResponse = exports.RoleCredentials = exports.GetRoleCredentialsRequest = exports.AccountInfo = void 0;
+exports.LogoutRequestFilterSensitiveLog = exports.ListAccountsResponseFilterSensitiveLog = exports.ListAccountsRequestFilterSensitiveLog = exports.ListAccountRolesResponseFilterSensitiveLog = exports.RoleInfoFilterSensitiveLog = exports.ListAccountRolesRequestFilterSensitiveLog = exports.GetRoleCredentialsResponseFilterSensitiveLog = exports.RoleCredentialsFilterSensitiveLog = exports.GetRoleCredentialsRequestFilterSensitiveLog = exports.AccountInfoFilterSensitiveLog = exports.UnauthorizedException = exports.TooManyRequestsException = exports.ResourceNotFoundException = exports.InvalidRequestException = void 0;
 const smithy_client_1 = __nccwpck_require__(4963);
 const SSOServiceException_1 = __nccwpck_require__(1517);
-var AccountInfo;
-(function (AccountInfo) {
-    AccountInfo.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(AccountInfo = exports.AccountInfo || (exports.AccountInfo = {}));
-var GetRoleCredentialsRequest;
-(function (GetRoleCredentialsRequest) {
-    GetRoleCredentialsRequest.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.accessToken && { accessToken: smithy_client_1.SENSITIVE_STRING }),
-    });
-})(GetRoleCredentialsRequest = exports.GetRoleCredentialsRequest || (exports.GetRoleCredentialsRequest = {}));
-var RoleCredentials;
-(function (RoleCredentials) {
-    RoleCredentials.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.secretAccessKey && { secretAccessKey: smithy_client_1.SENSITIVE_STRING }),
-        ...(obj.sessionToken && { sessionToken: smithy_client_1.SENSITIVE_STRING }),
-    });
-})(RoleCredentials = exports.RoleCredentials || (exports.RoleCredentials = {}));
-var GetRoleCredentialsResponse;
-(function (GetRoleCredentialsResponse) {
-    GetRoleCredentialsResponse.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.roleCredentials && { roleCredentials: RoleCredentials.filterSensitiveLog(obj.roleCredentials) }),
-    });
-})(GetRoleCredentialsResponse = exports.GetRoleCredentialsResponse || (exports.GetRoleCredentialsResponse = {}));
 class InvalidRequestException extends SSOServiceException_1.SSOServiceException {
     constructor(opts) {
         super({
@@ -14617,45 +13970,53 @@ class UnauthorizedException extends SSOServiceException_1.SSOServiceException {
     }
 }
 exports.UnauthorizedException = UnauthorizedException;
-var ListAccountRolesRequest;
-(function (ListAccountRolesRequest) {
-    ListAccountRolesRequest.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.accessToken && { accessToken: smithy_client_1.SENSITIVE_STRING }),
-    });
-})(ListAccountRolesRequest = exports.ListAccountRolesRequest || (exports.ListAccountRolesRequest = {}));
-var RoleInfo;
-(function (RoleInfo) {
-    RoleInfo.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(RoleInfo = exports.RoleInfo || (exports.RoleInfo = {}));
-var ListAccountRolesResponse;
-(function (ListAccountRolesResponse) {
-    ListAccountRolesResponse.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ListAccountRolesResponse = exports.ListAccountRolesResponse || (exports.ListAccountRolesResponse = {}));
-var ListAccountsRequest;
-(function (ListAccountsRequest) {
-    ListAccountsRequest.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.accessToken && { accessToken: smithy_client_1.SENSITIVE_STRING }),
-    });
-})(ListAccountsRequest = exports.ListAccountsRequest || (exports.ListAccountsRequest = {}));
-var ListAccountsResponse;
-(function (ListAccountsResponse) {
-    ListAccountsResponse.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(ListAccountsResponse = exports.ListAccountsResponse || (exports.ListAccountsResponse = {}));
-var LogoutRequest;
-(function (LogoutRequest) {
-    LogoutRequest.filterSensitiveLog = (obj) => ({
-        ...obj,
-        ...(obj.accessToken && { accessToken: smithy_client_1.SENSITIVE_STRING }),
-    });
-})(LogoutRequest = exports.LogoutRequest || (exports.LogoutRequest = {}));
+const AccountInfoFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.AccountInfoFilterSensitiveLog = AccountInfoFilterSensitiveLog;
+const GetRoleCredentialsRequestFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.accessToken && { accessToken: smithy_client_1.SENSITIVE_STRING }),
+});
+exports.GetRoleCredentialsRequestFilterSensitiveLog = GetRoleCredentialsRequestFilterSensitiveLog;
+const RoleCredentialsFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.secretAccessKey && { secretAccessKey: smithy_client_1.SENSITIVE_STRING }),
+    ...(obj.sessionToken && { sessionToken: smithy_client_1.SENSITIVE_STRING }),
+});
+exports.RoleCredentialsFilterSensitiveLog = RoleCredentialsFilterSensitiveLog;
+const GetRoleCredentialsResponseFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.roleCredentials && { roleCredentials: (0, exports.RoleCredentialsFilterSensitiveLog)(obj.roleCredentials) }),
+});
+exports.GetRoleCredentialsResponseFilterSensitiveLog = GetRoleCredentialsResponseFilterSensitiveLog;
+const ListAccountRolesRequestFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.accessToken && { accessToken: smithy_client_1.SENSITIVE_STRING }),
+});
+exports.ListAccountRolesRequestFilterSensitiveLog = ListAccountRolesRequestFilterSensitiveLog;
+const RoleInfoFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.RoleInfoFilterSensitiveLog = RoleInfoFilterSensitiveLog;
+const ListAccountRolesResponseFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ListAccountRolesResponseFilterSensitiveLog = ListAccountRolesResponseFilterSensitiveLog;
+const ListAccountsRequestFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.accessToken && { accessToken: smithy_client_1.SENSITIVE_STRING }),
+});
+exports.ListAccountsRequestFilterSensitiveLog = ListAccountsRequestFilterSensitiveLog;
+const ListAccountsResponseFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.ListAccountsResponseFilterSensitiveLog = ListAccountsResponseFilterSensitiveLog;
+const LogoutRequestFilterSensitiveLog = (obj) => ({
+    ...obj,
+    ...(obj.accessToken && { accessToken: smithy_client_1.SENSITIVE_STRING }),
+});
+exports.LogoutRequestFilterSensitiveLog = LogoutRequestFilterSensitiveLog;
 
 
 /***/ }),
@@ -14785,14 +14146,14 @@ const models_0_1 = __nccwpck_require__(6390);
 const SSOServiceException_1 = __nccwpck_require__(1517);
 const serializeAws_restJson1GetRoleCredentialsCommand = async (input, context) => {
     const { hostname, protocol = "https", port, path: basePath } = await context.endpoint();
-    const headers = {
-        ...(isSerializableHeaderValue(input.accessToken) && { "x-amz-sso_bearer_token": input.accessToken }),
-    };
+    const headers = map({}, isSerializableHeaderValue, {
+        "x-amz-sso_bearer_token": input.accessToken,
+    });
     const resolvedPath = `${(basePath === null || basePath === void 0 ? void 0 : basePath.endsWith("/")) ? basePath.slice(0, -1) : basePath || ""}` + "/federation/credentials";
-    const query = {
-        ...(input.roleName !== undefined && { role_name: input.roleName }),
-        ...(input.accountId !== undefined && { account_id: input.accountId }),
-    };
+    const query = map({
+        role_name: [, input.roleName],
+        account_id: [, input.accountId],
+    });
     let body;
     return new protocol_http_1.HttpRequest({
         protocol,
@@ -14808,15 +14169,15 @@ const serializeAws_restJson1GetRoleCredentialsCommand = async (input, context) =
 exports.serializeAws_restJson1GetRoleCredentialsCommand = serializeAws_restJson1GetRoleCredentialsCommand;
 const serializeAws_restJson1ListAccountRolesCommand = async (input, context) => {
     const { hostname, protocol = "https", port, path: basePath } = await context.endpoint();
-    const headers = {
-        ...(isSerializableHeaderValue(input.accessToken) && { "x-amz-sso_bearer_token": input.accessToken }),
-    };
+    const headers = map({}, isSerializableHeaderValue, {
+        "x-amz-sso_bearer_token": input.accessToken,
+    });
     const resolvedPath = `${(basePath === null || basePath === void 0 ? void 0 : basePath.endsWith("/")) ? basePath.slice(0, -1) : basePath || ""}` + "/assignment/roles";
-    const query = {
-        ...(input.nextToken !== undefined && { next_token: input.nextToken }),
-        ...(input.maxResults !== undefined && { max_result: input.maxResults.toString() }),
-        ...(input.accountId !== undefined && { account_id: input.accountId }),
-    };
+    const query = map({
+        next_token: [, input.nextToken],
+        max_result: [() => input.maxResults !== void 0, () => input.maxResults.toString()],
+        account_id: [, input.accountId],
+    });
     let body;
     return new protocol_http_1.HttpRequest({
         protocol,
@@ -14832,14 +14193,14 @@ const serializeAws_restJson1ListAccountRolesCommand = async (input, context) => 
 exports.serializeAws_restJson1ListAccountRolesCommand = serializeAws_restJson1ListAccountRolesCommand;
 const serializeAws_restJson1ListAccountsCommand = async (input, context) => {
     const { hostname, protocol = "https", port, path: basePath } = await context.endpoint();
-    const headers = {
-        ...(isSerializableHeaderValue(input.accessToken) && { "x-amz-sso_bearer_token": input.accessToken }),
-    };
+    const headers = map({}, isSerializableHeaderValue, {
+        "x-amz-sso_bearer_token": input.accessToken,
+    });
     const resolvedPath = `${(basePath === null || basePath === void 0 ? void 0 : basePath.endsWith("/")) ? basePath.slice(0, -1) : basePath || ""}` + "/assignment/accounts";
-    const query = {
-        ...(input.nextToken !== undefined && { next_token: input.nextToken }),
-        ...(input.maxResults !== undefined && { max_result: input.maxResults.toString() }),
-    };
+    const query = map({
+        next_token: [, input.nextToken],
+        max_result: [() => input.maxResults !== void 0, () => input.maxResults.toString()],
+    });
     let body;
     return new protocol_http_1.HttpRequest({
         protocol,
@@ -14855,9 +14216,9 @@ const serializeAws_restJson1ListAccountsCommand = async (input, context) => {
 exports.serializeAws_restJson1ListAccountsCommand = serializeAws_restJson1ListAccountsCommand;
 const serializeAws_restJson1LogoutCommand = async (input, context) => {
     const { hostname, protocol = "https", port, path: basePath } = await context.endpoint();
-    const headers = {
-        ...(isSerializableHeaderValue(input.accessToken) && { "x-amz-sso_bearer_token": input.accessToken }),
-    };
+    const headers = map({}, isSerializableHeaderValue, {
+        "x-amz-sso_bearer_token": input.accessToken,
+    });
     const resolvedPath = `${(basePath === null || basePath === void 0 ? void 0 : basePath.endsWith("/")) ? basePath.slice(0, -1) : basePath || ""}` + "/logout";
     let body;
     return new protocol_http_1.HttpRequest({
@@ -14875,15 +14236,14 @@ const deserializeAws_restJson1GetRoleCredentialsCommand = async (output, context
     if (output.statusCode !== 200 && output.statusCode >= 300) {
         return deserializeAws_restJson1GetRoleCredentialsCommandError(output, context);
     }
-    const contents = {
+    const contents = map({
         $metadata: deserializeMetadata(output),
-        roleCredentials: undefined,
-    };
+    });
     const data = (0, smithy_client_1.expectNonNull)((0, smithy_client_1.expectObject)(await parseBody(output.body, context)), "body");
-    if (data.roleCredentials !== undefined && data.roleCredentials !== null) {
+    if (data.roleCredentials != null) {
         contents.roleCredentials = deserializeAws_restJson1RoleCredentials(data.roleCredentials, context);
     }
-    return Promise.resolve(contents);
+    return contents;
 };
 exports.deserializeAws_restJson1GetRoleCredentialsCommand = deserializeAws_restJson1GetRoleCredentialsCommand;
 const deserializeAws_restJson1GetRoleCredentialsCommandError = async (output, context) => {
@@ -14891,7 +14251,6 @@ const deserializeAws_restJson1GetRoleCredentialsCommandError = async (output, co
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InvalidRequestException":
@@ -14908,33 +14267,29 @@ const deserializeAws_restJson1GetRoleCredentialsCommandError = async (output, co
             throw await deserializeAws_restJson1UnauthorizedExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new SSOServiceException_1.SSOServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: SSOServiceException_1.SSOServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_restJson1ListAccountRolesCommand = async (output, context) => {
     if (output.statusCode !== 200 && output.statusCode >= 300) {
         return deserializeAws_restJson1ListAccountRolesCommandError(output, context);
     }
-    const contents = {
+    const contents = map({
         $metadata: deserializeMetadata(output),
-        nextToken: undefined,
-        roleList: undefined,
-    };
+    });
     const data = (0, smithy_client_1.expectNonNull)((0, smithy_client_1.expectObject)(await parseBody(output.body, context)), "body");
-    if (data.nextToken !== undefined && data.nextToken !== null) {
+    if (data.nextToken != null) {
         contents.nextToken = (0, smithy_client_1.expectString)(data.nextToken);
     }
-    if (data.roleList !== undefined && data.roleList !== null) {
+    if (data.roleList != null) {
         contents.roleList = deserializeAws_restJson1RoleListType(data.roleList, context);
     }
-    return Promise.resolve(contents);
+    return contents;
 };
 exports.deserializeAws_restJson1ListAccountRolesCommand = deserializeAws_restJson1ListAccountRolesCommand;
 const deserializeAws_restJson1ListAccountRolesCommandError = async (output, context) => {
@@ -14942,7 +14297,6 @@ const deserializeAws_restJson1ListAccountRolesCommandError = async (output, cont
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InvalidRequestException":
@@ -14959,33 +14313,29 @@ const deserializeAws_restJson1ListAccountRolesCommandError = async (output, cont
             throw await deserializeAws_restJson1UnauthorizedExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new SSOServiceException_1.SSOServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: SSOServiceException_1.SSOServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_restJson1ListAccountsCommand = async (output, context) => {
     if (output.statusCode !== 200 && output.statusCode >= 300) {
         return deserializeAws_restJson1ListAccountsCommandError(output, context);
     }
-    const contents = {
+    const contents = map({
         $metadata: deserializeMetadata(output),
-        accountList: undefined,
-        nextToken: undefined,
-    };
+    });
     const data = (0, smithy_client_1.expectNonNull)((0, smithy_client_1.expectObject)(await parseBody(output.body, context)), "body");
-    if (data.accountList !== undefined && data.accountList !== null) {
+    if (data.accountList != null) {
         contents.accountList = deserializeAws_restJson1AccountListType(data.accountList, context);
     }
-    if (data.nextToken !== undefined && data.nextToken !== null) {
+    if (data.nextToken != null) {
         contents.nextToken = (0, smithy_client_1.expectString)(data.nextToken);
     }
-    return Promise.resolve(contents);
+    return contents;
 };
 exports.deserializeAws_restJson1ListAccountsCommand = deserializeAws_restJson1ListAccountsCommand;
 const deserializeAws_restJson1ListAccountsCommandError = async (output, context) => {
@@ -14993,7 +14343,6 @@ const deserializeAws_restJson1ListAccountsCommandError = async (output, context)
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InvalidRequestException":
@@ -15010,25 +14359,23 @@ const deserializeAws_restJson1ListAccountsCommandError = async (output, context)
             throw await deserializeAws_restJson1UnauthorizedExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new SSOServiceException_1.SSOServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: SSOServiceException_1.SSOServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
 const deserializeAws_restJson1LogoutCommand = async (output, context) => {
     if (output.statusCode !== 200 && output.statusCode >= 300) {
         return deserializeAws_restJson1LogoutCommandError(output, context);
     }
-    const contents = {
+    const contents = map({
         $metadata: deserializeMetadata(output),
-    };
+    });
     await collectBody(output.body, context);
-    return Promise.resolve(contents);
+    return contents;
 };
 exports.deserializeAws_restJson1LogoutCommand = deserializeAws_restJson1LogoutCommand;
 const deserializeAws_restJson1LogoutCommandError = async (output, context) => {
@@ -15036,7 +14383,6 @@ const deserializeAws_restJson1LogoutCommandError = async (output, context) => {
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadRestJsonErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InvalidRequestException":
@@ -15050,20 +14396,19 @@ const deserializeAws_restJson1LogoutCommandError = async (output, context) => {
             throw await deserializeAws_restJson1UnauthorizedExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new SSOServiceException_1.SSOServiceException({
-                name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody,
+                exceptionCtor: SSOServiceException_1.SSOServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody);
     }
 };
+const map = smithy_client_1.map;
 const deserializeAws_restJson1InvalidRequestExceptionResponse = async (parsedOutput, context) => {
-    const contents = {};
+    const contents = map({});
     const data = parsedOutput.body;
-    if (data.message !== undefined && data.message !== null) {
+    if (data.message != null) {
         contents.message = (0, smithy_client_1.expectString)(data.message);
     }
     const exception = new models_0_1.InvalidRequestException({
@@ -15073,9 +14418,9 @@ const deserializeAws_restJson1InvalidRequestExceptionResponse = async (parsedOut
     return (0, smithy_client_1.decorateServiceException)(exception, parsedOutput.body);
 };
 const deserializeAws_restJson1ResourceNotFoundExceptionResponse = async (parsedOutput, context) => {
-    const contents = {};
+    const contents = map({});
     const data = parsedOutput.body;
-    if (data.message !== undefined && data.message !== null) {
+    if (data.message != null) {
         contents.message = (0, smithy_client_1.expectString)(data.message);
     }
     const exception = new models_0_1.ResourceNotFoundException({
@@ -15085,9 +14430,9 @@ const deserializeAws_restJson1ResourceNotFoundExceptionResponse = async (parsedO
     return (0, smithy_client_1.decorateServiceException)(exception, parsedOutput.body);
 };
 const deserializeAws_restJson1TooManyRequestsExceptionResponse = async (parsedOutput, context) => {
-    const contents = {};
+    const contents = map({});
     const data = parsedOutput.body;
-    if (data.message !== undefined && data.message !== null) {
+    if (data.message != null) {
         contents.message = (0, smithy_client_1.expectString)(data.message);
     }
     const exception = new models_0_1.TooManyRequestsException({
@@ -15097,9 +14442,9 @@ const deserializeAws_restJson1TooManyRequestsExceptionResponse = async (parsedOu
     return (0, smithy_client_1.decorateServiceException)(exception, parsedOutput.body);
 };
 const deserializeAws_restJson1UnauthorizedExceptionResponse = async (parsedOutput, context) => {
-    const contents = {};
+    const contents = map({});
     const data = parsedOutput.body;
-    if (data.message !== undefined && data.message !== null) {
+    if (data.message != null) {
         contents.message = (0, smithy_client_1.expectString)(data.message);
     }
     const exception = new models_0_1.UnauthorizedException({
@@ -15497,8 +14842,8 @@ class AssumeRoleCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.AssumeRoleRequest.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.AssumeRoleResponse.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.AssumeRoleRequestFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.AssumeRoleResponseFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -15541,8 +14886,8 @@ class AssumeRoleWithSAMLCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.AssumeRoleWithSAMLRequest.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.AssumeRoleWithSAMLResponse.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.AssumeRoleWithSAMLRequestFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.AssumeRoleWithSAMLResponseFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -15585,8 +14930,8 @@ class AssumeRoleWithWebIdentityCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.AssumeRoleWithWebIdentityRequest.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.AssumeRoleWithWebIdentityResponse.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.AssumeRoleWithWebIdentityRequestFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.AssumeRoleWithWebIdentityResponseFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -15631,8 +14976,8 @@ class DecodeAuthorizationMessageCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.DecodeAuthorizationMessageRequest.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.DecodeAuthorizationMessageResponse.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.DecodeAuthorizationMessageRequestFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.DecodeAuthorizationMessageResponseFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -15677,8 +15022,8 @@ class GetAccessKeyInfoCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.GetAccessKeyInfoRequest.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.GetAccessKeyInfoResponse.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.GetAccessKeyInfoRequestFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.GetAccessKeyInfoResponseFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -15723,8 +15068,8 @@ class GetCallerIdentityCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.GetCallerIdentityRequest.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.GetCallerIdentityResponse.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.GetCallerIdentityRequestFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.GetCallerIdentityResponseFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -15769,8 +15114,8 @@ class GetFederationTokenCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.GetFederationTokenRequest.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.GetFederationTokenResponse.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.GetFederationTokenRequestFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.GetFederationTokenResponseFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -15815,8 +15160,8 @@ class GetSessionTokenCommand extends smithy_client_1.Command {
             logger,
             clientName,
             commandName,
-            inputFilterSensitiveLog: models_0_1.GetSessionTokenRequest.filterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.GetSessionTokenResponse.filterSensitiveLog,
+            inputFilterSensitiveLog: models_0_1.GetSessionTokenRequestFilterSensitiveLog,
+            outputFilterSensitiveLog: models_0_1.GetSessionTokenResponseFilterSensitiveLog,
         };
         const { requestHandler } = configuration;
         return stack.resolve((request) => requestHandler.handle(request.request, options || {}), handlerExecutionContext);
@@ -16217,44 +15562,8 @@ tslib_1.__exportStar(__nccwpck_require__(1780), exports);
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GetSessionTokenResponse = exports.GetSessionTokenRequest = exports.GetFederationTokenResponse = exports.FederatedUser = exports.GetFederationTokenRequest = exports.GetCallerIdentityResponse = exports.GetCallerIdentityRequest = exports.GetAccessKeyInfoResponse = exports.GetAccessKeyInfoRequest = exports.InvalidAuthorizationMessageException = exports.DecodeAuthorizationMessageResponse = exports.DecodeAuthorizationMessageRequest = exports.IDPCommunicationErrorException = exports.AssumeRoleWithWebIdentityResponse = exports.AssumeRoleWithWebIdentityRequest = exports.InvalidIdentityTokenException = exports.IDPRejectedClaimException = exports.AssumeRoleWithSAMLResponse = exports.AssumeRoleWithSAMLRequest = exports.RegionDisabledException = exports.PackedPolicyTooLargeException = exports.MalformedPolicyDocumentException = exports.ExpiredTokenException = exports.AssumeRoleResponse = exports.Credentials = exports.AssumeRoleRequest = exports.Tag = exports.PolicyDescriptorType = exports.AssumedRoleUser = void 0;
+exports.GetSessionTokenResponseFilterSensitiveLog = exports.GetSessionTokenRequestFilterSensitiveLog = exports.GetFederationTokenResponseFilterSensitiveLog = exports.FederatedUserFilterSensitiveLog = exports.GetFederationTokenRequestFilterSensitiveLog = exports.GetCallerIdentityResponseFilterSensitiveLog = exports.GetCallerIdentityRequestFilterSensitiveLog = exports.GetAccessKeyInfoResponseFilterSensitiveLog = exports.GetAccessKeyInfoRequestFilterSensitiveLog = exports.DecodeAuthorizationMessageResponseFilterSensitiveLog = exports.DecodeAuthorizationMessageRequestFilterSensitiveLog = exports.AssumeRoleWithWebIdentityResponseFilterSensitiveLog = exports.AssumeRoleWithWebIdentityRequestFilterSensitiveLog = exports.AssumeRoleWithSAMLResponseFilterSensitiveLog = exports.AssumeRoleWithSAMLRequestFilterSensitiveLog = exports.AssumeRoleResponseFilterSensitiveLog = exports.CredentialsFilterSensitiveLog = exports.AssumeRoleRequestFilterSensitiveLog = exports.TagFilterSensitiveLog = exports.PolicyDescriptorTypeFilterSensitiveLog = exports.AssumedRoleUserFilterSensitiveLog = exports.InvalidAuthorizationMessageException = exports.IDPCommunicationErrorException = exports.InvalidIdentityTokenException = exports.IDPRejectedClaimException = exports.RegionDisabledException = exports.PackedPolicyTooLargeException = exports.MalformedPolicyDocumentException = exports.ExpiredTokenException = void 0;
 const STSServiceException_1 = __nccwpck_require__(6450);
-var AssumedRoleUser;
-(function (AssumedRoleUser) {
-    AssumedRoleUser.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(AssumedRoleUser = exports.AssumedRoleUser || (exports.AssumedRoleUser = {}));
-var PolicyDescriptorType;
-(function (PolicyDescriptorType) {
-    PolicyDescriptorType.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(PolicyDescriptorType = exports.PolicyDescriptorType || (exports.PolicyDescriptorType = {}));
-var Tag;
-(function (Tag) {
-    Tag.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(Tag = exports.Tag || (exports.Tag = {}));
-var AssumeRoleRequest;
-(function (AssumeRoleRequest) {
-    AssumeRoleRequest.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(AssumeRoleRequest = exports.AssumeRoleRequest || (exports.AssumeRoleRequest = {}));
-var Credentials;
-(function (Credentials) {
-    Credentials.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(Credentials = exports.Credentials || (exports.Credentials = {}));
-var AssumeRoleResponse;
-(function (AssumeRoleResponse) {
-    AssumeRoleResponse.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(AssumeRoleResponse = exports.AssumeRoleResponse || (exports.AssumeRoleResponse = {}));
 class ExpiredTokenException extends STSServiceException_1.STSServiceException {
     constructor(opts) {
         super({
@@ -16307,18 +15616,6 @@ class RegionDisabledException extends STSServiceException_1.STSServiceException 
     }
 }
 exports.RegionDisabledException = RegionDisabledException;
-var AssumeRoleWithSAMLRequest;
-(function (AssumeRoleWithSAMLRequest) {
-    AssumeRoleWithSAMLRequest.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(AssumeRoleWithSAMLRequest = exports.AssumeRoleWithSAMLRequest || (exports.AssumeRoleWithSAMLRequest = {}));
-var AssumeRoleWithSAMLResponse;
-(function (AssumeRoleWithSAMLResponse) {
-    AssumeRoleWithSAMLResponse.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(AssumeRoleWithSAMLResponse = exports.AssumeRoleWithSAMLResponse || (exports.AssumeRoleWithSAMLResponse = {}));
 class IDPRejectedClaimException extends STSServiceException_1.STSServiceException {
     constructor(opts) {
         super({
@@ -16345,18 +15642,6 @@ class InvalidIdentityTokenException extends STSServiceException_1.STSServiceExce
     }
 }
 exports.InvalidIdentityTokenException = InvalidIdentityTokenException;
-var AssumeRoleWithWebIdentityRequest;
-(function (AssumeRoleWithWebIdentityRequest) {
-    AssumeRoleWithWebIdentityRequest.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(AssumeRoleWithWebIdentityRequest = exports.AssumeRoleWithWebIdentityRequest || (exports.AssumeRoleWithWebIdentityRequest = {}));
-var AssumeRoleWithWebIdentityResponse;
-(function (AssumeRoleWithWebIdentityResponse) {
-    AssumeRoleWithWebIdentityResponse.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(AssumeRoleWithWebIdentityResponse = exports.AssumeRoleWithWebIdentityResponse || (exports.AssumeRoleWithWebIdentityResponse = {}));
 class IDPCommunicationErrorException extends STSServiceException_1.STSServiceException {
     constructor(opts) {
         super({
@@ -16370,18 +15655,6 @@ class IDPCommunicationErrorException extends STSServiceException_1.STSServiceExc
     }
 }
 exports.IDPCommunicationErrorException = IDPCommunicationErrorException;
-var DecodeAuthorizationMessageRequest;
-(function (DecodeAuthorizationMessageRequest) {
-    DecodeAuthorizationMessageRequest.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DecodeAuthorizationMessageRequest = exports.DecodeAuthorizationMessageRequest || (exports.DecodeAuthorizationMessageRequest = {}));
-var DecodeAuthorizationMessageResponse;
-(function (DecodeAuthorizationMessageResponse) {
-    DecodeAuthorizationMessageResponse.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(DecodeAuthorizationMessageResponse = exports.DecodeAuthorizationMessageResponse || (exports.DecodeAuthorizationMessageResponse = {}));
 class InvalidAuthorizationMessageException extends STSServiceException_1.STSServiceException {
     constructor(opts) {
         super({
@@ -16395,60 +15668,90 @@ class InvalidAuthorizationMessageException extends STSServiceException_1.STSServ
     }
 }
 exports.InvalidAuthorizationMessageException = InvalidAuthorizationMessageException;
-var GetAccessKeyInfoRequest;
-(function (GetAccessKeyInfoRequest) {
-    GetAccessKeyInfoRequest.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(GetAccessKeyInfoRequest = exports.GetAccessKeyInfoRequest || (exports.GetAccessKeyInfoRequest = {}));
-var GetAccessKeyInfoResponse;
-(function (GetAccessKeyInfoResponse) {
-    GetAccessKeyInfoResponse.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(GetAccessKeyInfoResponse = exports.GetAccessKeyInfoResponse || (exports.GetAccessKeyInfoResponse = {}));
-var GetCallerIdentityRequest;
-(function (GetCallerIdentityRequest) {
-    GetCallerIdentityRequest.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(GetCallerIdentityRequest = exports.GetCallerIdentityRequest || (exports.GetCallerIdentityRequest = {}));
-var GetCallerIdentityResponse;
-(function (GetCallerIdentityResponse) {
-    GetCallerIdentityResponse.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(GetCallerIdentityResponse = exports.GetCallerIdentityResponse || (exports.GetCallerIdentityResponse = {}));
-var GetFederationTokenRequest;
-(function (GetFederationTokenRequest) {
-    GetFederationTokenRequest.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(GetFederationTokenRequest = exports.GetFederationTokenRequest || (exports.GetFederationTokenRequest = {}));
-var FederatedUser;
-(function (FederatedUser) {
-    FederatedUser.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(FederatedUser = exports.FederatedUser || (exports.FederatedUser = {}));
-var GetFederationTokenResponse;
-(function (GetFederationTokenResponse) {
-    GetFederationTokenResponse.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(GetFederationTokenResponse = exports.GetFederationTokenResponse || (exports.GetFederationTokenResponse = {}));
-var GetSessionTokenRequest;
-(function (GetSessionTokenRequest) {
-    GetSessionTokenRequest.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(GetSessionTokenRequest = exports.GetSessionTokenRequest || (exports.GetSessionTokenRequest = {}));
-var GetSessionTokenResponse;
-(function (GetSessionTokenResponse) {
-    GetSessionTokenResponse.filterSensitiveLog = (obj) => ({
-        ...obj,
-    });
-})(GetSessionTokenResponse = exports.GetSessionTokenResponse || (exports.GetSessionTokenResponse = {}));
+const AssumedRoleUserFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.AssumedRoleUserFilterSensitiveLog = AssumedRoleUserFilterSensitiveLog;
+const PolicyDescriptorTypeFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.PolicyDescriptorTypeFilterSensitiveLog = PolicyDescriptorTypeFilterSensitiveLog;
+const TagFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.TagFilterSensitiveLog = TagFilterSensitiveLog;
+const AssumeRoleRequestFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.AssumeRoleRequestFilterSensitiveLog = AssumeRoleRequestFilterSensitiveLog;
+const CredentialsFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.CredentialsFilterSensitiveLog = CredentialsFilterSensitiveLog;
+const AssumeRoleResponseFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.AssumeRoleResponseFilterSensitiveLog = AssumeRoleResponseFilterSensitiveLog;
+const AssumeRoleWithSAMLRequestFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.AssumeRoleWithSAMLRequestFilterSensitiveLog = AssumeRoleWithSAMLRequestFilterSensitiveLog;
+const AssumeRoleWithSAMLResponseFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.AssumeRoleWithSAMLResponseFilterSensitiveLog = AssumeRoleWithSAMLResponseFilterSensitiveLog;
+const AssumeRoleWithWebIdentityRequestFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.AssumeRoleWithWebIdentityRequestFilterSensitiveLog = AssumeRoleWithWebIdentityRequestFilterSensitiveLog;
+const AssumeRoleWithWebIdentityResponseFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.AssumeRoleWithWebIdentityResponseFilterSensitiveLog = AssumeRoleWithWebIdentityResponseFilterSensitiveLog;
+const DecodeAuthorizationMessageRequestFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DecodeAuthorizationMessageRequestFilterSensitiveLog = DecodeAuthorizationMessageRequestFilterSensitiveLog;
+const DecodeAuthorizationMessageResponseFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.DecodeAuthorizationMessageResponseFilterSensitiveLog = DecodeAuthorizationMessageResponseFilterSensitiveLog;
+const GetAccessKeyInfoRequestFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.GetAccessKeyInfoRequestFilterSensitiveLog = GetAccessKeyInfoRequestFilterSensitiveLog;
+const GetAccessKeyInfoResponseFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.GetAccessKeyInfoResponseFilterSensitiveLog = GetAccessKeyInfoResponseFilterSensitiveLog;
+const GetCallerIdentityRequestFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.GetCallerIdentityRequestFilterSensitiveLog = GetCallerIdentityRequestFilterSensitiveLog;
+const GetCallerIdentityResponseFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.GetCallerIdentityResponseFilterSensitiveLog = GetCallerIdentityResponseFilterSensitiveLog;
+const GetFederationTokenRequestFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.GetFederationTokenRequestFilterSensitiveLog = GetFederationTokenRequestFilterSensitiveLog;
+const FederatedUserFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.FederatedUserFilterSensitiveLog = FederatedUserFilterSensitiveLog;
+const GetFederationTokenResponseFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.GetFederationTokenResponseFilterSensitiveLog = GetFederationTokenResponseFilterSensitiveLog;
+const GetSessionTokenRequestFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.GetSessionTokenRequestFilterSensitiveLog = GetSessionTokenRequestFilterSensitiveLog;
+const GetSessionTokenResponseFilterSensitiveLog = (obj) => ({
+    ...obj,
+});
+exports.GetSessionTokenResponseFilterSensitiveLog = GetSessionTokenResponseFilterSensitiveLog;
 
 
 /***/ }),
@@ -16589,7 +15892,6 @@ const deserializeAws_queryAssumeRoleCommandError = async (output, context) => {
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadQueryErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "ExpiredTokenException":
@@ -16606,14 +15908,12 @@ const deserializeAws_queryAssumeRoleCommandError = async (output, context) => {
             throw await deserializeAws_queryRegionDisabledExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new STSServiceException_1.STSServiceException({
-                name: parsedBody.Error.code || parsedBody.Error.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody: parsedBody.Error,
+                exceptionCtor: STSServiceException_1.STSServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody.Error);
     }
 };
 const deserializeAws_queryAssumeRoleWithSAMLCommand = async (output, context) => {
@@ -16635,7 +15935,6 @@ const deserializeAws_queryAssumeRoleWithSAMLCommandError = async (output, contex
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadQueryErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "ExpiredTokenException":
@@ -16658,14 +15957,12 @@ const deserializeAws_queryAssumeRoleWithSAMLCommandError = async (output, contex
             throw await deserializeAws_queryRegionDisabledExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new STSServiceException_1.STSServiceException({
-                name: parsedBody.Error.code || parsedBody.Error.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody: parsedBody.Error,
+                exceptionCtor: STSServiceException_1.STSServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody.Error);
     }
 };
 const deserializeAws_queryAssumeRoleWithWebIdentityCommand = async (output, context) => {
@@ -16687,7 +15984,6 @@ const deserializeAws_queryAssumeRoleWithWebIdentityCommandError = async (output,
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadQueryErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "ExpiredTokenException":
@@ -16713,14 +16009,12 @@ const deserializeAws_queryAssumeRoleWithWebIdentityCommandError = async (output,
             throw await deserializeAws_queryRegionDisabledExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new STSServiceException_1.STSServiceException({
-                name: parsedBody.Error.code || parsedBody.Error.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody: parsedBody.Error,
+                exceptionCtor: STSServiceException_1.STSServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody.Error);
     }
 };
 const deserializeAws_queryDecodeAuthorizationMessageCommand = async (output, context) => {
@@ -16742,7 +16036,6 @@ const deserializeAws_queryDecodeAuthorizationMessageCommandError = async (output
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadQueryErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "InvalidAuthorizationMessageException":
@@ -16750,14 +16043,12 @@ const deserializeAws_queryDecodeAuthorizationMessageCommandError = async (output
             throw await deserializeAws_queryInvalidAuthorizationMessageExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new STSServiceException_1.STSServiceException({
-                name: parsedBody.Error.code || parsedBody.Error.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody: parsedBody.Error,
+                exceptionCtor: STSServiceException_1.STSServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody.Error);
     }
 };
 const deserializeAws_queryGetAccessKeyInfoCommand = async (output, context) => {
@@ -16779,20 +16070,14 @@ const deserializeAws_queryGetAccessKeyInfoCommandError = async (output, context)
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadQueryErrorCode(output, parsedOutput.body);
-    switch (errorCode) {
-        default:
-            const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new STSServiceException_1.STSServiceException({
-                name: parsedBody.Error.code || parsedBody.Error.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
-            });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody.Error);
-    }
+    const parsedBody = parsedOutput.body;
+    (0, smithy_client_1.throwDefaultError)({
+        output,
+        parsedBody: parsedBody.Error,
+        exceptionCtor: STSServiceException_1.STSServiceException,
+        errorCode,
+    });
 };
 const deserializeAws_queryGetCallerIdentityCommand = async (output, context) => {
     if (output.statusCode >= 300) {
@@ -16813,20 +16098,14 @@ const deserializeAws_queryGetCallerIdentityCommandError = async (output, context
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadQueryErrorCode(output, parsedOutput.body);
-    switch (errorCode) {
-        default:
-            const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new STSServiceException_1.STSServiceException({
-                name: parsedBody.Error.code || parsedBody.Error.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
-            });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody.Error);
-    }
+    const parsedBody = parsedOutput.body;
+    (0, smithy_client_1.throwDefaultError)({
+        output,
+        parsedBody: parsedBody.Error,
+        exceptionCtor: STSServiceException_1.STSServiceException,
+        errorCode,
+    });
 };
 const deserializeAws_queryGetFederationTokenCommand = async (output, context) => {
     if (output.statusCode >= 300) {
@@ -16847,7 +16126,6 @@ const deserializeAws_queryGetFederationTokenCommandError = async (output, contex
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadQueryErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "MalformedPolicyDocumentException":
@@ -16861,14 +16139,12 @@ const deserializeAws_queryGetFederationTokenCommandError = async (output, contex
             throw await deserializeAws_queryRegionDisabledExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new STSServiceException_1.STSServiceException({
-                name: parsedBody.Error.code || parsedBody.Error.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody: parsedBody.Error,
+                exceptionCtor: STSServiceException_1.STSServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody.Error);
     }
 };
 const deserializeAws_queryGetSessionTokenCommand = async (output, context) => {
@@ -16890,7 +16166,6 @@ const deserializeAws_queryGetSessionTokenCommandError = async (output, context) 
         ...output,
         body: await parseBody(output.body, context),
     };
-    let response;
     const errorCode = loadQueryErrorCode(output, parsedOutput.body);
     switch (errorCode) {
         case "RegionDisabledException":
@@ -16898,14 +16173,12 @@ const deserializeAws_queryGetSessionTokenCommandError = async (output, context) 
             throw await deserializeAws_queryRegionDisabledExceptionResponse(parsedOutput, context);
         default:
             const parsedBody = parsedOutput.body;
-            const $metadata = deserializeMetadata(output);
-            const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
-            response = new STSServiceException_1.STSServiceException({
-                name: parsedBody.Error.code || parsedBody.Error.Code || errorCode || statusCode || "UnknowError",
-                $fault: "client",
-                $metadata,
+            (0, smithy_client_1.throwDefaultError)({
+                output,
+                parsedBody: parsedBody.Error,
+                exceptionCtor: STSServiceException_1.STSServiceException,
+                errorCode,
             });
-            throw (0, smithy_client_1.decorateServiceException)(response, parsedBody.Error);
     }
 };
 const deserializeAws_queryExpiredTokenExceptionResponse = async (parsedOutput, context) => {
@@ -16982,118 +16255,118 @@ const deserializeAws_queryRegionDisabledExceptionResponse = async (parsedOutput,
 };
 const serializeAws_queryAssumeRoleRequest = (input, context) => {
     const entries = {};
-    if (input.RoleArn !== undefined && input.RoleArn !== null) {
+    if (input.RoleArn != null) {
         entries["RoleArn"] = input.RoleArn;
     }
-    if (input.RoleSessionName !== undefined && input.RoleSessionName !== null) {
+    if (input.RoleSessionName != null) {
         entries["RoleSessionName"] = input.RoleSessionName;
     }
-    if (input.PolicyArns !== undefined && input.PolicyArns !== null) {
+    if (input.PolicyArns != null) {
         const memberEntries = serializeAws_querypolicyDescriptorListType(input.PolicyArns, context);
         Object.entries(memberEntries).forEach(([key, value]) => {
             const loc = `PolicyArns.${key}`;
             entries[loc] = value;
         });
     }
-    if (input.Policy !== undefined && input.Policy !== null) {
+    if (input.Policy != null) {
         entries["Policy"] = input.Policy;
     }
-    if (input.DurationSeconds !== undefined && input.DurationSeconds !== null) {
+    if (input.DurationSeconds != null) {
         entries["DurationSeconds"] = input.DurationSeconds;
     }
-    if (input.Tags !== undefined && input.Tags !== null) {
+    if (input.Tags != null) {
         const memberEntries = serializeAws_querytagListType(input.Tags, context);
         Object.entries(memberEntries).forEach(([key, value]) => {
             const loc = `Tags.${key}`;
             entries[loc] = value;
         });
     }
-    if (input.TransitiveTagKeys !== undefined && input.TransitiveTagKeys !== null) {
+    if (input.TransitiveTagKeys != null) {
         const memberEntries = serializeAws_querytagKeyListType(input.TransitiveTagKeys, context);
         Object.entries(memberEntries).forEach(([key, value]) => {
             const loc = `TransitiveTagKeys.${key}`;
             entries[loc] = value;
         });
     }
-    if (input.ExternalId !== undefined && input.ExternalId !== null) {
+    if (input.ExternalId != null) {
         entries["ExternalId"] = input.ExternalId;
     }
-    if (input.SerialNumber !== undefined && input.SerialNumber !== null) {
+    if (input.SerialNumber != null) {
         entries["SerialNumber"] = input.SerialNumber;
     }
-    if (input.TokenCode !== undefined && input.TokenCode !== null) {
+    if (input.TokenCode != null) {
         entries["TokenCode"] = input.TokenCode;
     }
-    if (input.SourceIdentity !== undefined && input.SourceIdentity !== null) {
+    if (input.SourceIdentity != null) {
         entries["SourceIdentity"] = input.SourceIdentity;
     }
     return entries;
 };
 const serializeAws_queryAssumeRoleWithSAMLRequest = (input, context) => {
     const entries = {};
-    if (input.RoleArn !== undefined && input.RoleArn !== null) {
+    if (input.RoleArn != null) {
         entries["RoleArn"] = input.RoleArn;
     }
-    if (input.PrincipalArn !== undefined && input.PrincipalArn !== null) {
+    if (input.PrincipalArn != null) {
         entries["PrincipalArn"] = input.PrincipalArn;
     }
-    if (input.SAMLAssertion !== undefined && input.SAMLAssertion !== null) {
+    if (input.SAMLAssertion != null) {
         entries["SAMLAssertion"] = input.SAMLAssertion;
     }
-    if (input.PolicyArns !== undefined && input.PolicyArns !== null) {
+    if (input.PolicyArns != null) {
         const memberEntries = serializeAws_querypolicyDescriptorListType(input.PolicyArns, context);
         Object.entries(memberEntries).forEach(([key, value]) => {
             const loc = `PolicyArns.${key}`;
             entries[loc] = value;
         });
     }
-    if (input.Policy !== undefined && input.Policy !== null) {
+    if (input.Policy != null) {
         entries["Policy"] = input.Policy;
     }
-    if (input.DurationSeconds !== undefined && input.DurationSeconds !== null) {
+    if (input.DurationSeconds != null) {
         entries["DurationSeconds"] = input.DurationSeconds;
     }
     return entries;
 };
 const serializeAws_queryAssumeRoleWithWebIdentityRequest = (input, context) => {
     const entries = {};
-    if (input.RoleArn !== undefined && input.RoleArn !== null) {
+    if (input.RoleArn != null) {
         entries["RoleArn"] = input.RoleArn;
     }
-    if (input.RoleSessionName !== undefined && input.RoleSessionName !== null) {
+    if (input.RoleSessionName != null) {
         entries["RoleSessionName"] = input.RoleSessionName;
     }
-    if (input.WebIdentityToken !== undefined && input.WebIdentityToken !== null) {
+    if (input.WebIdentityToken != null) {
         entries["WebIdentityToken"] = input.WebIdentityToken;
     }
-    if (input.ProviderId !== undefined && input.ProviderId !== null) {
+    if (input.ProviderId != null) {
         entries["ProviderId"] = input.ProviderId;
     }
-    if (input.PolicyArns !== undefined && input.PolicyArns !== null) {
+    if (input.PolicyArns != null) {
         const memberEntries = serializeAws_querypolicyDescriptorListType(input.PolicyArns, context);
         Object.entries(memberEntries).forEach(([key, value]) => {
             const loc = `PolicyArns.${key}`;
             entries[loc] = value;
         });
     }
-    if (input.Policy !== undefined && input.Policy !== null) {
+    if (input.Policy != null) {
         entries["Policy"] = input.Policy;
     }
-    if (input.DurationSeconds !== undefined && input.DurationSeconds !== null) {
+    if (input.DurationSeconds != null) {
         entries["DurationSeconds"] = input.DurationSeconds;
     }
     return entries;
 };
 const serializeAws_queryDecodeAuthorizationMessageRequest = (input, context) => {
     const entries = {};
-    if (input.EncodedMessage !== undefined && input.EncodedMessage !== null) {
+    if (input.EncodedMessage != null) {
         entries["EncodedMessage"] = input.EncodedMessage;
     }
     return entries;
 };
 const serializeAws_queryGetAccessKeyInfoRequest = (input, context) => {
     const entries = {};
-    if (input.AccessKeyId !== undefined && input.AccessKeyId !== null) {
+    if (input.AccessKeyId != null) {
         entries["AccessKeyId"] = input.AccessKeyId;
     }
     return entries;
@@ -17104,23 +16377,23 @@ const serializeAws_queryGetCallerIdentityRequest = (input, context) => {
 };
 const serializeAws_queryGetFederationTokenRequest = (input, context) => {
     const entries = {};
-    if (input.Name !== undefined && input.Name !== null) {
+    if (input.Name != null) {
         entries["Name"] = input.Name;
     }
-    if (input.Policy !== undefined && input.Policy !== null) {
+    if (input.Policy != null) {
         entries["Policy"] = input.Policy;
     }
-    if (input.PolicyArns !== undefined && input.PolicyArns !== null) {
+    if (input.PolicyArns != null) {
         const memberEntries = serializeAws_querypolicyDescriptorListType(input.PolicyArns, context);
         Object.entries(memberEntries).forEach(([key, value]) => {
             const loc = `PolicyArns.${key}`;
             entries[loc] = value;
         });
     }
-    if (input.DurationSeconds !== undefined && input.DurationSeconds !== null) {
+    if (input.DurationSeconds != null) {
         entries["DurationSeconds"] = input.DurationSeconds;
     }
-    if (input.Tags !== undefined && input.Tags !== null) {
+    if (input.Tags != null) {
         const memberEntries = serializeAws_querytagListType(input.Tags, context);
         Object.entries(memberEntries).forEach(([key, value]) => {
             const loc = `Tags.${key}`;
@@ -17131,13 +16404,13 @@ const serializeAws_queryGetFederationTokenRequest = (input, context) => {
 };
 const serializeAws_queryGetSessionTokenRequest = (input, context) => {
     const entries = {};
-    if (input.DurationSeconds !== undefined && input.DurationSeconds !== null) {
+    if (input.DurationSeconds != null) {
         entries["DurationSeconds"] = input.DurationSeconds;
     }
-    if (input.SerialNumber !== undefined && input.SerialNumber !== null) {
+    if (input.SerialNumber != null) {
         entries["SerialNumber"] = input.SerialNumber;
     }
-    if (input.TokenCode !== undefined && input.TokenCode !== null) {
+    if (input.TokenCode != null) {
         entries["TokenCode"] = input.TokenCode;
     }
     return entries;
@@ -17159,17 +16432,17 @@ const serializeAws_querypolicyDescriptorListType = (input, context) => {
 };
 const serializeAws_queryPolicyDescriptorType = (input, context) => {
     const entries = {};
-    if (input.arn !== undefined && input.arn !== null) {
+    if (input.arn != null) {
         entries["arn"] = input.arn;
     }
     return entries;
 };
 const serializeAws_queryTag = (input, context) => {
     const entries = {};
-    if (input.Key !== undefined && input.Key !== null) {
+    if (input.Key != null) {
         entries["Key"] = input.Key;
     }
-    if (input.Value !== undefined && input.Value !== null) {
+    if (input.Value != null) {
         entries["Value"] = input.Value;
     }
     return entries;
@@ -22861,9 +22134,9 @@ const parseRfc3339DateTime = (value) => {
     return buildDate(year, month, day, { hours, minutes, seconds, fractionalMilliseconds });
 };
 exports.parseRfc3339DateTime = parseRfc3339DateTime;
-const IMF_FIXDATE = new RegExp(/^(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun), (\d{2}) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\d{4}) (\d{2}):(\d{2}):(\d{2})(?:\.(\d+))? GMT$/);
-const RFC_850_DATE = new RegExp(/^(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday), (\d{2})-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-(\d{2}) (\d{2}):(\d{2}):(\d{2})(?:\.(\d+))? GMT$/);
-const ASC_TIME = new RegExp(/^(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) ( [1-9]|\d{2}) (\d{2}):(\d{2}):(\d{2})(?:\.(\d+))? (\d{4})$/);
+const IMF_FIXDATE = new RegExp(/^(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun), (\d{2}) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\d{4}) (\d{1,2}):(\d{2}):(\d{2})(?:\.(\d+))? GMT$/);
+const RFC_850_DATE = new RegExp(/^(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday), (\d{2})-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-(\d{2}) (\d{1,2}):(\d{2}):(\d{2})(?:\.(\d+))? GMT$/);
+const ASC_TIME = new RegExp(/^(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) ( [1-9]|\d{2}) (\d{1,2}):(\d{2}):(\d{2})(?:\.(\d+))? (\d{4})$/);
 const parseRfc7231DateTime = (value) => {
     if (value === null || value === undefined) {
         return undefined;
@@ -22976,6 +22249,38 @@ const stripLeadingZeroes = (value) => {
         return value;
     }
     return value.slice(idx);
+};
+
+
+/***/ }),
+
+/***/ 7222:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.throwDefaultError = void 0;
+const exceptions_1 = __nccwpck_require__(7778);
+const throwDefaultError = ({ output, parsedBody, exceptionCtor, errorCode }) => {
+    const $metadata = deserializeMetadata(output);
+    const statusCode = $metadata.httpStatusCode ? $metadata.httpStatusCode + "" : undefined;
+    const response = new exceptionCtor({
+        name: parsedBody.code || parsedBody.Code || errorCode || statusCode || "UnknowError",
+        $fault: "client",
+        $metadata,
+    });
+    throw (0, exceptions_1.decorateServiceException)(response, parsedBody);
+};
+exports.throwDefaultError = throwDefaultError;
+const deserializeMetadata = (output) => {
+    var _a;
+    return ({
+        httpStatusCode: output.statusCode,
+        requestId: (_a = output.headers["x-amzn-requestid"]) !== null && _a !== void 0 ? _a : output.headers["x-amzn-request-id"],
+        extendedRequestId: output.headers["x-amz-id-2"],
+        cfId: output.headers["x-amz-cf-id"],
+    });
 };
 
 
@@ -23142,6 +22447,7 @@ tslib_1.__exportStar(__nccwpck_require__(6034), exports);
 tslib_1.__exportStar(__nccwpck_require__(4014), exports);
 tslib_1.__exportStar(__nccwpck_require__(8392), exports);
 tslib_1.__exportStar(__nccwpck_require__(4695), exports);
+tslib_1.__exportStar(__nccwpck_require__(7222), exports);
 tslib_1.__exportStar(__nccwpck_require__(3088), exports);
 tslib_1.__exportStar(__nccwpck_require__(2363), exports);
 tslib_1.__exportStar(__nccwpck_require__(7778), exports);
@@ -23149,7 +22455,9 @@ tslib_1.__exportStar(__nccwpck_require__(1927), exports);
 tslib_1.__exportStar(__nccwpck_require__(6457), exports);
 tslib_1.__exportStar(__nccwpck_require__(5830), exports);
 tslib_1.__exportStar(__nccwpck_require__(3613), exports);
+tslib_1.__exportStar(__nccwpck_require__(1599), exports);
 tslib_1.__exportStar(__nccwpck_require__(4809), exports);
+tslib_1.__exportStar(__nccwpck_require__(308), exports);
 tslib_1.__exportStar(__nccwpck_require__(8000), exports);
 tslib_1.__exportStar(__nccwpck_require__(8730), exports);
 
@@ -23198,6 +22506,88 @@ class LazyJsonString extends exports.StringWrapper {
     }
 }
 exports.LazyJsonString = LazyJsonString;
+
+
+/***/ }),
+
+/***/ 1599:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.convertMap = exports.map = void 0;
+function map(arg0, arg1, arg2) {
+    let target;
+    let filter;
+    let instructions;
+    if (typeof arg1 === "undefined" && typeof arg2 === "undefined") {
+        target = {};
+        instructions = arg0;
+    }
+    else {
+        target = arg0;
+        if (typeof arg1 === "function") {
+            filter = arg1;
+            instructions = arg2;
+            return mapWithFilter(target, filter, instructions);
+        }
+        else {
+            instructions = arg1;
+        }
+    }
+    for (const key of Object.keys(instructions)) {
+        if (!Array.isArray(instructions[key])) {
+            target[key] = instructions[key];
+            continue;
+        }
+        let [filter, value] = instructions[key];
+        if (typeof value === "function") {
+            let _value;
+            const defaultFilterPassed = filter === undefined && (_value = value()) != null;
+            const customFilterPassed = (typeof filter === "function" && !!filter(void 0)) || (typeof filter !== "function" && !!filter);
+            if (defaultFilterPassed) {
+                target[key] = _value;
+            }
+            else if (customFilterPassed) {
+                target[key] = value();
+            }
+        }
+        else {
+            const defaultFilterPassed = filter === undefined && value != null;
+            const customFilterPassed = (typeof filter === "function" && !!filter(value)) || (typeof filter !== "function" && !!filter);
+            if (defaultFilterPassed || customFilterPassed) {
+                target[key] = value;
+            }
+        }
+    }
+    return target;
+}
+exports.map = map;
+const convertMap = (target) => {
+    const output = {};
+    for (const [k, v] of Object.entries(target || {})) {
+        output[k] = [, v];
+    }
+    return output;
+};
+exports.convertMap = convertMap;
+const mapWithFilter = (target, filter, instructions) => {
+    return map(target, Object.entries(instructions).reduce((_instructions, [key, value]) => {
+        if (Array.isArray(value)) {
+            _instructions[key] = value;
+        }
+        else {
+            if (typeof value === "function") {
+                _instructions[key] = [filter, value()];
+            }
+            else {
+                _instructions[key] = [filter, value];
+            }
+        }
+        return _instructions;
+    }, {}));
+};
 
 
 /***/ }),
@@ -23412,6 +22802,37 @@ const strictParseByte = (value) => {
     return (0, exports.expectByte)(value);
 };
 exports.strictParseByte = strictParseByte;
+
+
+/***/ }),
+
+/***/ 308:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.resolvedPath = void 0;
+const extended_encode_uri_component_1 = __nccwpck_require__(1927);
+const resolvedPath = (resolvedPath, input, memberName, labelValueProvider, uriLabel, isGreedyLabel) => {
+    if (input != null && input[memberName] !== undefined) {
+        const labelValue = labelValueProvider();
+        if (labelValue.length <= 0) {
+            throw new Error("Empty value provided for input HTTP label: " + memberName + ".");
+        }
+        resolvedPath = resolvedPath.replace(uriLabel, isGreedyLabel
+            ? labelValue
+                .split("/")
+                .map((segment) => (0, extended_encode_uri_component_1.extendedEncodeURIComponent)(segment))
+                .join("/")
+            : (0, extended_encode_uri_component_1.extendedEncodeURIComponent)(labelValue));
+    }
+    else {
+        throw new Error("No value provided for input HTTP label: " + memberName + ".");
+    }
+    return resolvedPath;
+};
+exports.resolvedPath = resolvedPath;
 
 
 /***/ }),
@@ -28428,7 +27849,7 @@ module.exports = require("util");
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"@aws-sdk/client-dynamodb","description":"AWS SDK for JavaScript Dynamodb Client for Node.js, Browser and React Native","version":"3.130.0","scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"tsc -p tsconfig.cjs.json","build:docs":"typedoc","build:es":"tsc -p tsconfig.es.json","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"2.0.0","@aws-crypto/sha256-js":"2.0.0","@aws-sdk/client-sts":"3.130.0","@aws-sdk/config-resolver":"3.130.0","@aws-sdk/credential-provider-node":"3.130.0","@aws-sdk/fetch-http-handler":"3.127.0","@aws-sdk/hash-node":"3.127.0","@aws-sdk/invalid-dependency":"3.127.0","@aws-sdk/middleware-content-length":"3.127.0","@aws-sdk/middleware-endpoint-discovery":"3.130.0","@aws-sdk/middleware-host-header":"3.127.0","@aws-sdk/middleware-logger":"3.127.0","@aws-sdk/middleware-recursion-detection":"3.127.0","@aws-sdk/middleware-retry":"3.127.0","@aws-sdk/middleware-serde":"3.127.0","@aws-sdk/middleware-signing":"3.130.0","@aws-sdk/middleware-stack":"3.127.0","@aws-sdk/middleware-user-agent":"3.127.0","@aws-sdk/node-config-provider":"3.127.0","@aws-sdk/node-http-handler":"3.127.0","@aws-sdk/protocol-http":"3.127.0","@aws-sdk/smithy-client":"3.127.0","@aws-sdk/types":"3.127.0","@aws-sdk/url-parser":"3.127.0","@aws-sdk/util-base64-browser":"3.109.0","@aws-sdk/util-base64-node":"3.55.0","@aws-sdk/util-body-length-browser":"3.55.0","@aws-sdk/util-body-length-node":"3.55.0","@aws-sdk/util-defaults-mode-browser":"3.127.0","@aws-sdk/util-defaults-mode-node":"3.130.0","@aws-sdk/util-user-agent-browser":"3.127.0","@aws-sdk/util-user-agent-node":"3.127.0","@aws-sdk/util-utf8-browser":"3.109.0","@aws-sdk/util-utf8-node":"3.109.0","@aws-sdk/util-waiter":"3.127.0","tslib":"^2.3.1","uuid":"^8.3.2"},"devDependencies":{"@aws-sdk/service-client-documentation-generator":"3.58.0","@tsconfig/recommended":"1.0.1","@types/node":"^12.7.5","@types/uuid":"^8.3.0","concurrently":"7.0.0","downlevel-dts":"0.7.0","rimraf":"3.0.2","typedoc":"0.19.2","typescript":"~4.6.2"},"engines":{"node":">=12.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-dynamodb","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-dynamodb"}}');
+module.exports = JSON.parse('{"name":"@aws-sdk/client-dynamodb","description":"AWS SDK for JavaScript Dynamodb Client for Node.js, Browser and React Native","version":"3.145.0","scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"tsc -p tsconfig.cjs.json","build:docs":"typedoc","build:es":"tsc -p tsconfig.es.json","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"2.0.0","@aws-crypto/sha256-js":"2.0.0","@aws-sdk/client-sts":"3.145.0","@aws-sdk/config-resolver":"3.130.0","@aws-sdk/credential-provider-node":"3.145.0","@aws-sdk/fetch-http-handler":"3.131.0","@aws-sdk/hash-node":"3.127.0","@aws-sdk/invalid-dependency":"3.127.0","@aws-sdk/middleware-content-length":"3.127.0","@aws-sdk/middleware-endpoint-discovery":"3.130.0","@aws-sdk/middleware-host-header":"3.127.0","@aws-sdk/middleware-logger":"3.127.0","@aws-sdk/middleware-recursion-detection":"3.127.0","@aws-sdk/middleware-retry":"3.127.0","@aws-sdk/middleware-serde":"3.127.0","@aws-sdk/middleware-signing":"3.130.0","@aws-sdk/middleware-stack":"3.127.0","@aws-sdk/middleware-user-agent":"3.127.0","@aws-sdk/node-config-provider":"3.127.0","@aws-sdk/node-http-handler":"3.127.0","@aws-sdk/protocol-http":"3.127.0","@aws-sdk/smithy-client":"3.142.0","@aws-sdk/types":"3.127.0","@aws-sdk/url-parser":"3.127.0","@aws-sdk/util-base64-browser":"3.109.0","@aws-sdk/util-base64-node":"3.55.0","@aws-sdk/util-body-length-browser":"3.55.0","@aws-sdk/util-body-length-node":"3.55.0","@aws-sdk/util-defaults-mode-browser":"3.142.0","@aws-sdk/util-defaults-mode-node":"3.142.0","@aws-sdk/util-user-agent-browser":"3.127.0","@aws-sdk/util-user-agent-node":"3.127.0","@aws-sdk/util-utf8-browser":"3.109.0","@aws-sdk/util-utf8-node":"3.109.0","@aws-sdk/util-waiter":"3.127.0","tslib":"^2.3.1","uuid":"^8.3.2"},"devDependencies":{"@aws-sdk/service-client-documentation-generator":"3.58.0","@tsconfig/recommended":"1.0.1","@types/node":"^12.7.5","@types/uuid":"^8.3.0","concurrently":"7.0.0","downlevel-dts":"0.7.0","rimraf":"3.0.2","typedoc":"0.19.2","typescript":"~4.6.2"},"overrides":{"typedoc":{"typescript":"~4.6.2"}},"engines":{"node":">=12.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-dynamodb","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-dynamodb"}}');
 
 /***/ }),
 
@@ -28436,7 +27857,7 @@ module.exports = JSON.parse('{"name":"@aws-sdk/client-dynamodb","description":"A
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"@aws-sdk/client-sso","description":"AWS SDK for JavaScript Sso Client for Node.js, Browser and React Native","version":"3.130.0","scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"tsc -p tsconfig.cjs.json","build:docs":"typedoc","build:es":"tsc -p tsconfig.es.json","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"2.0.0","@aws-crypto/sha256-js":"2.0.0","@aws-sdk/config-resolver":"3.130.0","@aws-sdk/fetch-http-handler":"3.127.0","@aws-sdk/hash-node":"3.127.0","@aws-sdk/invalid-dependency":"3.127.0","@aws-sdk/middleware-content-length":"3.127.0","@aws-sdk/middleware-host-header":"3.127.0","@aws-sdk/middleware-logger":"3.127.0","@aws-sdk/middleware-recursion-detection":"3.127.0","@aws-sdk/middleware-retry":"3.127.0","@aws-sdk/middleware-serde":"3.127.0","@aws-sdk/middleware-stack":"3.127.0","@aws-sdk/middleware-user-agent":"3.127.0","@aws-sdk/node-config-provider":"3.127.0","@aws-sdk/node-http-handler":"3.127.0","@aws-sdk/protocol-http":"3.127.0","@aws-sdk/smithy-client":"3.127.0","@aws-sdk/types":"3.127.0","@aws-sdk/url-parser":"3.127.0","@aws-sdk/util-base64-browser":"3.109.0","@aws-sdk/util-base64-node":"3.55.0","@aws-sdk/util-body-length-browser":"3.55.0","@aws-sdk/util-body-length-node":"3.55.0","@aws-sdk/util-defaults-mode-browser":"3.127.0","@aws-sdk/util-defaults-mode-node":"3.130.0","@aws-sdk/util-user-agent-browser":"3.127.0","@aws-sdk/util-user-agent-node":"3.127.0","@aws-sdk/util-utf8-browser":"3.109.0","@aws-sdk/util-utf8-node":"3.109.0","tslib":"^2.3.1"},"devDependencies":{"@aws-sdk/service-client-documentation-generator":"3.58.0","@tsconfig/recommended":"1.0.1","@types/node":"^12.7.5","concurrently":"7.0.0","downlevel-dts":"0.7.0","rimraf":"3.0.2","typedoc":"0.19.2","typescript":"~4.6.2"},"engines":{"node":">=12.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-sso","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-sso"}}');
+module.exports = JSON.parse('{"name":"@aws-sdk/client-sso","description":"AWS SDK for JavaScript Sso Client for Node.js, Browser and React Native","version":"3.145.0","scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"tsc -p tsconfig.cjs.json","build:docs":"typedoc","build:es":"tsc -p tsconfig.es.json","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"2.0.0","@aws-crypto/sha256-js":"2.0.0","@aws-sdk/config-resolver":"3.130.0","@aws-sdk/fetch-http-handler":"3.131.0","@aws-sdk/hash-node":"3.127.0","@aws-sdk/invalid-dependency":"3.127.0","@aws-sdk/middleware-content-length":"3.127.0","@aws-sdk/middleware-host-header":"3.127.0","@aws-sdk/middleware-logger":"3.127.0","@aws-sdk/middleware-recursion-detection":"3.127.0","@aws-sdk/middleware-retry":"3.127.0","@aws-sdk/middleware-serde":"3.127.0","@aws-sdk/middleware-stack":"3.127.0","@aws-sdk/middleware-user-agent":"3.127.0","@aws-sdk/node-config-provider":"3.127.0","@aws-sdk/node-http-handler":"3.127.0","@aws-sdk/protocol-http":"3.127.0","@aws-sdk/smithy-client":"3.142.0","@aws-sdk/types":"3.127.0","@aws-sdk/url-parser":"3.127.0","@aws-sdk/util-base64-browser":"3.109.0","@aws-sdk/util-base64-node":"3.55.0","@aws-sdk/util-body-length-browser":"3.55.0","@aws-sdk/util-body-length-node":"3.55.0","@aws-sdk/util-defaults-mode-browser":"3.142.0","@aws-sdk/util-defaults-mode-node":"3.142.0","@aws-sdk/util-user-agent-browser":"3.127.0","@aws-sdk/util-user-agent-node":"3.127.0","@aws-sdk/util-utf8-browser":"3.109.0","@aws-sdk/util-utf8-node":"3.109.0","tslib":"^2.3.1"},"devDependencies":{"@aws-sdk/service-client-documentation-generator":"3.58.0","@tsconfig/recommended":"1.0.1","@types/node":"^12.7.5","concurrently":"7.0.0","downlevel-dts":"0.7.0","rimraf":"3.0.2","typedoc":"0.19.2","typescript":"~4.6.2"},"overrides":{"typedoc":{"typescript":"~4.6.2"}},"engines":{"node":">=12.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-sso","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-sso"}}');
 
 /***/ }),
 
@@ -28444,7 +27865,7 @@ module.exports = JSON.parse('{"name":"@aws-sdk/client-sso","description":"AWS SD
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"@aws-sdk/client-sts","description":"AWS SDK for JavaScript Sts Client for Node.js, Browser and React Native","version":"3.130.0","scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"tsc -p tsconfig.cjs.json","build:docs":"typedoc","build:es":"tsc -p tsconfig.es.json","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"2.0.0","@aws-crypto/sha256-js":"2.0.0","@aws-sdk/config-resolver":"3.130.0","@aws-sdk/credential-provider-node":"3.130.0","@aws-sdk/fetch-http-handler":"3.127.0","@aws-sdk/hash-node":"3.127.0","@aws-sdk/invalid-dependency":"3.127.0","@aws-sdk/middleware-content-length":"3.127.0","@aws-sdk/middleware-host-header":"3.127.0","@aws-sdk/middleware-logger":"3.127.0","@aws-sdk/middleware-recursion-detection":"3.127.0","@aws-sdk/middleware-retry":"3.127.0","@aws-sdk/middleware-sdk-sts":"3.130.0","@aws-sdk/middleware-serde":"3.127.0","@aws-sdk/middleware-signing":"3.130.0","@aws-sdk/middleware-stack":"3.127.0","@aws-sdk/middleware-user-agent":"3.127.0","@aws-sdk/node-config-provider":"3.127.0","@aws-sdk/node-http-handler":"3.127.0","@aws-sdk/protocol-http":"3.127.0","@aws-sdk/smithy-client":"3.127.0","@aws-sdk/types":"3.127.0","@aws-sdk/url-parser":"3.127.0","@aws-sdk/util-base64-browser":"3.109.0","@aws-sdk/util-base64-node":"3.55.0","@aws-sdk/util-body-length-browser":"3.55.0","@aws-sdk/util-body-length-node":"3.55.0","@aws-sdk/util-defaults-mode-browser":"3.127.0","@aws-sdk/util-defaults-mode-node":"3.130.0","@aws-sdk/util-user-agent-browser":"3.127.0","@aws-sdk/util-user-agent-node":"3.127.0","@aws-sdk/util-utf8-browser":"3.109.0","@aws-sdk/util-utf8-node":"3.109.0","entities":"2.2.0","fast-xml-parser":"3.19.0","tslib":"^2.3.1"},"devDependencies":{"@aws-sdk/service-client-documentation-generator":"3.58.0","@tsconfig/recommended":"1.0.1","@types/node":"^12.7.5","concurrently":"7.0.0","downlevel-dts":"0.7.0","rimraf":"3.0.2","typedoc":"0.19.2","typescript":"~4.6.2"},"engines":{"node":">=12.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-sts","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-sts"}}');
+module.exports = JSON.parse('{"name":"@aws-sdk/client-sts","description":"AWS SDK for JavaScript Sts Client for Node.js, Browser and React Native","version":"3.145.0","scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"tsc -p tsconfig.cjs.json","build:docs":"typedoc","build:es":"tsc -p tsconfig.es.json","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"2.0.0","@aws-crypto/sha256-js":"2.0.0","@aws-sdk/config-resolver":"3.130.0","@aws-sdk/credential-provider-node":"3.145.0","@aws-sdk/fetch-http-handler":"3.131.0","@aws-sdk/hash-node":"3.127.0","@aws-sdk/invalid-dependency":"3.127.0","@aws-sdk/middleware-content-length":"3.127.0","@aws-sdk/middleware-host-header":"3.127.0","@aws-sdk/middleware-logger":"3.127.0","@aws-sdk/middleware-recursion-detection":"3.127.0","@aws-sdk/middleware-retry":"3.127.0","@aws-sdk/middleware-sdk-sts":"3.130.0","@aws-sdk/middleware-serde":"3.127.0","@aws-sdk/middleware-signing":"3.130.0","@aws-sdk/middleware-stack":"3.127.0","@aws-sdk/middleware-user-agent":"3.127.0","@aws-sdk/node-config-provider":"3.127.0","@aws-sdk/node-http-handler":"3.127.0","@aws-sdk/protocol-http":"3.127.0","@aws-sdk/smithy-client":"3.142.0","@aws-sdk/types":"3.127.0","@aws-sdk/url-parser":"3.127.0","@aws-sdk/util-base64-browser":"3.109.0","@aws-sdk/util-base64-node":"3.55.0","@aws-sdk/util-body-length-browser":"3.55.0","@aws-sdk/util-body-length-node":"3.55.0","@aws-sdk/util-defaults-mode-browser":"3.142.0","@aws-sdk/util-defaults-mode-node":"3.142.0","@aws-sdk/util-user-agent-browser":"3.127.0","@aws-sdk/util-user-agent-node":"3.127.0","@aws-sdk/util-utf8-browser":"3.109.0","@aws-sdk/util-utf8-node":"3.109.0","entities":"2.2.0","fast-xml-parser":"3.19.0","tslib":"^2.3.1"},"devDependencies":{"@aws-sdk/service-client-documentation-generator":"3.58.0","@tsconfig/recommended":"1.0.1","@types/node":"^12.7.5","concurrently":"7.0.0","downlevel-dts":"0.7.0","rimraf":"3.0.2","typedoc":"0.19.2","typescript":"~4.6.2"},"overrides":{"typedoc":{"typescript":"~4.6.2"}},"engines":{"node":">=12.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-sts","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-sts"}}');
 
 /***/ }),
 
