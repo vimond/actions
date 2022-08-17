@@ -1,8 +1,6 @@
-import fetch from 'node-fetch';
-
-async function checkIfExist(jiraConfig, tickets) {
+async function checkIfExist(nodeFetch, jiraConfig, tickets) {
     const auth = Buffer.from(`${jiraConfig.username}:${jiraConfig.token}`);
-    const f = await fetch(`https://${jiraConfig.proxy}/rest/api/2/search?` + new URLSearchParams({
+    const f = await nodeFetch(`https://${jiraConfig.proxy}/rest/api/2/search?` + new URLSearchParams({
         jql: `issue IN ( ${tickets.join(',')} )`,
         fields: "*all",
         maxResults: 50

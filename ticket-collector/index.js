@@ -5,6 +5,7 @@ require('dotenv').config();
 const ticketFinder = require('../utils/tickets-finder');
 const prMetadataCollector = require('./src/pr-metadata-collector');
 const jira = require('../utils/jira');
+const nodeFetch = require('node-fetch');
 
 
 // most @actions toolkit packages have async methods
@@ -35,7 +36,7 @@ async function run() {
     const ticketsFound = Array.from(ticketFinder.findAll(textBlocks));
     console.log(`Tickets found: ${JSON.stringify(ticketsFound)}`);
 
-    const ticketsFiltered = await jira.checkIfExist(jiraConfig, ticketsFound);
+    const ticketsFiltered = await jira.checkIfExist(nodeFetch, jiraConfig, ticketsFound);
     console.log(`Tickets filtered: ${JSON.stringify(ticketsFiltered)}`);
 
 
