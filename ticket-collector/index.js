@@ -36,17 +36,33 @@ async function run() {
     const ticketsFound = Array.from(ticketFinder.findAll(textBlocks));
     console.log(`Tickets found: ${JSON.stringify(ticketsFound)}`);
 
-    const ticketsFiltered = await jira.checkIfExist(nodeFetch, jiraConfig, ticketsFound);
-    console.log(`Tickets filtered: ${JSON.stringify(ticketsFiltered)}`);
+    let filteredTickets;
+    if (jiraConfig.host !== undefined && jiraConfig.token !== undefined && jiraConfig.username !== undefined) {
+      try {
+        filteredTickets = await jira.checkIfExist(nodeFetch, jiraConfig, ticketsFound);
+        if (filteredTickets == null || typeof filteredTickets[Symbol.iterator] !== 'function') {
+          console.log(`Bad response from JIRA: ${filteredTickets}`);
+          filteredTickets = ticketsFound;
+        }
+        filteredTickets = filteredTickets.map(t => t.key);
 
+        console.log(`Finished ticket validation: ${JSON.stringify(filteredTickets)}`);
+      } catch (e) {
+        console.log(`error validating JIRA tickets, skipping: ${e}`);
+        filteredTickets = ticketsFound;
+      }
+    } else {
+      filteredTickets = ticketsFound;
+      console.log("jira config not provided, skipping validation")
+    }
 
 
     if (input.outputFile !== "") {
-      await fs.writeFileSync(input.outputFile, JSON.stringify(ticketsFiltered), { flag: 'w' });
+      await fs.writeFileSync(input.outputFile, JSON.stringify(filteredTickets), { flag: 'w' });
     }
-    core.setOutput('tickets', Buffer.from(JSON.stringify(ticketsFiltered)).toString('base64'))
+    core.setOutput('tickets', Buffer.from(JSON.stringify(filteredTickets)).toString('base64'))
 
-    if (ticketsFiltered.length === 0) {
+    if (filteredTickets.length === 0) {
       core.setFailed('No valid tickets were found in this pull request');
     }
   } catch (error) {

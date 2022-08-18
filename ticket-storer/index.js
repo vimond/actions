@@ -75,8 +75,7 @@ async function run() {
       try {
         filteredTickets = await jira.checkIfExist(nodeFetch, jiraConfig, allTickets);
         if (filteredTickets == null || typeof filteredTickets[Symbol.iterator] !== 'function') {
-          console.log(filteredTickets);
-          core.setFailed("Bad response from JIRA");
+          console.log(`Bad response from JIRA: ${filteredTickets}`);
           filteredTickets = allTickets;
         }
         filteredTickets = filteredTickets.map(t => t.key);

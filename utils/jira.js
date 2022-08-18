@@ -1,9 +1,21 @@
+const maxResults = 1000;
+
 async function checkIfExist(nodeFetch, jiraConfig, tickets) {
     const auth = Buffer.from(`${jiraConfig.username}:${jiraConfig.token}`);
-    const f = await nodeFetch(`https://${jiraConfig.proxy}/rest/api/2/search?` + new URLSearchParams({
+    let filteredTickets = [];
+    for (let i = 0; i < tickets.length; i += maxResults) {
+        const newTickets = await processBatch(nodeFetch, auth, jiraConfig.proxy, tickets.slice(i, i+maxResults))
+        filteredTickets.concat(newTickets)
+    }
+
+    return filteredTickets;
+}
+
+async function processBatch(nodeFetch, auth, proxy, tickets) {
+    const f = await nodeFetch(`https://${proxy}/rest/api/2/search?` + new URLSearchParams({
         jql: `issue IN ( ${tickets.join(',')} )`,
         fields: "*all",
-        maxResults: 50
+        maxResults: maxResults
     }),
         {
             headers: {
@@ -12,7 +24,16 @@ async function checkIfExist(nodeFetch, jiraConfig, tickets) {
             }
         });
 
-    const resp = await f.json();
+    if (f.status != 200) {
+        console.log(`Non-200 status code returned by JIRA: ${f.status}`);
+    }
+    const textResp = await f.text();
+    try {
+        const jsonResp = JSON.parse(textResp);
+    } catch (e) {
+        console.log(`Couldn't parse JSON resp: ${e}. Resp: ${textResp}`);
+        throw e;
+    }
 
     console.log(`Warnings: ${resp.data.warningMessages}`);
 
