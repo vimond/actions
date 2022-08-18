@@ -34610,14 +34610,14 @@ async function checkIfExist(nodeFetch, jiraConfig, tickets) {
     const auth = Buffer.from(`${jiraConfig.username}:${jiraConfig.token}`);
     let filteredTickets = [];
     for (let i = 0; i < tickets.length; i += maxResults) {
-        const newTickets = await processBatch(nodeFetch, auth, jiraConfig.proxy, tickets.slice(i, i+maxResults))
+        const newTickets = await processBatch(nodeFetch, auth, jiraConfig.proxy, jiraConfig.host, tickets.slice(i, i+maxResults))
         filteredTickets.concat(newTickets)
     }
 
     return filteredTickets;
 }
 
-async function processBatch(nodeFetch, auth, proxy, tickets) {
+async function processBatch(nodeFetch, auth, proxy, jifraHost, tickets) {
     const f = await nodeFetch(`https://${proxy}/rest/api/2/search?` + new URLSearchParams({
         jql: `issue IN ( ${tickets.join(',')} )`,
         fields: "*all",
@@ -34647,7 +34647,7 @@ async function processBatch(nodeFetch, auth, proxy, tickets) {
         {
             key: issue.key,
             summary: issue.fields.summary,
-            link: `https://${jiraConfig.host}/browse/${issue.key}`
+            link: `https://${jifraHost}/browse/${issue.key}`
         }
     ));
 }
