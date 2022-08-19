@@ -1,10 +1,10 @@
 const maxResults = 1000;
 
 async function checkIfExist(nodeFetch, jiraConfig, tickets) {
-    const auth = Buffer.from(`${jiraConfig.username}:${jiraConfig.token}`);
+    const auth = Buffer.from(`${jiraConfig.username}:${jiraConfig.token}`).toString("base64");
     let filteredTickets = [];
     for (let i = 0; i < tickets.length; i += maxResults) {
-        const newTickets = await processBatch(nodeFetch, auth, jiraConfig.proxy, jiraConfig.host, tickets.slice(i, i+maxResults))
+        const newTickets = await processBatch(nodeFetch, auth, jiraConfig.proxy, jiraConfig.host, tickets.slice(i, i + maxResults))
         filteredTickets.concat(newTickets)
     }
 
