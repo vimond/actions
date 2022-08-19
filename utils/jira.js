@@ -28,16 +28,21 @@ async function processBatch(nodeFetch, auth, proxy, jifraHost, tickets) {
         console.log(`Non-200 status code returned by JIRA: ${f.status}`);
     }
     const textResp = await f.text();
+    let jsonResp;
     try {
-        const jsonResp = JSON.parse(textResp);
+        jsonResp = JSON.parse(textResp);
     } catch (e) {
         console.log(`Couldn't parse JSON resp: ${e}. Resp: ${textResp}`);
         throw e;
     }
 
-    console.log(`Warnings: ${resp.data.warningMessages}`);
+    if (jsonResp.data.errorMessages !== undefined && jsonResp.data.errorMessages.length === 1 && jsonResp.data.errorMessages[0] === "Issue does not exist or you do not have permission to see it.") {
+        return [];
+    }
 
-    return resp.data.issues.map(issue => (
+    console.log(`Warnings: ${jsonResp.data.warningMessages}`);
+
+    return jsonResp.data.issues.map(issue => (
         {
             key: issue.key,
             summary: issue.fields.summary,
