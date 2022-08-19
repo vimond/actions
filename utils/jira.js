@@ -36,13 +36,13 @@ async function processBatch(nodeFetch, auth, proxy, jifraHost, tickets) {
         throw e;
     }
 
-    if (jsonResp.data.errorMessages !== undefined && jsonResp.data.errorMessages.length === 1 && jsonResp.data.errorMessages[0] === "Issue does not exist or you do not have permission to see it.") {
+    if (jsonResp.errorMessages !== undefined && jsonResp.errorMessages.length === 1 && jsonResp.errorMessages[0] === "Issue does not exist or you do not have permission to see it.") {
         return [];
     }
 
-    console.log(`Warnings: ${jsonResp.data.warningMessages}`);
-
-    return jsonResp.data.issues.map(issue => (
+    console.log(`Warnings: ${jsonResp.warningMessages}`);
+    ƒ
+    return jsonResp.issues.map(issue => (
         {
             key: issue.key,
             summary: issue.fields.summary,
