@@ -9698,8 +9698,8 @@ async function checkIfExist(nodeFetch, jiraConfig, tickets) {
     const auth = Buffer.from(`${jiraConfig.username}:${jiraConfig.token}`).toString("base64");
     let filteredTickets = [];
     for (let i = 0; i < tickets.length; i += maxResults) {
-        const newTickets = await processBatch(nodeFetch, auth, jiraConfig.proxy, jiraConfig.host, tickets.slice(i, i + maxResults))
-        filteredTickets.concat(newTickets)
+        const newTickets = await processBatch(nodeFetch, auth, jiraConfig.proxy, jiraConfig.host, tickets.slice(i, i + maxResults));
+        filteredTickets = filteredTickets.concat(newTickets);
     }
 
     return filteredTickets;
@@ -9735,17 +9735,13 @@ async function processBatch(nodeFetch, auth, proxy, jifraHost, tickets) {
     }
 
     console.log(`Warnings: ${jsonResp.warningMessages}`);
-    console.log("issues", jsonResp.issues[0].key);
-    const fmt = jsonResp.issues.map(issue => (
+    return jsonResp.issues.map(issue => (
         {
             key: issue.key,
             summary: issue.fields.summary,
             link: `https://${jifraHost}/browse/${issue.key}`
         }
     ));
-    console.log('fmt', fmt);
-    return fmt;
-
 }
 
 module.exports = {
@@ -9995,13 +9991,12 @@ async function run() {
     let filteredTickets;
     if (jiraConfig.host !== undefined && jiraConfig.token !== undefined && jiraConfig.username !== undefined) {
       try {
-        const outp = await jira.checkIfExist(nodeFetch, jiraConfig, ticketsFound);
-        if (outp == null || typeof outp[Symbol.iterator] !== 'function') {
-          console.log(`Bad response from JIRA: ${outp}`);
+        filteredTickets = await jira.checkIfExist(nodeFetch, jiraConfig, ticketsFound);
+        if (filteredTickets == null || typeof filteredTickets[Symbol.iterator] !== 'function') {
+          console.log(`Bad response from JIRA: ${filteredTickets}`);
           filteredTickets = formatMissingTickets(ticketsFound, jiraConfig.host);
         }
-        console.log(`Finished ticket validation: ${outp} ${JSON.stringify(outp)}`);
-        filteredTickets = outp;
+        console.log(`Finished ticket validation: ${JSON.stringify(filteredTickets)}`);
       } catch (e) {
         console.log(`error validating JIRA tickets, skipping: ${e}`);
         filteredTickets = formatMissingTickets(ticketsFound, jiraConfig.host);

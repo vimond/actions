@@ -34610,8 +34610,8 @@ async function checkIfExist(nodeFetch, jiraConfig, tickets) {
     const auth = Buffer.from(`${jiraConfig.username}:${jiraConfig.token}`).toString("base64");
     let filteredTickets = [];
     for (let i = 0; i < tickets.length; i += maxResults) {
-        const newTickets = await processBatch(nodeFetch, auth, jiraConfig.proxy, jiraConfig.host, tickets.slice(i, i + maxResults))
-        filteredTickets.concat(newTickets)
+        const newTickets = await processBatch(nodeFetch, auth, jiraConfig.proxy, jiraConfig.host, tickets.slice(i, i + maxResults));
+        filteredTickets = filteredTickets.concat(newTickets);
     }
 
     return filteredTickets;
@@ -34647,7 +34647,6 @@ async function processBatch(nodeFetch, auth, proxy, jifraHost, tickets) {
     }
 
     console.log(`Warnings: ${jsonResp.warningMessages}`);
-
     return jsonResp.issues.map(issue => (
         {
             key: issue.key,
