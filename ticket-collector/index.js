@@ -42,15 +42,15 @@ async function run() {
         filteredTickets = await jira.checkIfExist(nodeFetch, jiraConfig, ticketsFound);
         if (filteredTickets == null || typeof filteredTickets[Symbol.iterator] !== 'function') {
           console.log(`Bad response from JIRA: ${filteredTickets}`);
-          filteredTickets = formatMissingTickets(ticketsFound);
+          filteredTickets = formatMissingTickets(ticketsFound, jiraConfig.host);
         }
         console.log(`Finished ticket validation: ${JSON.stringify(filteredTickets)}`);
       } catch (e) {
         console.log(`error validating JIRA tickets, skipping: ${e}`);
-        filteredTickets = formatMissingTickets(ticketsFound);
+        filteredTickets = formatMissingTickets(ticketsFound, jiraConfig.host);
       }
     } else {
-      filteredTickets = formatMissingTickets(ticketsFound);
+      filteredTickets = formatMissingTickets(ticketsFound, jiraConfig.host);
       console.log("jira config not provided, skipping validation")
     }
 
@@ -68,11 +68,11 @@ async function run() {
   }
 }
 
-function formatMissingTickets(tickets) {
+function formatMissingTickets(tickets, host) {
   return tickets.map(t => (
     {
       "key": t,
-      "link": `https://vimond-ng.atlassian.net/browse/${t}`,
+      "link": `https://${host}/browse/${t}`,
       "summary": "Missing"
     }
   ));

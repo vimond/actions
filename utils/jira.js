@@ -41,14 +41,17 @@ async function processBatch(nodeFetch, auth, proxy, jifraHost, tickets) {
     }
 
     console.log(`Warnings: ${jsonResp.warningMessages}`);
-    console.log("issues", jsonResp.issues);
-    return jsonResp.issues.map(issue => (
+    console.log("issues", jsonResp.issues[0].key);
+    const fmt = jsonResp.issues.map(issue => (
         {
             key: issue.key,
             summary: issue.fields.summary,
             link: `https://${jifraHost}/browse/${issue.key}`
         }
     ));
+    console.log('fmt', fmt);
+    return fmt;
+
 }
 
 module.exports = {
