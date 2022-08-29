@@ -48,4 +48,4 @@ function convertTicketInput(inputValue) {
 }
 
 
-run();
+await run();
