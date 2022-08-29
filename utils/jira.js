@@ -41,7 +41,7 @@ async function processBatch(nodeFetch, auth, proxy, jifraHost, tickets) {
     }
 
     console.log(`Warnings: ${jsonResp.warningMessages}`);
-    ƒ
+    console.log("issues", jsonResp.issues);
     return jsonResp.issues.map(issue => (
         {
             key: issue.key,

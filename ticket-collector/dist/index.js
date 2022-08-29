@@ -9735,7 +9735,7 @@ async function processBatch(nodeFetch, auth, proxy, jifraHost, tickets) {
     }
 
     console.log(`Warnings: ${jsonResp.warningMessages}`);
-
+    console.log("issues", jsonResp.issues);
     return jsonResp.issues.map(issue => (
         {
             key: issue.key,
@@ -9983,7 +9983,7 @@ async function run() {
     // Hide secrets
     core.setSecret(jiraConfig.token);
     core.setSecret(jiraConfig.username);
-    core.setSecret(core.getInput('gh-token'))
+    core.setSecret(core.getInput('gh-token'));
 
     let textBlocks = await prMetadataCollector.getAllTextBlocks(input.owner, input.repo, input.prNumber);
     const ticketsFound = Array.from(ticketFinder.findAll(textBlocks));
