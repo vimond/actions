@@ -49,4 +49,4 @@ function convertTicketInput(inputValue) {
   return Buffer.from(inputValue, 'base64').toString('utf-8');
 }
 
-await run();
+run();

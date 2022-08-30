@@ -78,4 +78,4 @@ function formatMissingTickets(tickets, host) {
   ));
 }
 
-await run();
+run();
