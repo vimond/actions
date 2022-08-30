@@ -34617,7 +34617,7 @@ async function checkIfExist(nodeFetch, jiraConfig, tickets) {
     return filteredTickets;
 }
 
-async function processBatch(nodeFetch, auth, proxy, jifraHost, tickets) {
+async function processBatch(nodeFetch, auth, proxy, jiraHost, tickets) {
     const f = await nodeFetch(`https://${proxy}/rest/api/2/search?` + new URLSearchParams({
         jql: `issue IN ( ${tickets.join(',')} )`,
         fields: "*all",
@@ -34630,7 +34630,7 @@ async function processBatch(nodeFetch, auth, proxy, jifraHost, tickets) {
             }
         });
 
-    if (f.status != 200) {
+    if (f.status !== 200) {
         console.log(`Non-200 status code returned by JIRA: ${f.status}`);
     }
     const textResp = await f.text();
@@ -34651,7 +34651,7 @@ async function processBatch(nodeFetch, auth, proxy, jifraHost, tickets) {
         {
             key: issue.key,
             summary: issue.fields.summary,
-            link: `https://${jifraHost}/browse/${issue.key}`
+            link: `https://${jiraHost}/browse/${issue.key}`
         }
     ));
 }
