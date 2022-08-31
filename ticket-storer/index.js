@@ -2,7 +2,8 @@ const ticketSender = require('./src/dynamodb');
 const core = require('@actions/core');
 const ticketFinder = require('../utils/tickets-finder');
 const prTicketSearcher = require('./src/github');
-const jira = require('./src/jira');
+const jira = require('../utils/jira');
+const nodeFetch = require('node-fetch');
 
 // most @actions toolkit packages have async methods
 async function run() {
@@ -72,10 +73,9 @@ async function run() {
     let filteredTickets;
     if (jiraConfig.host !== undefined && jiraConfig.token !== undefined && jiraConfig.username !== undefined) {
       try {
-        filteredTickets = await jira.checkIfExist(jiraConfig, allTickets);
+        filteredTickets = await jira.checkIfExist(nodeFetch, jiraConfig, allTickets);
         if (filteredTickets == null || typeof filteredTickets[Symbol.iterator] !== 'function') {
-          console.log(filteredTickets);
-          core.setFailed("Bad response from JIRA");
+          console.log(`Bad response from JIRA: ${filteredTickets}`);
           filteredTickets = allTickets;
         }
         filteredTickets = filteredTickets.map(t => t.key);
