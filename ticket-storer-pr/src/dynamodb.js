@@ -7,7 +7,12 @@ async function storePRTickets(awsConfig, owner, repoName, prID, tickets) {
         Item: {
             "OwnerRepo": { S: `${owner}:${repoName}` },
             "ID": { S: `PR:${prID}` },
-            "Tickets": { SS: tickets }
+            "Tickets": { SS: tickets },
+
+            "Owner": { S: owner },
+            "Repo": { S: repoName },
+            "ChangeType": { S: "PR" },
+            "ChangeId": { S: prID }
         },
         TableName: awsConfig.tableName
     }));
