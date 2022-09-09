@@ -34551,7 +34551,7 @@ async function storeOverrideRepoName(awsConfig, owner, repoName, overrideRepoNam
         Item: {
             "OwnerRepo": { S: `${owner}:${overrideRepoName}` },
             "ID": { S: "reponame" },
-            "RepoName": { S: repoName }
+            "OverrideRepoName": { S: repoName }
         },
         TableName: awsConfig.tableName
     }));
