@@ -65,7 +65,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.TICKET_COLLECTOR_SECRET_ACCESS_KEY }}
           aws-region: eu-north-1
       - name: Store tickets
-        uses: vimond/actions/ticket-storer-pr@9dc6f7b9e472d6b7f500cdbd6320b18aac15d8ba
+        uses: vimond/actions/ticket-storer-pr@feat/extra-fields
         with:
           owner: ${{ github.repository_owner }}
           repository: ${{ github.event.repository.name }}

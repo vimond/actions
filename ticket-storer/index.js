@@ -111,7 +111,9 @@ async function run() {
         parentSha: parentSha,
         branch: input.refName,
         tickets: tickets,
-        prs: commitPrs[commit.id]
+        prs: commitPrs[commit.id],
+        owner: input.owner,
+        repo: input.repo
       });
       parentSha = commit.id;
     }
