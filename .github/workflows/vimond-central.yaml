@@ -35,7 +35,7 @@ jobs:
         run: "echo ${{ env.PR_ID }}"
       - name: collect tickets
         id: collect
-        uses: vimond/actions/ticket-collector@9dc6f7b9e472d6b7f500cdbd6320b18aac15d8ba
+        uses: vimond/actions/ticket-collector@6f7502fda805a640eb4ac44e96e77c8793634631
         with:
           owner: ${{ github.repository_owner }}
           repository: ${{ github.event.repository.name }}
@@ -53,7 +53,7 @@ jobs:
       - name: Print the list of ticket
         run: echo "${{ steps.collect.outputs.tickets }}" | base64 -d
       - name: Update PR
-        uses: vimond/actions/pr-update-ticket-list@9dc6f7b9e472d6b7f500cdbd6320b18aac15d8ba
+        uses: vimond/actions/pr-update-ticket-list@6f7502fda805a640eb4ac44e96e77c8793634631
         with:
           pr-id: ${{ env.PR_ID }}
           tickets: ${{ steps.collect.outputs.tickets }}
@@ -65,7 +65,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.TICKET_COLLECTOR_SECRET_ACCESS_KEY }}
           aws-region: eu-north-1
       - name: Store tickets
-        uses: vimond/actions/ticket-storer-pr@feat/extra-fields
+        uses: vimond/actions/ticket-storer-pr@6f7502fda805a640eb4ac44e96e77c8793634631
         with:
           owner: ${{ github.repository_owner }}
           repository: ${{ github.event.repository.name }}
