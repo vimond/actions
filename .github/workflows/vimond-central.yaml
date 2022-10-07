@@ -36,7 +36,7 @@ jobs:
         run: "echo ${{ env.PR_ID }}"
       - name: collect tickets
         id: collect
-        uses: vimond/actions/ticket-collector@main
+        uses: vimond/actions/ticket-collector@testing-private-runners
         with:
           owner: ${{ github.repository_owner }}
           repository: ${{ github.event.repository.name }}
