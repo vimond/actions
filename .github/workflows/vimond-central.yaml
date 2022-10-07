@@ -23,7 +23,7 @@ env:
 jobs:
   pr-lint:
     name: ticket check
-    runs-on: ubuntu-latest
+    runs-on: vimond-hosted
 
     steps:
       - name : machine echo github
