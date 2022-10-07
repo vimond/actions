@@ -26,6 +26,7 @@ jobs:
     runs-on: vimond-hosted
 
     steps:
+      - run: hostname
       - name : machine echo github
         env : { CONTENT : "${{ toJson(github) }}" }
         run : "echo $CONTENT"
