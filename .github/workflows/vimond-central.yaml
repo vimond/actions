@@ -35,7 +35,7 @@ jobs:
         run: "echo ${{ env.PR_ID }}"
       - name: collect tickets
         id: collect
-        uses: vimond/actions/ticket-collector@testing-private-runners
+        uses: vimond/actions/ticket-collector@6f7502fda805a640eb4ac44e96e77c8793634631
         with:
           owner: ${{ github.repository_owner }}
           repository: ${{ github.event.repository.name }}
@@ -73,3 +73,4 @@ jobs:
           pr-id: ${{ env.PR_ID }}
           tickets: ${{ steps.collect.outputs.tickets }}
           dynamodb-tablename: 'eu-north-1-internal-commit-tickets'
+
