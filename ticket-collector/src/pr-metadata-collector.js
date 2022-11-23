@@ -43,7 +43,7 @@ async function getAllCommitMessages( octokitClient, prMetadata ) {
 
 async function searchForCommitPullRequest(searchClient, prMetadata, commitMetadata) {
     const searchResponse = await searchClient.rest.search.issuesAndPullRequests({
-        q: encodeURIComponent(commitMetadata.sha),
+        q: `${commitMetadata.sha} +is:pull-request`,
     });
     console.log(`Request search PR for sha ${commitMetadata.sha}:  ${searchResponse.headers['x-cache']}`);
     let prBodies = []
