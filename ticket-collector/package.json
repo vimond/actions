@@ -1,7 +1,7 @@
 {
   "name": "ticket-collector",
   "version": "1.0.0",
-  "description": "JavaScript Action Template",
+  "description": "<p align=\"center\">   <a href=\"https://github.com/actions/javascript-action/actions\"><img alt=\"javscript-action status\" src=\"https://github.com/actions/javascript-action/workflows/units-test/badge.svg\"></a> </p>",
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
@@ -9,21 +9,13 @@
     "test": "jest",
     "all": "npm run lint && npm run prepare && npm run test"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/actions/javascript-action.git"
-  },
   "keywords": [
     "GitHub",
     "Actions",
     "JavaScript"
   ],
   "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/actions/javascript-action/issues"
-  },
-  "homepage": "https://github.com/actions/javascript-action#readme",
+  "license": "ISC",
   "dependencies": {
     "@actions/core": "^1.2.5",
     "@actions/github": "^5.0.3",
