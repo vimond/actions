@@ -47,9 +47,6 @@ jobs:
           jira-username: ${{ secrets.JIRA_USERNAME }}
           jira-token: ${{ secrets.JIRA_TOKEN }}
           jira-proxy: ${{ secrets.JIRA_PROXY_DOMAIN }}
-      #      - name: Fake some tickets
-      #        id: collect
-      #        run: echo '::set-output name=tickets::W3sia2V5IjoiVEVTVC03ODkiLCJzdW1tYXJ5IjoiTS1UZXN0IHNldCAtIChNb25ldGl6YXRpb24pIC0gVm91Y2hlcnMiLCJsaW5rIjoiaHR0cHM6Ly92aW1vbmQtbmcuYXRsYXNzaWFuLm5ldC9icm93c2UvVEVTVC03ODkifSx7ImtleSI6IlRFU1QtMTIzIiwic3VtbWFyeSI6Ik0tVGVzdCAtIChDYXRhbG9nIC0gQXNzZXRzIC8gUmVsYXRlZCBBc3NldHMpIC0gVmlldyBhc3NldHMgZm9yIGEgU3R1ZGlvL1Nob3ciLCJsaW5rIjoiaHR0cHM6Ly92aW1vbmQtbmcuYXRsYXNzaWFuLm5ldC9icm93c2UvVEVTVC0xMjMifSx7ImtleSI6IlNSLTEyMzQiLCJzdW1tYXJ5IjoiRXJyb3IgRGlzcGxheWluZyB0aGUgY29udGVudCBpbiBWTUFOIHdlYiBicm93c2VyIiwibGluayI6Imh0dHBzOi8vdmltb25kLW5nLmF0bGFzc2lhbi5uZXQvYnJvd3NlL1NSLTEyMzQifSx7ImtleSI6IlBMQVQtMzIxIiwic3VtbWFyeSI6IlVwZ3JhZGUgS2Fma2EgZnJvbSAxLjEuMSB0byAyLjYuMCIsImxpbmsiOiJodHRwczovL3ZpbW9uZC1uZy5hdGxhc3NpYW4ubmV0L2Jyb3dzZS9QTEFULTMyMSJ9LHsia2V5IjoiUExBVC0xMjMiLCJzdW1tYXJ5IjoiaW5ncmVzc2VzLWFwLXNvdXRoZWFzdC0yYS5uY2FiLXByb2QuazhzLnZvcHMuaW8gaW5zdGFuY2UgaXMgcnVubmluZyBvbiBkZWdyYWRlZCBoYXJkd2FyZSwgUmVxdWlyZWQgdG8gc3RvcCBhbmQgc3RhcnQiLCJsaW5rIjoiaHR0cHM6Ly92aW1vbmQtbmcuYXRsYXNzaWFuLm5ldC9icm93c2UvUExBVC0xMjMifV0='
       - name: Print the list of ticket
         run: echo "${{ steps.collect.outputs.tickets }}" | base64 -d
       - name: Update PR
@@ -59,7 +56,7 @@ jobs:
           tickets: ${{ steps.collect.outputs.tickets }}
           gh-token: ${{ secrets.ACTIONS_GITHUB_API_TOKEN }}
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.TICKET_COLLECTOR_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.TICKET_COLLECTOR_SECRET_ACCESS_KEY }}
