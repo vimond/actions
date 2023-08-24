@@ -18,7 +18,7 @@ jobs:
         run : "echo $CONTENT"
       - name: Configure AWS Credentials
         # TODO: Needs to keep an eye for v2 coming soon https://github.com/aws-actions/configure-aws-credentials/issues/489
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v3.0.0
         with:
           aws-access-key-id: ${{ secrets.TICKET_COLLECTOR_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.TICKET_COLLECTOR_SECRET_ACCESS_KEY }}
