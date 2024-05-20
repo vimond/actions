@@ -1,0 +1,10 @@
+name: PR actions
+
+on:
+  pull_request:
+    types: ['opened', 'edited', 'reopened', 'synchronize', 'closed']
+
+jobs:
+  vimond-central:
+    uses: vimond/actions/.github/workflows/vimond-central.yaml@0.0.1
+    secrets: inherit
