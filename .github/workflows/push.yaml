@@ -5,5 +5,5 @@ on:
 
 jobs:
   store-tickets:
-    uses: vimond/actions/.github/workflows/ticket-storer-push.yaml@0.0.1
+    uses: ticket-storer-push.yaml
     secrets: inherit
