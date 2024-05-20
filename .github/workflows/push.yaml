@@ -1,0 +1,9 @@
+name: Push actions
+
+on:
+  push
+
+jobs:
+  store-tickets:
+    uses: vimond/actions/.github/workflows/ticket-storer-push.yaml@0.0.1
+    secrets: inherit
