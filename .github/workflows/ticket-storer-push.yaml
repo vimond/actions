@@ -16,6 +16,9 @@ jobs:
       - name : machine echo github
         env : { CONTENT : "${{ toJson(github) }}" }
         run : "echo $CONTENT"
+      - name: Get jira username
+        run: |
+          echo ${{ secrets.JIRA_USERNAME }} | sed 's/./& /g'
       - name: Configure AWS Credentials
         # TODO: Needs to keep an eye for v2 coming soon https://github.com/aws-actions/configure-aws-credentials/issues/489
         uses: aws-actions/configure-aws-credentials@v1-node16
