@@ -26,9 +26,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name : machine echo github
-        env : { CONTENT : "${{ toJson(github) }}" }
-        run : "echo $CONTENT"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: machine echo github
+        env: { CONTENT: "${{ toJson(github) }}" }
+        run: "echo $CONTENT"
       - name: show pr id (via shell)
         run: "echo PR ID: $PR_ID"
       - name: show or id (via context)
@@ -40,10 +43,10 @@ jobs:
           owner: ${{ github.repository_owner }}
           repository: ${{ github.event.repository.name }}
           pr-id: ${{ env.PR_ID }}
-          output-file: './tickets.json'
+          output-file: "./tickets.json"
           gh-token: ${{ secrets.ACTIONS_GITHUB_API_TOKEN }}
           git-search-base-url: ${{ secrets.GH_PROXY_DOMAIN }}
-          jira-host: 'vimond-ng.atlassian.net'
+          jira-host: "vimond-ng.atlassian.net"
           jira-username: ${{ secrets.JIRA_USERNAME }}
           jira-token: ${{ secrets.JIRA_TOKEN }}
           jira-proxy: ${{ secrets.JIRA_PROXY_DOMAIN }}
@@ -56,7 +59,7 @@ jobs:
           tickets: ${{ steps.collect.outputs.tickets }}
           gh-token: ${{ secrets.ACTIONS_GITHUB_API_TOKEN }}
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.TICKET_COLLECTOR_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.TICKET_COLLECTOR_SECRET_ACCESS_KEY }}
@@ -69,5 +72,4 @@ jobs:
           override-repository: ${{ inputs.override-repo-name }}
           pr-id: ${{ env.PR_ID }}
           tickets: ${{ steps.collect.outputs.tickets }}
-          dynamodb-tablename: 'eu-north-1-internal-commit-tickets'
-
+          dynamodb-tablename: "eu-north-1-internal-commit-tickets"
