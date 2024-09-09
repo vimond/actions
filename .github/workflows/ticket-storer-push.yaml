@@ -28,7 +28,7 @@ jobs:
 
       - name: store valid tickets
         id: store
-        uses: vimond/actions/ticket-storer@v1
+        uses: vimond/actions/ticket-storer@0.0.1
         with:
           owner: ${{ github.repository_owner }}
           repository: ${{ github.event.repository.name }}
