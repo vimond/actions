@@ -13,12 +13,11 @@ jobs:
     name: ticket store
     runs-on: ubuntu-latest
     steps:
-      - name : machine echo github
-        env : { CONTENT : "${{ toJson(github) }}" }
-        run : "echo $CONTENT"
+      - name: machine echo github
+        env: { CONTENT: "${{ toJson(github) }}" }
+        run: "echo $CONTENT"
       - name: Configure AWS Credentials
-        # TODO: Needs to keep an eye for v2 coming soon https://github.com/aws-actions/configure-aws-credentials/issues/489
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.TICKET_COLLECTOR_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.TICKET_COLLECTOR_SECRET_ACCESS_KEY }}
@@ -38,9 +37,9 @@ jobs:
           new-sha: ${{ github.event.after }}
           commits: "${{ toJson(github.event.commits) }}"
 
-          dynamodb-tablename: 'eu-north-1-internal-commit-tickets'
+          dynamodb-tablename: "eu-north-1-internal-commit-tickets"
 
-          jira-host: 'vimond-ng.atlassian.net'
+          jira-host: "vimond-ng.atlassian.net"
           jira-username: ${{ secrets.JIRA_USERNAME }}
           jira-token: ${{ secrets.JIRA_TOKEN }}
           jira-proxy: ${{ secrets.JIRA_PROXY_DOMAIN }}
