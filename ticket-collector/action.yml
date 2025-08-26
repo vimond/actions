@@ -42,5 +42,5 @@ outputs:
   tickets:
     description: 'Base64 encoded json list of tickets found'
 runs:
-  using: 'node24'
+  using: 'node22'
   main: 'dist/index.js'

@@ -5,7 +5,7 @@ import json from '@rollup/plugin-json'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 
 const config = {
-  input: 'index.js',
+  input: 'src/pr-metadata-collector.ts',
   output: {
     esModule: true,
     file: 'dist/index.js',
