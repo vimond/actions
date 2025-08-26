@@ -8,5 +8,4 @@ parserOptions:
   ecmaVersion: latest
 rules: {}
 ignorePatterns:
-  - "dist/*.js"
-
+  - 'dist/*.js'
